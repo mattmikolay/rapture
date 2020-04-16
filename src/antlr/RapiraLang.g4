@@ -3,12 +3,13 @@ grammar RapiraLang;
 // Parser rules
 
 dialog_unit
-    : statement
+    : statement EOF
     ;
 
 statement
     : number
     | IDENTIFIER
+    | TEXT
     ;
 
 number
@@ -47,6 +48,10 @@ SIGNED_REAL
 
 IDENTIFIER
     : [a-z][a-z0-9_]+
+    ;
+
+TEXT
+    : '"' (~[\r\n"] | '""')* '"'
     ;
 
 COMMENT
