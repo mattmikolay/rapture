@@ -23,7 +23,7 @@ class RapiraCommand : CliktCommand(
     override fun run() {
         inputFile.inputStream().use {
             val lexer = RapiraLangLexer(CharStreams.fromStream(it))
-            RapiraLangParser(CommonTokenStream(lexer)).program()
+            RapiraLangParser(CommonTokenStream(lexer)).dialog_unit()
         }
     }
 }

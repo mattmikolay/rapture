@@ -2,15 +2,25 @@ grammar RapiraLang;
 
 // Parser rules
 
-program
-    : number EOF
+dialog_unit
+    : statement
+    ;
+
+statement
+    : number
     ;
 
 number
-    : SIGNED_INT | UNSIGNED_INT
+    : INT
+    | REAL
     ;
 
 // Lexer rules
+
+INT
+    : UNSIGNED_INT
+    | SIGNED_INT
+    ;
 
 UNSIGNED_INT
     : [0-9]+
@@ -18,6 +28,20 @@ UNSIGNED_INT
 
 SIGNED_INT
     : ('+' | '-') UNSIGNED_INT
+    ;
+
+REAL
+    : UNSIGNED_REAL
+    | SIGNED_REAL
+    ;
+
+UNSIGNED_REAL
+    : [0-9]+ 'e' INT
+    | [0-9]+ ('.' [0-9]+ ('e' INT)?)
+    ;
+
+SIGNED_REAL
+    : ('+' | '-') UNSIGNED_REAL
     ;
 
 COMMENT
