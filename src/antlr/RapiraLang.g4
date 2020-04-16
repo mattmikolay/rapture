@@ -7,6 +7,15 @@ dialog_unit
     ;
 
 statement
+    : assignment
+    ;
+
+assignment
+    // TODO: Add support for index expressions
+    : IDENTIFIER ':=' expression
+    ;
+
+expression
     : number
     | IDENTIFIER
     | TEXT
