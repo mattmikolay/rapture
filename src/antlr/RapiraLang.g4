@@ -8,6 +8,7 @@ dialog_unit
 
 statement
     : number
+    | IDENTIFIER
     ;
 
 number
@@ -42,6 +43,10 @@ UNSIGNED_REAL
 
 SIGNED_REAL
     : ('+' | '-') UNSIGNED_REAL
+    ;
+
+IDENTIFIER
+    : [a-z][a-z0-9_]+
     ;
 
 COMMENT
