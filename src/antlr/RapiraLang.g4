@@ -18,12 +18,14 @@ stmts
 
 statement
     : assignment
+    | output
     ;
 
 assignment
     : IDENTIFIER (index_expr)* ':=' expression
     ;
 
+// TODO Add declarations support
 function
     : 'fun' IDENTIFIER? '(' function_params? ')' stmts 'end'
     ;
@@ -32,12 +34,17 @@ function_params
     : '=>'? IDENTIFIER (',' '=>'? IDENTIFIER)*
     ;
 
+// TODO Add declarations support
 procedure
     : 'proc' IDENTIFIER? '(' procedure_params? ')' stmts 'end'
     ;
 
 procedure_params
     : ('=>' | '<=')? IDENTIFIER (',' ('=>' | '<=')? IDENTIFIER)*
+    ;
+
+output
+    : 'output' 'nlf'? (':' expression (',' expression)*)?
     ;
 
 expression
