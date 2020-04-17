@@ -8,8 +8,8 @@ dialog_unit
     ;
 
 routine_definition
-    : function
-    // TODO procedure
+    : procedure
+    | function
     ;
 
 stmts
@@ -30,6 +30,14 @@ function
 
 function_params
     : '=>'? IDENTIFIER (',' '=>'? IDENTIFIER)*
+    ;
+
+procedure
+    : 'proc' IDENTIFIER? '(' procedure_params? ')' stmts 'end'
+    ;
+
+procedure_params
+    : ('=>' | '<=')? IDENTIFIER (',' ('=>' | '<=')? IDENTIFIER)*
     ;
 
 expression
@@ -81,7 +89,7 @@ base_expr
     | TEXT
     | UNSIGNED_INT
     | UNSIGNED_REAL
-    // TODO Insert procedure
+    | procedure
     | function
     | LARROW (comma_expr)? RARROW
     | '(' expression ')'
