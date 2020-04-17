@@ -4,6 +4,16 @@ grammar RapiraLang;
 
 dialog_unit
     : statement EOF
+    | routine_definition EOF
+    ;
+
+routine_definition
+    : function
+    // TODO procedure
+    ;
+
+stmts
+    : (statement (';' | '\r' | '\n'))*
     ;
 
 statement
@@ -12,6 +22,14 @@ statement
 
 assignment
     : IDENTIFIER (index_expr)* ':=' expression
+    ;
+
+function
+    : 'fun' IDENTIFIER? '(' function_params? ')' stmts 'end'
+    ;
+
+function_params
+    : '=>'? IDENTIFIER (',' '=>'? IDENTIFIER)*
     ;
 
 expression
@@ -63,7 +81,8 @@ base_expr
     | TEXT
     | UNSIGNED_INT
     | UNSIGNED_REAL
-    // TODO Insert procedure and function
+    // TODO Insert procedure
+    | function
     | LARROW (comma_expr)? RARROW
     | '(' expression ')'
     ;
