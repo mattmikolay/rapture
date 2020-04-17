@@ -18,7 +18,14 @@ stmts
 
 statement
     : assignment
+    // TODO call
+    // TODO if
+    // TODO case
+    // TODO loop
     | output
+    // TODO input
+    | LOOP_EXIT
+    | RETURN expression?
     ;
 
 assignment
@@ -134,6 +141,14 @@ LARROW
 
 RARROW
     : '*>'
+    ;
+
+LOOP_EXIT
+    : 'exit'
+    ;
+
+RETURN
+    : 'return'
     ;
 
 UNSIGNED_INT
