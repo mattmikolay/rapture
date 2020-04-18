@@ -3,8 +3,12 @@ grammar RapiraLang;
 // Parser rules
 
 dialog_unit
-    : statement EOF
-    | routine_definition EOF
+    : statement STMT_END EOF
+    | routine_definition STMT_END EOF
+    ;
+
+file_input
+    : ((statement STMT_END) | (routine_definition STMT_END) | STMT_END)* EOF
     ;
 
 routine_definition
@@ -13,7 +17,7 @@ routine_definition
     ;
 
 stmts
-    : (statement (';' | '\r' | '\n'))*
+    : (statement STMT_END)*
     ;
 
 statement
@@ -42,7 +46,7 @@ call
     ;
 
 function
-    : 'fun' IDENTIFIER? '(' function_params? ')' declarations? stmts 'end'
+    : 'fun' IDENTIFIER? '(' function_params? ')' STMT_END declarations? stmts 'end'
     ;
 
 function_params
@@ -50,7 +54,7 @@ function_params
     ;
 
 procedure
-    : 'proc' IDENTIFIER? '(' procedure_params? ')' declarations? stmts 'end'
+    : 'proc' IDENTIFIER? '(' procedure_params? ')' STMT_END declarations? stmts 'end'
     ;
 
 procedure_params
@@ -63,11 +67,11 @@ declarations
     ;
 
 intern
-    : 'intern' ':' IDENTIFIER (',' IDENTIFIER)*
+    : 'intern' ':' IDENTIFIER (',' IDENTIFIER)* STMT_END
     ;
 
 extern
-    : 'extern' ':' IDENTIFIER (',' IDENTIFIER)*
+    : 'extern' ':' IDENTIFIER (',' IDENTIFIER)* STMT_END
     ;
 
 if_statement
@@ -212,10 +216,23 @@ TEXT
     : '"' (~[\r\n"] | '""')* '"'
     ;
 
-COMMENT
-    : '\\' ~[\r\n]* -> skip
+STMT_END
+    : ';'
+    | NEWLINE+
     ;
 
-WHITESPACE
-    : [ \r\t\n]+ -> skip
+SKIPPED
+    : (COMMENT | WHITESPACE) -> skip
+    ;
+
+fragment NEWLINE
+    : [\r\n]
+    ;
+
+fragment WHITESPACE
+    : [ \t]+
+    ;
+
+fragment COMMENT
+    : '\\' ~[\r\n]*
     ;
