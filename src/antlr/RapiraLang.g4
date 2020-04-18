@@ -2,18 +2,18 @@ grammar RapiraLang;
 
 // Parser rules
 
-dialog_unit
+dialogUnit
     : statement STMT_END EOF
-    | routine_definition STMT_END EOF
+    | routineDefinition STMT_END EOF
     ;
 
-file_input
-    : ((statement STMT_END) | (routine_definition STMT_END) | STMT_END)* EOF
+fileInput
+    : ((statement STMT_END) | (routineDefinition STMT_END) | STMT_END)* EOF
     ;
 
-routine_definition
-    : procedure
-    | function
+routineDefinition
+    : procedureDefinition
+    | functionDefinition
     ;
 
 stmts
@@ -21,43 +21,43 @@ stmts
     ;
 
 statement
-    : assignment
-    | call
-    | if_statement
-    | case_statement
-    | loop_statement
-    | output
-    | input
+    : assignStatement
+    | callStatement
+    | ifStatement
+    | caseStatement
+    | loopStatement
+    | outputStatement
+    | inputStatement
     | LOOP_EXIT
     | RETURN expression?
     ;
 
-assignment
+assignStatement
     : variable ':=' expression
     ;
 
 variable
-    : IDENTIFIER (index_expr)*
+    : IDENTIFIER (indexExpression)*
     ;
 
-call
-    : 'call' expression actual_proc_param
-    | IDENTIFIER actual_proc_param
+callStatement
+    : 'call' expression procedureArguments
+    | IDENTIFIER procedureArguments
     ;
 
-function
-    : 'fun' IDENTIFIER? '(' function_params? ')' STMT_END declarations? stmts 'end'
+functionDefinition
+    : 'fun' IDENTIFIER? '(' functionParams? ')' STMT_END declarations? stmts 'end'
     ;
 
-function_params
+functionParams
     : '=>'? IDENTIFIER (',' '=>'? IDENTIFIER)*
     ;
 
-procedure
-    : 'proc' IDENTIFIER? '(' procedure_params? ')' STMT_END declarations? stmts 'end'
+procedureDefinition
+    : 'proc' IDENTIFIER? '(' procedureParams? ')' STMT_END declarations? stmts 'end'
     ;
 
-procedure_params
+procedureParams
     : ('=>' | '<=')? IDENTIFIER (',' ('=>' | '<=')? IDENTIFIER)*
     ;
 
@@ -74,110 +74,110 @@ extern
     : 'extern' ':' IDENTIFIER (',' IDENTIFIER)* STMT_END
     ;
 
-if_statement
+ifStatement
     : 'if' expression 'then' stmts ('else' stmts)? 'fi'
     ;
 
-case_statement
+caseStatement
     : (
         ('case' expression ('when' expression (',' expression)* ':' stmts)*) |
         ('case' ('when' expression ':' stmts)*)
       ) ('else' stmts)? 'esac'
     ;
 
-loop_statement
-    : (for_clause | repeat_clause)? while_clause? 'do' stmts ('od' | ('until' expression))
+loopStatement
+    : (forClause | repeatClause)? whileClause? 'do' stmts ('od' | ('until' expression))
     ;
 
-for_clause
+forClause
     : 'for' IDENTIFIER ('from' expression)? ('to' expression)? ('step' expression)?
     ;
 
-repeat_clause
+repeatClause
     : 'repeat' expression
     ;
 
-while_clause
+whileClause
     : 'while' expression
     ;
 
-output
+outputStatement
     : 'output' 'nlf'? (':' expression (',' expression)*)?
     ;
 
-input
+inputStatement
     : 'input' 'text'? ':' IDENTIFIER (',' IDENTIFIER)*
     ;
 
 expression
-    : or_expr
+    : orExpression
     ;
 
-or_expr
-    : and_expr ('or' and_expr)*
+orExpression
+    : andExpression ('or' andExpression)*
     ;
 
-and_expr
-    : not_expr ('and' not_expr)*
+andExpression
+    : notExpression ('and' notExpression)*
     ;
 
-not_expr
-    : ('not')? eq_expr
+notExpression
+    : ('not')? equalityExpression
     ;
 
-eq_expr
-    : rel_expr (('=' | '/=') rel_expr)*
+equalityExpression
+    : relationalExpression (('=' | '/=') relationalExpression)*
     ;
 
-rel_expr
-    : add_expr (('<' | '>' | '>=' | '<=') add_expr)*
+relationalExpression
+    : additionExpression (('<' | '>' | '>=' | '<=') additionExpression)*
     ;
 
-add_expr
-    : ('+' | '-')? product_expr (('+' | '-') product_expr)*
+additionExpression
+    : ('+' | '-')? productExpression (('+' | '-') productExpression)*
     ;
 
-product_expr
-    : exponent_expr (('*' | '/' | '//' | '/%') exponent_expr)*
+productExpression
+    : exponentExpression (('*' | '/' | '//' | '/%') exponentExpression)*
     ;
 
-exponent_expr
-    : len_expr ('**' len_expr)*
+exponentExpression
+    : lengthExpression ('**' lengthExpression)*
     ;
 
-len_expr
-    : ('#')? subop_expr
+lengthExpression
+    : ('#')? subopExpression
     ;
 
-subop_expr
-    : base_expr (index_expr | actual_fun_param)*
+subopExpression
+    : baseExpression (indexExpression | functionArguments)*
     ;
 
-base_expr
+baseExpression
     : IDENTIFIER
     | TEXT
     | UNSIGNED_INT
     | UNSIGNED_REAL
-    | procedure
-    | function
-    | LARROW (comma_expr)? RARROW
+    | procedureDefinition
+    | functionDefinition
+    | LARROW (commaExpression)? RARROW
     | '(' expression ')'
     ;
 
-comma_expr
+commaExpression
     : expression (',' expression)*
     ;
 
-index_expr
-    : '[' comma_expr ']'
+indexExpression
+    : '[' commaExpression ']'
     | '[' expression? ':' expression? ']'
     ;
 
-actual_proc_param
+procedureArguments
     : '(' (('<=' variable | '=>'? expression))? (',' ('<=' variable | '=>'? expression))* ')'
     ;
 
-actual_fun_param
+functionArguments
     : '(' ( '=>'? expression )? (',' '=>'? expression)* ')'
     ;
 
