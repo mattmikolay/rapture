@@ -23,7 +23,7 @@ statement
     // TODO case
     // TODO loop
     | output
-    // TODO input
+    | input
     | LOOP_EXIT
     | RETURN expression?
     ;
@@ -63,6 +63,10 @@ extern
 
 output
     : 'output' 'nlf'? (':' expression (',' expression)*)?
+    ;
+
+input
+    : 'input' 'text'? ':' IDENTIFIER (',' IDENTIFIER)*
     ;
 
 expression
