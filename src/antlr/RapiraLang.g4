@@ -21,7 +21,7 @@ statement
     | call
     | if_statement
     | case_statement
-    // TODO loop
+    | loop_statement
     | output
     | input
     | LOOP_EXIT
@@ -79,6 +79,22 @@ case_statement
         ('case' expression ('when' expression (',' expression)* ':' stmts)*) |
         ('case' ('when' expression ':' stmts)*)
       ) ('else' stmts)? 'esac'
+    ;
+
+loop_statement
+    : (for_clause | repeat_clause)? while_clause? 'do' stmts ('od' | ('until' expression))
+    ;
+
+for_clause
+    : 'for' IDENTIFIER ('from' expression)? ('to' expression)? ('step' expression)?
+    ;
+
+repeat_clause
+    : 'repeat' expression
+    ;
+
+while_clause
+    : 'while' expression
     ;
 
 output
