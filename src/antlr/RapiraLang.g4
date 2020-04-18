@@ -19,7 +19,7 @@ stmts
 statement
     : assignment
     | call
-    // TODO if
+    | if
     // TODO case
     // TODO loop
     | output
@@ -68,6 +68,10 @@ intern
 
 extern
     : 'extern' ':' IDENTIFIER (',' IDENTIFIER)*
+    ;
+
+if
+    : 'if' expression 'then' stmts ('else' stmts)? 'fi'
     ;
 
 output
