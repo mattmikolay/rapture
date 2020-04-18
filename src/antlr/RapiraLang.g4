@@ -18,7 +18,7 @@ stmts
 
 statement
     : assignment
-    // TODO call
+    | call
     // TODO if
     // TODO case
     // TODO loop
@@ -29,7 +29,16 @@ statement
     ;
 
 assignment
-    : IDENTIFIER (index_expr)* ':=' expression
+    : variable ':=' expression
+    ;
+
+variable
+    : IDENTIFIER (index_expr)*
+    ;
+
+call
+    : 'call' expression actual_proc_param
+    | IDENTIFIER actual_proc_param
     ;
 
 function
@@ -131,6 +140,10 @@ comma_expr
 index_expr
     : '[' comma_expr ']'
     | '[' expression? ':' expression? ']'
+    ;
+
+actual_proc_param
+    : '(' (('<=' variable | '=>'? expression))? (',' ('<=' variable | '=>'? expression))* ')'
     ;
 
 actual_fun_param
