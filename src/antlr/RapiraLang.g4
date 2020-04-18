@@ -19,8 +19,8 @@ stmts
 statement
     : assignment
     | call
-    | if
-    // TODO case
+    | if_statement
+    | case_statement
     // TODO loop
     | output
     | input
@@ -70,8 +70,15 @@ extern
     : 'extern' ':' IDENTIFIER (',' IDENTIFIER)*
     ;
 
-if
+if_statement
     : 'if' expression 'then' stmts ('else' stmts)? 'fi'
+    ;
+
+case_statement
+    : (
+        ('case' expression ('when' expression (',' expression)* ':' stmts)*) |
+        ('case' ('when' expression ':' stmts)*)
+      ) ('else' stmts)? 'esac'
     ;
 
 output
