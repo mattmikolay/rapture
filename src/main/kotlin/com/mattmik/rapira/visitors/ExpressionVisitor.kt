@@ -27,5 +27,10 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
         }
     }
 
+    override fun visitUnaryExpression(ctx: RapiraLangParser.UnaryExpressionContext): RapiraObject {
+        val result = this.visit(ctx.subopExpression())
+        return if (ctx.op?.type == RapiraLangParser.MINUS) result.negate() else result
+    }
+
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) = RapiraInteger(Integer.valueOf(ctx.text))
 }

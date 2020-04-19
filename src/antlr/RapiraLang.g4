@@ -130,7 +130,7 @@ arithmeticExpression
     : arithmeticExpression '**' arithmeticExpression #exponentiationExpression
     | arithmeticExpression ('*' | '/' | '//' | '/%') arithmeticExpression #multiplicationExpression
     | arithmeticExpression op=(PLUS | MINUS) arithmeticExpression #additionExpression
-    | (PLUS | MINUS) subopExpression #unaryExpression
+    | op=(PLUS | MINUS) subopExpression #unaryExpression
     | subopExpression #unaryExpression
     ;
 
