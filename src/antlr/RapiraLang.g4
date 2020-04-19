@@ -110,47 +110,34 @@ inputStatement
     ;
 
 expression
-    : orExpression
+    : logicalExpression
     ;
 
-orExpression
-    : andExpression ('or' andExpression)*
+logicalExpression
+    : logicalExpression 'and' logicalExpression
+    | logicalExpression 'or' logicalExpression
+    | 'not' comparisonExpression
+    | comparisonExpression
     ;
 
-andExpression
-    : notExpression ('and' notExpression)*
+comparisonExpression
+    : comparisonExpression ('<' | '>' | '>=' | '<=') comparisonExpression
+    | comparisonExpression ('=' | '/=') comparisonExpression
+    | arithmeticExpression
     ;
 
-notExpression
-    : ('not')? equalityExpression
-    ;
-
-equalityExpression
-    : relationalExpression (('=' | '/=') relationalExpression)*
-    ;
-
-relationalExpression
-    : additionExpression (('<' | '>' | '>=' | '<=') additionExpression)*
-    ;
-
-additionExpression
-    : ('+' | '-')? productExpression (('+' | '-') productExpression)*
-    ;
-
-productExpression
-    : exponentExpression (('*' | '/' | '//' | '/%') exponentExpression)*
-    ;
-
-exponentExpression
-    : lengthExpression ('**' lengthExpression)*
-    ;
-
-lengthExpression
-    : ('#')? subopExpression
+arithmeticExpression
+    : arithmeticExpression '**' arithmeticExpression
+    | arithmeticExpression ('*' | '/' | '//' | '/%') arithmeticExpression
+    | arithmeticExpression ('+' | '-') arithmeticExpression
+    | ('+' | '-') subopExpression
+    | subopExpression
     ;
 
 subopExpression
-    : baseExpression (indexExpression | functionArguments)*
+    : subopExpression (indexExpression | functionArguments)
+    | '#' subopExpression
+    | baseExpression
     ;
 
 baseExpression
