@@ -127,11 +127,11 @@ comparisonExpression
     ;
 
 arithmeticExpression
-    : arithmeticExpression '**' arithmeticExpression
-    | arithmeticExpression ('*' | '/' | '//' | '/%') arithmeticExpression
-    | arithmeticExpression ('+' | '-') arithmeticExpression
-    | ('+' | '-') subopExpression
-    | subopExpression
+    : arithmeticExpression '**' arithmeticExpression #exponentiationExpression
+    | arithmeticExpression ('*' | '/' | '//' | '/%') arithmeticExpression #multiplicationExpression
+    | arithmeticExpression op=(PLUS | MINUS) arithmeticExpression #additionExpression
+    | (PLUS | MINUS) subopExpression #unaryExpression
+    | subopExpression #unaryExpression
     ;
 
 subopExpression
@@ -141,14 +141,14 @@ subopExpression
     ;
 
 baseExpression
-    : IDENTIFIER
-    | TEXT
-    | UNSIGNED_INT
-    | UNSIGNED_REAL
-    | procedureDefinition
-    | functionDefinition
-    | LARROW (commaExpression)? RARROW
-    | '(' expression ')'
+    : IDENTIFIER #identifierValue
+    | TEXT #textValue
+    | UNSIGNED_INT #intValue
+    | UNSIGNED_REAL #realValue
+    | procedureDefinition #procedureValue
+    | functionDefinition #functionValue
+    | LARROW (commaExpression)? RARROW #sequenceValue
+    | '(' expression ')' #parentheticalExpression
     ;
 
 commaExpression
@@ -170,13 +170,13 @@ functionArguments
 
 // Lexer rules
 
-LARROW
-    : '<*'
-    ;
+LARROW : '<*' ;
 
-RARROW
-    : '*>'
-    ;
+RARROW : '*>' ;
+
+PLUS : '+' ;
+
+MINUS : '-' ;
 
 LOOP_EXIT
     : 'exit'
@@ -191,8 +191,8 @@ UNSIGNED_INT
     ;
 
 UNSIGNED_REAL
-    : [0-9]+ 'e' ('+' | '-')? UNSIGNED_INT
-    | [0-9]+ ('.' [0-9]+ ('e' ('+' | '-')? UNSIGNED_INT)?)
+    : [0-9]+ 'e' (PLUS | MINUS)? UNSIGNED_INT
+    | [0-9]+ ('.' [0-9]+ ('e' (PLUS | MINUS)? UNSIGNED_INT)?)
     ;
 
 IDENTIFIER
