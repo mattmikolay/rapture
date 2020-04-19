@@ -33,4 +33,8 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
     }
 
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) = RapiraInteger(Integer.valueOf(ctx.text))
+
+    override fun visitParentheticalExpression(
+        ctx: RapiraLangParser.ParentheticalExpressionContext
+    ): RapiraObject = this.visit(ctx.expression())
 }
