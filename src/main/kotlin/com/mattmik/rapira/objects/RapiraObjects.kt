@@ -57,27 +57,27 @@ data class RapiraInteger(val value: Int) : RapiraObject() {
 
     override fun multiply(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value * other.value)
-        is RapiraEmpty -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform multiplication using an empty value")
     }
 
     override fun divide(other: RapiraObject) = when (other) {
         is RapiraInteger -> TODO("Not yet implemented")
-        is RapiraEmpty -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform division using an empty value")
     }
 
     override fun intDivide(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value / other.value)
-        is RapiraEmpty -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform integer division using an empty value")
     }
 
     override fun modulus(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value % other.value)
-        is RapiraEmpty -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform modulo operation using an empty value")
     }
 
     override fun power(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value.toDouble().pow(other.value).toInt())
-        is RapiraEmpty -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform exponentiation operation using an empty value")
     }
 
     override fun toString() = "$value"
