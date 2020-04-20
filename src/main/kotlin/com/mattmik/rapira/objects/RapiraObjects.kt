@@ -1,5 +1,6 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import kotlin.math.pow
 
 sealed class RapiraObject {
@@ -14,39 +15,29 @@ sealed class RapiraObject {
 }
 
 object RapiraEmpty : RapiraObject() {
-    override fun add(other: RapiraObject) = when (other) {
-        is RapiraInteger -> TODO("Not yet implemented")
-        is RapiraEmpty -> TODO("Not yet implemented")
-    }
+    override fun add(other: RapiraObject)
+            = throw RapiraInvalidOperationError("cannot perform addition using an empty value")
 
-    override fun subtract(other: RapiraObject) = when (other) {
-        is RapiraInteger -> TODO("Not yet implemented")
-        is RapiraEmpty -> TODO("Not yet implemented")
-    }
+    override fun subtract(other: RapiraObject)
+            = throw RapiraInvalidOperationError("cannot perform subtraction using an empty value")
 
-    override fun negate(): RapiraObject {
-        TODO("Not yet implemented")
-    }
+    override fun negate(): RapiraObject
+            = throw RapiraInvalidOperationError("cannot negate an empty value")
 
-    override fun multiply(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
+    override fun multiply(other: RapiraObject)
+            = throw RapiraInvalidOperationError("cannot perform multiplication using an empty value")
 
-    override fun divide(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
+    override fun divide(other: RapiraObject)
+            = throw RapiraInvalidOperationError("cannot perform division using an empty value")
 
-    override fun intDivide(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
+    override fun intDivide(other: RapiraObject)
+            = throw RapiraInvalidOperationError("cannot perform integer division using an empty value")
 
-    override fun modulus(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
+    override fun modulus(other: RapiraObject)
+            = throw RapiraInvalidOperationError("cannot perform modulo operation using an empty value")
 
-    override fun power(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
+    override fun power(other: RapiraObject)
+            = throw RapiraInvalidOperationError("cannot perform exponentiation operation using an empty value")
 }
 
 data class RapiraInteger(val value: Int) : RapiraObject() {
