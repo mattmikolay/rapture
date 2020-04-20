@@ -50,7 +50,7 @@ data class RapiraInteger(val value: Int) : RapiraObject() {
 
     override fun subtract(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value - other.value)
-        is RapiraEmpty -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform subtraction using an empty value")
     }
 
     override fun negate(): RapiraObject = RapiraInteger(-value)
