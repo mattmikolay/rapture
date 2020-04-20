@@ -215,7 +215,9 @@ class IntDivisionTest {
         Pair(RapiraEmpty, RapiraInteger(4)),
         Pair(RapiraInteger(4), RapiraEmpty),
         Pair(RapiraEmpty, RapiraReal(4.1)),
-        Pair(RapiraReal(4.1), RapiraEmpty)
+        Pair(RapiraReal(4.1), RapiraEmpty),
+        Pair(RapiraReal(4.1), RapiraInteger(2)),
+        Pair(RapiraInteger(2), RapiraReal(4.1))
     ).map { (first, second) ->
         dynamicTest("$first // $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
