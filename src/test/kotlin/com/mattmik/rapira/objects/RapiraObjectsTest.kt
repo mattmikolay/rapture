@@ -2,8 +2,8 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DynamicTest.dynamicTest
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertThrows
 
@@ -100,50 +100,168 @@ class NegationTest {
     }
 }
 
-class RapiraEmptyTest {
+class MultiplicationTest {
 
-    private val otherObject = RapiraInteger(4)
+    private val multiplyOperation = { a: RapiraObject, b: RapiraObject -> a.multiply(b) };
 
-    @Test
-    fun multiplyThrowsInvalidOperationError() {
-        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.multiply(otherObject) }
+    @TestFactory
+    fun validOperationsReturnNewObject() = listOf(
+        Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(21)),
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(21))
+    ).map { (first, second, expected) ->
+        dynamicTest("$first * $second = $expected") {
+            assertEquals(
+                expected,
+                multiplyOperation(first, second)
+            )
+        }
     }
 
-    @Test
-    fun divideThrowsInvalidOperationError() {
-        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.divide(otherObject) }
-    }
-
-    @Test
-    fun intDivideThrowsInvalidOperationError() {
-        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.intDivide(otherObject) }
-    }
-
-    @Test
-    fun modulusThrowsInvalidOperationError() {
-        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.modulus(otherObject) }
-    }
-
-    @Test
-    fun powerThrowsInvalidOperationError() {
-        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.power(otherObject) }
+    @TestFactory
+    fun invalidOperationsThrowError() = listOf(
+        Pair(RapiraEmpty, RapiraInteger(4)),
+        Pair(RapiraInteger(4), RapiraEmpty)
+    ).map { (first, second) ->
+        dynamicTest("$first * $second throws error") {
+            assertThrows<RapiraInvalidOperationError> {
+                multiplyOperation(
+                    first,
+                    second
+                )
+            }
+        }
     }
 }
 
-class RapiraIntegerTest {
+class DivisionTest {
 
-    private val firstInteger = RapiraInteger(7)
-    private val secondInteger = RapiraInteger(3)
+    private val divideOperation = { a: RapiraObject, b: RapiraObject -> a.divide(b) };
 
-    @Test
-    fun multiplyReturnsInteger() = assertEquals(RapiraInteger(21), firstInteger.multiply(secondInteger))
+    @TestFactory
+    @Disabled("Division not yet implemented")
+    fun validOperationsReturnNewObject() = listOf(
+        Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(21)),
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(21))
+    ).map { (first, second, expected) ->
+        dynamicTest("$first / $second = $expected") {
+            assertEquals(
+                expected,
+                divideOperation(first, second)
+            )
+        }
+    }
 
-    @Test
-    fun intDivideReturnsInteger() = assertEquals(RapiraInteger(2), firstInteger.intDivide(secondInteger))
+    @TestFactory
+    fun invalidOperationsThrowError() = listOf(
+        Pair(RapiraEmpty, RapiraInteger(4)),
+        Pair(RapiraInteger(4), RapiraEmpty)
+    ).map { (first, second) ->
+        dynamicTest("$first / $second throws error") {
+            assertThrows<RapiraInvalidOperationError> {
+                divideOperation(
+                    first,
+                    second
+                )
+            }
+        }
+    }
+}
 
-    @Test
-    fun modulusReturnsInteger() = assertEquals(RapiraInteger(1), firstInteger.modulus(secondInteger))
+class IntDivisionTest {
 
-    @Test
-    fun powerReturnsInteger() = assertEquals(RapiraInteger(343), firstInteger.power(secondInteger))
+    private val intDivideOperation = { a: RapiraObject, b: RapiraObject -> a.intDivide(b) };
+
+    @TestFactory
+    fun validOperationsReturnNewObject() = listOf(
+        Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(2)),
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(0))
+    ).map { (first, second, expected) ->
+        dynamicTest("$first // $second = $expected") {
+            assertEquals(
+                expected,
+                intDivideOperation(first, second)
+            )
+        }
+    }
+
+    @TestFactory
+    fun invalidOperationsThrowError() = listOf(
+        Pair(RapiraEmpty, RapiraInteger(4)),
+        Pair(RapiraInteger(4), RapiraEmpty)
+    ).map { (first, second) ->
+        dynamicTest("$first // $second throws error") {
+            assertThrows<RapiraInvalidOperationError> {
+                intDivideOperation(
+                    first,
+                    second
+                )
+            }
+        }
+    }
+}
+
+class ModulusTest {
+
+    private val moduloOperation = { a: RapiraObject, b: RapiraObject -> a.modulus(b) };
+
+    @TestFactory
+    fun validOperationsReturnNewObject() = listOf(
+        Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(1)),
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(3))
+    ).map { (first, second, expected) ->
+        dynamicTest("$first /% $second = $expected") {
+            assertEquals(
+                expected,
+                moduloOperation(first, second)
+            )
+        }
+    }
+
+    @TestFactory
+    fun invalidOperationsThrowError() = listOf(
+        Pair(RapiraEmpty, RapiraInteger(4)),
+        Pair(RapiraInteger(4), RapiraEmpty)
+    ).map { (first, second) ->
+        dynamicTest("$first /% $second throws error") {
+            assertThrows<RapiraInvalidOperationError> {
+                moduloOperation(
+                    first,
+                    second
+                )
+            }
+        }
+    }
+}
+
+class ExponentiationTest {
+
+    private val powerOperation = { a: RapiraObject, b: RapiraObject -> a.power(b) };
+
+    @TestFactory
+    fun validOperationsReturnNewObject() = listOf(
+        Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(343)),
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(2187))
+    ).map { (first, second, expected) ->
+        dynamicTest("$first ** $second = $expected") {
+            assertEquals(
+                expected,
+                powerOperation(first, second)
+            )
+        }
+    }
+
+    @TestFactory
+    fun invalidOperationsThrowError() = listOf(
+        Pair(RapiraEmpty, RapiraInteger(4)),
+        Pair(RapiraInteger(4), RapiraEmpty)
+    ).map { (first, second) ->
+        dynamicTest("$first ** $second throws error") {
+            assertThrows<RapiraInvalidOperationError> {
+                powerOperation(
+                    first,
+                    second
+                )
+            }
+        }
+    }
 }
