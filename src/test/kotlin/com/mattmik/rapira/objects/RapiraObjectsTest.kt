@@ -42,7 +42,7 @@ class AdditionTest {
 
 class SubtractionTest {
 
-    private val subtractionOperation = { a: RapiraObject, b: RapiraObject -> a.subtract(b) };
+    private val subtractOperation = { a: RapiraObject, b: RapiraObject -> a.subtract(b) };
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -52,7 +52,7 @@ class SubtractionTest {
         dynamicTest("$first - $second = $expected") {
             assertEquals(
                 expected,
-                subtractionOperation(first, second)
+                subtractOperation(first, second)
             )
         }
     }
@@ -64,7 +64,7 @@ class SubtractionTest {
     ).map { (first, second) ->
         dynamicTest("$first - $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
-                subtractionOperation(
+                subtractOperation(
                     first,
                     second
                 )
@@ -73,14 +73,36 @@ class SubtractionTest {
     }
 }
 
+class NegationTest {
+
+    private val negateOperation = { a: RapiraObject -> a.negate() };
+
+    @TestFactory
+    fun validOperationsReturnNewObject() = listOf(
+        Pair(RapiraInteger(7), RapiraInteger(-7)),
+        Pair(RapiraInteger(-7), RapiraInteger(7))
+    ).map { (value, expected) ->
+        dynamicTest("-($value) = $expected") {
+            assertEquals(
+                expected,
+                negateOperation(value)
+            )
+        }
+    }
+
+    @TestFactory
+    fun invalidOperationsThrowError() = listOf(
+        RapiraEmpty
+    ).map { value ->
+        dynamicTest("-($value) throws error") {
+            assertThrows<RapiraInvalidOperationError> { negateOperation(value) }
+        }
+    }
+}
+
 class RapiraEmptyTest {
 
     private val otherObject = RapiraInteger(4)
-
-    @Test
-    fun negateThrowsInvalidOperationError() {
-        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.negate() }
-    }
 
     @Test
     fun multiplyThrowsInvalidOperationError() {
@@ -112,9 +134,6 @@ class RapiraIntegerTest {
 
     private val firstInteger = RapiraInteger(7)
     private val secondInteger = RapiraInteger(3)
-
-    @Test
-    fun negateReturnsInteger() = assertEquals(RapiraInteger(-7), firstInteger.negate())
 
     @Test
     fun multiplyReturnsInteger() = assertEquals(RapiraInteger(21), firstInteger.multiply(secondInteger))
