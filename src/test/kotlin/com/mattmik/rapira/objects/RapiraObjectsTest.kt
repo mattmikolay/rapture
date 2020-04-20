@@ -1,51 +1,52 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import org.junit.Test
-import org.junit.Assert.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class RapiraEmptyTest {
 
     private val otherObject = RapiraInteger(4)
 
-    @Test(expected = RapiraInvalidOperationError::class)
+    @Test
     fun addThrowsInvalidOperationError() {
-        RapiraEmpty.add(otherObject)
+        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.add(otherObject) }
     }
 
-    @Test(expected = RapiraInvalidOperationError::class)
+    @Test
     fun subtractThrowsInvalidOperationError() {
-        RapiraEmpty.subtract(otherObject)
+        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.subtract(otherObject) }
     }
 
-    @Test(expected = RapiraInvalidOperationError::class)
+    @Test
     fun negateThrowsInvalidOperationError() {
-        RapiraEmpty.negate()
+        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.negate() }
     }
 
-    @Test(expected = RapiraInvalidOperationError::class)
+    @Test
     fun multiplyThrowsInvalidOperationError() {
-        RapiraEmpty.multiply(otherObject)
+        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.multiply(otherObject) }
     }
 
-    @Test(expected = RapiraInvalidOperationError::class)
+    @Test
     fun divideThrowsInvalidOperationError() {
-        RapiraEmpty.divide(otherObject)
+        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.divide(otherObject) }
     }
 
-    @Test(expected = RapiraInvalidOperationError::class)
+    @Test
     fun intDivideThrowsInvalidOperationError() {
-        RapiraEmpty.intDivide(otherObject)
+        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.intDivide(otherObject) }
     }
 
-    @Test(expected = RapiraInvalidOperationError::class)
+    @Test
     fun modulusThrowsInvalidOperationError() {
-        RapiraEmpty.modulus(otherObject)
+        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.modulus(otherObject) }
     }
 
-    @Test(expected = RapiraInvalidOperationError::class)
+    @Test
     fun powerThrowsInvalidOperationError() {
-        RapiraEmpty.power(otherObject)
+        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.power(otherObject) }
     }
 }
 
