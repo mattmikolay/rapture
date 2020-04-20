@@ -16,6 +16,19 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
         return result
     }
 
+    override fun visitMultiplicationExpression(ctx: RapiraLangParser.MultiplicationExpressionContext): RapiraObject {
+        val (leftExpression, rightExpression) = ctx.arithmeticExpression()
+        val leftResult = this.visit(leftExpression)
+        val rightResult = this.visit(rightExpression)
+        return when (ctx.op.type) {
+            RapiraLangParser.MULT -> leftResult.multiply(rightResult)
+            RapiraLangParser.DIVIDE -> leftResult.divide(rightResult)
+            RapiraLangParser.INTDIVIDE -> leftResult.intDivide(rightResult)
+            RapiraLangParser.MOD -> leftResult.modulus(rightResult)
+            else -> super.visitMultiplicationExpression(ctx)
+        }
+    }
+
     override fun visitAdditionExpression(ctx: RapiraLangParser.AdditionExpressionContext): RapiraObject {
         val (leftExpression, rightExpression) = ctx.arithmeticExpression()
         val leftResult = this.visit(leftExpression)

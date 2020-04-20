@@ -128,7 +128,7 @@ comparisonExpression
 
 arithmeticExpression
     : arithmeticExpression '**' arithmeticExpression #exponentiationExpression
-    | arithmeticExpression ('*' | '/' | '//' | '/%') arithmeticExpression #multiplicationExpression
+    | arithmeticExpression op=(MULT | DIVIDE | INTDIVIDE | MOD) arithmeticExpression #multiplicationExpression
     | arithmeticExpression op=(PLUS | MINUS) arithmeticExpression #additionExpression
     | op=(PLUS | MINUS) subopExpression #unaryExpression
     | subopExpression #unaryExpression
@@ -177,6 +177,14 @@ RARROW : '*>' ;
 PLUS : '+' ;
 
 MINUS : '-' ;
+
+MULT : '*' ;
+
+DIVIDE : '/' ;
+
+INTDIVIDE : '//' ;
+
+MOD : '/%' ;
 
 LOOP_EXIT
     : 'exit'
