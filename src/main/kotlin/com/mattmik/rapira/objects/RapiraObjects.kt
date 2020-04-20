@@ -1,5 +1,7 @@
 package com.mattmik.rapira.objects
 
+import kotlin.math.pow
+
 sealed class RapiraObject {
     abstract fun add(other: RapiraObject): RapiraObject
     abstract fun subtract(other: RapiraObject): RapiraObject
@@ -8,6 +10,7 @@ sealed class RapiraObject {
     abstract fun divide(other: RapiraObject): RapiraObject
     abstract fun intDivide(other: RapiraObject): RapiraObject
     abstract fun modulus(other: RapiraObject): RapiraObject
+    abstract fun power(other: RapiraObject): RapiraObject
 }
 
 object RapiraEmpty : RapiraObject() {
@@ -38,6 +41,10 @@ object RapiraEmpty : RapiraObject() {
     }
 
     override fun modulus(other: RapiraObject): RapiraObject {
+        TODO("Not yet implemented")
+    }
+
+    override fun power(other: RapiraObject): RapiraObject {
         TODO("Not yet implemented")
     }
 }
@@ -72,6 +79,11 @@ data class RapiraInteger(val value: Int) : RapiraObject() {
 
     override fun modulus(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value % other.value)
+        is RapiraEmpty -> TODO("Not yet implemented")
+    }
+
+    override fun power(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraInteger(value.toDouble().pow(other.value).toInt())
         is RapiraEmpty -> TODO("Not yet implemented")
     }
 }
