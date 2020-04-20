@@ -38,12 +38,14 @@ object RapiraEmpty : RapiraObject() {
 
     override fun power(other: RapiraObject)
             = throw RapiraInvalidOperationError("cannot perform exponentiation operation using an empty value")
+
+    override fun toString() = "empty"
 }
 
 data class RapiraInteger(val value: Int) : RapiraObject() {
     override fun add(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value + other.value)
-        is RapiraEmpty -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform addition using an empty value")
     }
 
     override fun subtract(other: RapiraObject) = when (other) {
@@ -77,4 +79,6 @@ data class RapiraInteger(val value: Int) : RapiraObject() {
         is RapiraInteger -> RapiraInteger(value.toDouble().pow(other.value).toInt())
         is RapiraEmpty -> TODO("Not yet implemented")
     }
+
+    override fun toString() = "$value"
 }

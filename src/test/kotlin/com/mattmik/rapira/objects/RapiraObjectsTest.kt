@@ -2,17 +2,47 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertThrows
+
+class AdditionTest {
+
+    private val addOperation = { a: RapiraObject, b: RapiraObject -> a.add(b) };
+
+    @TestFactory
+    fun validOperationsReturnNewObject() = listOf(
+        Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(10)),
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(10))
+    ).map { (first, second, expected) ->
+        dynamicTest("$first + $second = $expected") {
+            assertEquals(
+                expected,
+                addOperation(first, second)
+            )
+        }
+    }
+
+    @TestFactory
+    fun invalidOperationsThrowError() = listOf(
+        Pair(RapiraEmpty, RapiraInteger(4)),
+        Pair(RapiraInteger(4), RapiraEmpty)
+    ).map { (first, second) ->
+        dynamicTest("$first + $second throws error") {
+            assertThrows<RapiraInvalidOperationError> {
+                addOperation(
+                    first,
+                    second
+                )
+            }
+        }
+    }
+}
 
 class RapiraEmptyTest {
 
     private val otherObject = RapiraInteger(4)
-
-    @Test
-    fun addThrowsInvalidOperationError() {
-        assertThrows<RapiraInvalidOperationError> { RapiraEmpty.add(otherObject) }
-    }
 
     @Test
     fun subtractThrowsInvalidOperationError() {
@@ -54,9 +84,6 @@ class RapiraIntegerTest {
 
     private val firstInteger = RapiraInteger(7)
     private val secondInteger = RapiraInteger(3)
-
-    @Test
-    fun addReturnsInteger() = assertEquals(RapiraInteger(10), firstInteger.add(secondInteger))
 
     @Test
     fun subtractReturnsInteger() = assertEquals(RapiraInteger(4), firstInteger.subtract(secondInteger))
