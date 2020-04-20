@@ -45,11 +45,13 @@ object RapiraEmpty : RapiraObject() {
 data class RapiraInteger(val value: Int) : RapiraObject() {
     override fun add(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value + other.value)
+        is RapiraReal -> RapiraReal(value + other.value)
         is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform addition using an empty value")
     }
 
     override fun subtract(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value - other.value)
+        is RapiraReal -> RapiraReal(value - other.value)
         is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform subtraction using an empty value")
     }
 
@@ -57,26 +59,79 @@ data class RapiraInteger(val value: Int) : RapiraObject() {
 
     override fun multiply(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value * other.value)
+        is RapiraReal -> RapiraReal(value * other.value)
         is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform multiplication using an empty value")
     }
 
     override fun divide(other: RapiraObject) = when (other) {
         is RapiraInteger -> TODO("Not yet implemented")
+        is RapiraReal -> RapiraReal(value / other.value)
         is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform division using an empty value")
     }
 
     override fun intDivide(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value / other.value)
+        is RapiraReal -> TODO("Not yet implemented")
         is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform integer division using an empty value")
     }
 
     override fun modulus(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value % other.value)
+        is RapiraReal -> TODO("Not yet implemented")
         is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform modulo operation using an empty value")
     }
 
     override fun power(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value.toDouble().pow(other.value).toInt())
+        is RapiraReal -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform exponentiation operation using an empty value")
+    }
+
+    override fun toString() = "$value"
+}
+
+data class RapiraReal(val value: Double) : RapiraObject() {
+    override fun add(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraReal(value + other.value)
+        is RapiraReal -> RapiraReal(value + other.value)
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform addition using an empty value")
+    }
+
+    override fun subtract(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraReal(value - other.value)
+        is RapiraReal -> RapiraReal(value - other.value)
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform subtraction using an empty value")
+    }
+
+    override fun negate(): RapiraObject = RapiraReal(-value)
+
+    override fun multiply(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraReal(value * other.value)
+        is RapiraReal -> RapiraReal(value * other.value)
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform multiplication using an empty value")
+    }
+
+    override fun divide(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraReal(value / other.value)
+        is RapiraReal -> RapiraReal(value / other.value)
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform division using an empty value")
+    }
+
+    override fun intDivide(other: RapiraObject) = when (other) {
+        is RapiraInteger -> TODO("Not yet implemented")
+        is RapiraReal -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform integer division using an empty value")
+    }
+
+    override fun modulus(other: RapiraObject) = when (other) {
+        is RapiraInteger -> TODO("Not yet implemented")
+        is RapiraReal -> TODO("Not yet implemented")
+        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform modulo operation using an empty value")
+    }
+
+    override fun power(other: RapiraObject) = when (other) {
+        is RapiraInteger -> TODO("Not yet implemented")
+        is RapiraReal -> TODO("Not yet implemented")
         is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform exponentiation operation using an empty value")
     }
 

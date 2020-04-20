@@ -1,11 +1,19 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertThrows
+
+fun assertEquals(expected: RapiraObject, actual: RapiraObject) {
+    // TODO Figure out a better way to deal with double equality
+    if (expected is RapiraReal && actual is RapiraReal) {
+        return Assertions.assertEquals(expected.value, actual.value, 0.00001)
+    }
+    return Assertions.assertEquals(expected, actual)
+}
 
 class AdditionTest {
 
@@ -14,7 +22,9 @@ class AdditionTest {
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
         Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(10)),
-        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(10))
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(10)),
+        Triple(RapiraReal(7.1), RapiraReal(3.8), RapiraReal(10.9)),
+        Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(10.9))
     ).map { (first, second, expected) ->
         dynamicTest("$first + $second = $expected") {
             assertEquals(
@@ -27,7 +37,9 @@ class AdditionTest {
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
         Pair(RapiraEmpty, RapiraInteger(4)),
-        Pair(RapiraInteger(4), RapiraEmpty)
+        Pair(RapiraInteger(4), RapiraEmpty),
+        Pair(RapiraEmpty, RapiraReal(4.1)),
+        Pair(RapiraReal(4.1), RapiraEmpty)
     ).map { (first, second) ->
         dynamicTest("$first + $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -47,7 +59,9 @@ class SubtractionTest {
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
         Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(4)),
-        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(-4))
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(-4)),
+        Triple(RapiraReal(7.1), RapiraReal(3.8), RapiraReal(3.3)),
+        Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(-3.3))
     ).map { (first, second, expected) ->
         dynamicTest("$first - $second = $expected") {
             assertEquals(
@@ -60,7 +74,9 @@ class SubtractionTest {
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
         Pair(RapiraEmpty, RapiraInteger(4)),
-        Pair(RapiraInteger(4), RapiraEmpty)
+        Pair(RapiraInteger(4), RapiraEmpty),
+        Pair(RapiraEmpty, RapiraReal(4.1)),
+        Pair(RapiraReal(4.1), RapiraEmpty)
     ).map { (first, second) ->
         dynamicTest("$first - $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -80,7 +96,9 @@ class NegationTest {
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
         Pair(RapiraInteger(7), RapiraInteger(-7)),
-        Pair(RapiraInteger(-7), RapiraInteger(7))
+        Pair(RapiraInteger(-7), RapiraInteger(7)),
+        Pair(RapiraReal(3.8), RapiraReal(-3.8)),
+        Pair(RapiraReal(-3.8), RapiraReal(3.8))
     ).map { (value, expected) ->
         dynamicTest("-($value) = $expected") {
             assertEquals(
@@ -107,7 +125,9 @@ class MultiplicationTest {
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
         Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(21)),
-        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(21))
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(21)),
+        Triple(RapiraReal(7.1), RapiraReal(3.8), RapiraReal(26.98)),
+        Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(26.98))
     ).map { (first, second, expected) ->
         dynamicTest("$first * $second = $expected") {
             assertEquals(
@@ -120,7 +140,9 @@ class MultiplicationTest {
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
         Pair(RapiraEmpty, RapiraInteger(4)),
-        Pair(RapiraInteger(4), RapiraEmpty)
+        Pair(RapiraInteger(4), RapiraEmpty),
+        Pair(RapiraEmpty, RapiraReal(4.1)),
+        Pair(RapiraReal(4.1), RapiraEmpty)
     ).map { (first, second) ->
         dynamicTest("$first * $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -141,7 +163,9 @@ class DivisionTest {
     @Disabled("Division not yet implemented")
     fun validOperationsReturnNewObject() = listOf(
         Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(21)),
-        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(21))
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(21)),
+        Triple(RapiraReal(5.5), RapiraReal(2.5), RapiraReal(2.2)),
+        Triple(RapiraReal(2.5), RapiraReal(5.5), RapiraReal(0.454545))
     ).map { (first, second, expected) ->
         dynamicTest("$first / $second = $expected") {
             assertEquals(
@@ -154,7 +178,9 @@ class DivisionTest {
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
         Pair(RapiraEmpty, RapiraInteger(4)),
-        Pair(RapiraInteger(4), RapiraEmpty)
+        Pair(RapiraInteger(4), RapiraEmpty),
+        Pair(RapiraEmpty, RapiraReal(4.1)),
+        Pair(RapiraReal(4.1), RapiraEmpty)
     ).map { (first, second) ->
         dynamicTest("$first / $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -187,7 +213,9 @@ class IntDivisionTest {
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
         Pair(RapiraEmpty, RapiraInteger(4)),
-        Pair(RapiraInteger(4), RapiraEmpty)
+        Pair(RapiraInteger(4), RapiraEmpty),
+        Pair(RapiraEmpty, RapiraReal(4.1)),
+        Pair(RapiraReal(4.1), RapiraEmpty)
     ).map { (first, second) ->
         dynamicTest("$first // $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -220,7 +248,9 @@ class ModulusTest {
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
         Pair(RapiraEmpty, RapiraInteger(4)),
-        Pair(RapiraInteger(4), RapiraEmpty)
+        Pair(RapiraInteger(4), RapiraEmpty),
+        Pair(RapiraEmpty, RapiraReal(4.1)),
+        Pair(RapiraReal(4.1), RapiraEmpty)
     ).map { (first, second) ->
         dynamicTest("$first /% $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -253,7 +283,9 @@ class ExponentiationTest {
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
         Pair(RapiraEmpty, RapiraInteger(4)),
-        Pair(RapiraInteger(4), RapiraEmpty)
+        Pair(RapiraInteger(4), RapiraEmpty),
+        Pair(RapiraEmpty, RapiraReal(4.1)),
+        Pair(RapiraReal(4.1), RapiraEmpty)
     ).map { (first, second) ->
         dynamicTest("$first ** $second throws error") {
             assertThrows<RapiraInvalidOperationError> {

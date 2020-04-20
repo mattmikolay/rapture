@@ -4,6 +4,7 @@ import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.objects.RapiraInteger
 import com.mattmik.rapira.objects.RapiraObject
+import com.mattmik.rapira.objects.RapiraReal
 
 class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
 
@@ -53,6 +54,8 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
     }
 
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) = RapiraInteger(Integer.valueOf(ctx.text))
+
+    override fun visitRealValue(ctx: RapiraLangParser.RealValueContext) = RapiraReal(ctx.text.toDouble())
 
     override fun visitParentheticalExpression(
         ctx: RapiraLangParser.ParentheticalExpressionContext
