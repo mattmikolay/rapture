@@ -137,6 +137,11 @@ data class RapiraReal(val value: Double) : RapiraObject("real number") {
 }
 
 data class RapiraText(val value: String) : RapiraObject("text") {
+    override fun add(other: RapiraObject) = when (other) {
+        is RapiraText -> RapiraText(value + other.value)
+        else -> throw RapiraInvalidOperationError(Operation.Addition, other)
+    }
+
     override fun toString() = "\"${value.replace("\"\"", "\"")}\""
 }
 

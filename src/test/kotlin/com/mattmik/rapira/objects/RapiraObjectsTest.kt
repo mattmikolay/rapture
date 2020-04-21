@@ -21,7 +21,8 @@ class AdditionTest {
         Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(10)),
         Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(10)),
         Triple(RapiraReal(7.1), RapiraReal(3.8), RapiraReal(10.9)),
-        Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(10.9))
+        Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(10.9)),
+        Triple(RapiraText("Hello, "), RapiraText("world!"), RapiraText("Hello, world!"))
     ).map { (first, second, expected) ->
         dynamicTest("$first + $second = $expected") {
             assertEquals(
