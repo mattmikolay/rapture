@@ -34,6 +34,16 @@ object RapiraEmpty : RapiraObject("empty") {
     override fun toString() = "empty"
 }
 
+data class RapiraLogical(val value: Boolean) : RapiraObject("logical") {
+    // TODO Implement operations
+
+    override fun toString() = if (value) "yes" else "no"
+}
+
+object RapiraProcedure : RapiraObject("procedure")
+
+object RapiraFunction : RapiraObject("function")
+
 data class RapiraInteger(val value: Int) : RapiraObject("integer") {
     override fun add(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value + other.value)
@@ -108,6 +118,8 @@ data class RapiraReal(val value: Double) : RapiraObject("real number") {
     override fun toString() = "$value"
 }
 
-class RapiraText(val value: String) : RapiraObject("text") {
+data class RapiraText(val value: String) : RapiraObject("text") {
     override fun toString() = "$value"
 }
+
+data class RapiraSequence(val entries: List<RapiraObject> = emptyList()) : RapiraObject("sequence")
