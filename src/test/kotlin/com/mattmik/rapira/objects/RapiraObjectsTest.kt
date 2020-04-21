@@ -338,6 +338,47 @@ class ExponentiationTest {
     }
 }
 
+class LengthTest {
+
+    private val lengthOperation = { a: RapiraObject -> a.length() };
+
+    @TestFactory
+    fun validOperationsReturnNewObject() = listOf(
+        Pair(RapiraText("Hello, world!"), RapiraInteger(13)),
+        Pair(
+            RapiraSequence(
+                listOf(
+                    RapiraInteger(1),
+                    RapiraText("hello"),
+                    RapiraSequence()
+                )
+            ),
+            RapiraInteger(3)
+        )
+    ).map { (value, expected) ->
+        dynamicTest("#($value) = $expected") {
+            assertEquals(
+                expected,
+                lengthOperation(value)
+            )
+        }
+    }
+
+    @TestFactory
+    fun invalidOperationsThrowError() = listOf(
+        RapiraEmpty,
+        RapiraLogical(true),
+        RapiraProcedure,
+        RapiraFunction,
+        RapiraInteger(1),
+        RapiraReal(1.0)
+    ).map { value ->
+        dynamicTest("#($value) throws error") {
+            assertThrows<RapiraInvalidOperationError> { lengthOperation(value) }
+        }
+    }
+}
+
 class StringRepresentationTest {
 
     @Test

@@ -11,6 +11,7 @@ enum class Operation(val description: String) {
     IntDivision("integer division"),
     Modulo("modulo"),
     Exponentiation("exponentiation"),
+    Length("length operation"),
 }
 
 class RapiraInvalidOperationError(cause: String) : RapiraRuntimeError(cause) {

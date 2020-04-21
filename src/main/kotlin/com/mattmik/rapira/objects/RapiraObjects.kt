@@ -26,6 +26,9 @@ sealed class RapiraObject(val typeDescription: String) {
 
     open fun power(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Exponentiation, this)
+
+    open fun length(): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.Length, this)
 }
 
 object RapiraEmpty : RapiraObject("empty") {
@@ -149,6 +152,8 @@ data class RapiraText(val value: String) : RapiraObject("text") {
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
+    override fun length() = RapiraInteger(value.length)
+
     override fun toString() = "\"${value.replace("\"\"", "\"")}\""
 }
 
@@ -162,6 +167,8 @@ data class RapiraSequence(val entries: List<RapiraObject> = emptyList()) : Rapir
         is RapiraInteger -> RapiraSequence(arrayOfNulls<RapiraObject>(other.value).flatMap { entries })
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
+
+    override fun length() = RapiraInteger(entries.size)
 
     override fun toString() = if (entries.isEmpty()) "<* *>" else entries.joinToString(prefix = "<* ", postfix = " *>")
 }
