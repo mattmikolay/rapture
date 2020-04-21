@@ -157,12 +157,13 @@ class DivisionTest {
     private val divideOperation = { a: RapiraObject, b: RapiraObject -> a.divide(b) };
 
     @TestFactory
-    @Disabled("Division not yet implemented")
     fun validOperationsReturnNewObject() = listOf(
-        Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(21)),
-        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(21)),
-        Triple(RapiraReal(5.5), RapiraReal(2.5), RapiraReal(2.2)),
-        Triple(RapiraReal(2.5), RapiraReal(5.5), RapiraReal(0.454545))
+        Triple(RapiraInteger(6), RapiraInteger(3), RapiraInteger(2)),
+        Triple(RapiraInteger(7), RapiraInteger(2), RapiraReal(3.5)),
+        Triple(RapiraReal(6.0), RapiraReal(3.0), RapiraReal(2.0)),
+        Triple(RapiraReal(6.0), RapiraInteger(3), RapiraReal(2.0)),
+        Triple(RapiraReal(3.0), RapiraReal(6.0), RapiraReal(0.5)),
+        Triple(RapiraReal(3.0), RapiraInteger(6), RapiraReal(0.5))
     ).map { (first, second, expected) ->
         dynamicTest("$first / $second = $expected") {
             assertEquals(
@@ -214,7 +215,9 @@ class IntDivisionTest {
         Pair(RapiraEmpty, RapiraReal(4.1)),
         Pair(RapiraReal(4.1), RapiraEmpty),
         Pair(RapiraReal(4.1), RapiraInteger(2)),
-        Pair(RapiraInteger(2), RapiraReal(4.1))
+        Pair(RapiraInteger(2), RapiraReal(4.1)),
+        Pair(RapiraInteger(2), RapiraInteger(0)),
+        Pair(RapiraInteger(2), RapiraInteger(-1))
     ).map { (first, second) ->
         dynamicTest("$first // $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -269,7 +272,10 @@ class ExponentiationTest {
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
         Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(343)),
-        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(2187))
+        Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(2187)),
+        Triple(RapiraInteger(4), RapiraReal(2.1), RapiraReal(18.3791736)),
+        Triple(RapiraReal(7.0), RapiraReal(3.0), RapiraReal(343.0)),
+        Triple(RapiraReal(7.0), RapiraInteger(3), RapiraReal(343.0))
     ).map { (first, second, expected) ->
         dynamicTest("$first ** $second = $expected") {
             assertEquals(

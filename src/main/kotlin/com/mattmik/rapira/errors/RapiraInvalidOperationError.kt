@@ -13,7 +13,9 @@ enum class Operation(val description: String) {
     Exponentiation("exponentiation"),
 }
 
-class RapiraInvalidOperationError(
-    operation: Operation,
-    rootCauseObject: RapiraObject
-) : RapiraRuntimeError("cannot perform ${operation.description} using object of type ${rootCauseObject.typeDescription}")
+class RapiraInvalidOperationError(cause: String) : RapiraRuntimeError(cause) {
+    constructor(
+        operation: Operation,
+        rootCauseObject: RapiraObject
+    ) : this("cannot perform ${operation.description} using object of type ${rootCauseObject.typeDescription}")
+}
