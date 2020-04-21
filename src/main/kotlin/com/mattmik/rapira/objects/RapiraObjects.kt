@@ -64,6 +64,7 @@ data class RapiraInteger(val value: Int) : RapiraObject("integer") {
     override fun multiply(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value * other.value)
         is RapiraReal -> RapiraReal(value * other.value)
+        is RapiraText -> RapiraText(other.value.repeat(value))
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
@@ -140,6 +141,11 @@ data class RapiraText(val value: String) : RapiraObject("text") {
     override fun add(other: RapiraObject) = when (other) {
         is RapiraText -> RapiraText(value + other.value)
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)
+    }
+
+    override fun multiply(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraText(value.repeat(other.value))
+        else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
     override fun toString() = "\"${value.replace("\"\"", "\"")}\""

@@ -125,7 +125,9 @@ class MultiplicationTest {
         Triple(RapiraInteger(7), RapiraInteger(3), RapiraInteger(21)),
         Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(21)),
         Triple(RapiraReal(7.1), RapiraReal(3.8), RapiraReal(26.98)),
-        Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(26.98))
+        Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(26.98)),
+        Triple(RapiraText("hello"), RapiraInteger(3), RapiraText("hellohellohello")),
+        Triple(RapiraInteger(3), RapiraText("hello"), RapiraText("hellohellohello"))
     ).map { (first, second, expected) ->
         dynamicTest("$first * $second = $expected") {
             assertEquals(
