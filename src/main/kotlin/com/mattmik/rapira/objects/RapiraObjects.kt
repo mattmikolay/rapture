@@ -5,29 +5,25 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import kotlin.math.pow
 
 sealed class RapiraObject(val typeDescription: String) {
-    open fun add(other: RapiraObject): RapiraObject
-        = throw RapiraInvalidOperationError(Operation.Addition, this)
+    open fun add(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Addition, this)
 
-    open fun subtract(other: RapiraObject): RapiraObject
-        = throw RapiraInvalidOperationError(Operation.Subtraction, this)
+    open fun subtract(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.Subtraction, this)
 
-    open fun negate(): RapiraObject
-        = throw RapiraInvalidOperationError(Operation.Negation, this)
+    open fun negate(): RapiraObject = throw RapiraInvalidOperationError(Operation.Negation, this)
 
-    open fun multiply(other: RapiraObject): RapiraObject
-        = throw RapiraInvalidOperationError(Operation.Multiplication, this)
+    open fun multiply(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.Multiplication, this)
 
-    open fun divide(other: RapiraObject): RapiraObject
-        = throw RapiraInvalidOperationError(Operation.Division, this)
+    open fun divide(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Division, this)
 
-    open fun intDivide(other: RapiraObject): RapiraObject
-        = throw RapiraInvalidOperationError(Operation.IntDivision, this)
+    open fun intDivide(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.IntDivision, this)
 
-    open fun modulus(other: RapiraObject): RapiraObject
-        = throw RapiraInvalidOperationError(Operation.Modulo, this)
+    open fun modulus(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Modulo, this)
 
-    open fun power(other: RapiraObject): RapiraObject
-        = throw RapiraInvalidOperationError(Operation.Exponentiation, this)
+    open fun power(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.Exponentiation, this)
 }
 
 object RapiraEmpty : RapiraObject("empty") {
@@ -40,9 +36,13 @@ data class RapiraLogical(val value: Boolean) : RapiraObject("logical") {
     override fun toString() = if (value) "yes" else "no"
 }
 
-object RapiraProcedure : RapiraObject("procedure")
+object RapiraProcedure : RapiraObject("procedure") {
+    override fun toString() = "procedure"
+}
 
-object RapiraFunction : RapiraObject("function")
+object RapiraFunction : RapiraObject("function") {
+    override fun toString() = "function"
+}
 
 data class RapiraInteger(val value: Int) : RapiraObject("integer") {
     override fun add(other: RapiraObject) = when (other) {
@@ -119,7 +119,9 @@ data class RapiraReal(val value: Double) : RapiraObject("real number") {
 }
 
 data class RapiraText(val value: String) : RapiraObject("text") {
-    override fun toString() = "$value"
+    override fun toString() = "\"${value.replace("\"\"", "\"")}\""
 }
 
-data class RapiraSequence(val entries: List<RapiraObject> = emptyList()) : RapiraObject("sequence")
+data class RapiraSequence(val entries: List<RapiraObject> = emptyList()) : RapiraObject("sequence") {
+    override fun toString() = if (entries.isEmpty()) "<* *>" else entries.joinToString(prefix = "<* ", postfix = " *>")
+}

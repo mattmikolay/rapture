@@ -1,11 +1,8 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.DynamicTest.dynamicTest
-import org.junit.jupiter.api.TestFactory
-import org.junit.jupiter.api.assertThrows
 
 fun assertEquals(expected: RapiraObject, actual: RapiraObject) {
     // TODO Figure out a better way to deal with double equality
@@ -297,5 +294,89 @@ class ExponentiationTest {
                 )
             }
         }
+    }
+}
+
+class StringRepresentationTest {
+
+    @Test
+    fun emptyToStringReturnsUserFriendlyRepresentation() = Assertions.assertEquals("empty", RapiraEmpty.toString())
+
+    @Test
+    fun logicalToStringReturnsUserFriendlyRepresentation() {
+        Assertions.assertEquals("yes", RapiraLogical(true).toString())
+        Assertions.assertEquals("no", RapiraLogical(false).toString())
+    }
+
+    @Test
+    fun procedureToStringReturnsUserFriendlyRepresentation() =
+        Assertions.assertEquals("procedure", RapiraProcedure.toString())
+
+    @Test
+    fun functionToStringReturnsUserFriendlyRepresentation() =
+        Assertions.assertEquals("function", RapiraFunction.toString())
+
+    @Test
+    fun integerToStringReturnsUserFriendlyRepresentation() {
+        Assertions.assertEquals("0", RapiraInteger(0).toString())
+        Assertions.assertEquals("123", RapiraInteger(123).toString())
+        Assertions.assertEquals("-123", RapiraInteger(-123).toString())
+    }
+
+    @Test
+    fun realToStringReturnsUserFriendlyRepresentation() {
+        Assertions.assertEquals("0.0", RapiraReal(0.0).toString())
+        Assertions.assertEquals("1.23456789", RapiraReal(1.23456789).toString())
+        Assertions.assertEquals("-1.23456789", RapiraReal(-1.23456789).toString())
+    }
+
+    @Test
+    fun textToStringReturnsUserFriendlyRepresentation() {
+        Assertions.assertEquals("\"Hello, world!\"", RapiraText("Hello, world!").toString())
+        Assertions.assertEquals(
+            "\"How about some \"double quotes\"? Fancy, eh?\"",
+            RapiraText("How about some \"\"double quotes\"\"? Fancy, eh?").toString()
+        )
+    }
+
+    @Test
+    fun sequenceToStringReturnsUserFriendlyRepresentation() {
+        Assertions.assertEquals("<* *>", RapiraSequence().toString())
+        Assertions.assertEquals(
+            "<* 1, 2, 3 *>",
+            RapiraSequence(
+                listOf(
+                    RapiraInteger(1),
+                    RapiraInteger(2),
+                    RapiraInteger(3)
+                )
+            ).toString()
+        )
+        Assertions.assertEquals(
+            "<* 1, <* 2, 3, 4 *>, 5 *>",
+            RapiraSequence(
+                listOf(
+                    RapiraInteger(1),
+                    RapiraSequence(
+                        listOf(
+                            RapiraInteger(2),
+                            RapiraInteger(3),
+                            RapiraInteger(4)
+                        )
+                    ),
+                    RapiraInteger(5)
+                )
+            ).toString()
+        )
+        Assertions.assertEquals(
+            "<* 1, 2.5, \"okay\" *>",
+            RapiraSequence(
+                listOf(
+                    RapiraInteger(1),
+                    RapiraReal(2.5),
+                    RapiraText("okay")
+                )
+            ).toString()
+        )
     }
 }
