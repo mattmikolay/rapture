@@ -22,7 +22,17 @@ class AdditionTest {
         Triple(RapiraInteger(3), RapiraInteger(7), RapiraInteger(10)),
         Triple(RapiraReal(7.1), RapiraReal(3.8), RapiraReal(10.9)),
         Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(10.9)),
-        Triple(RapiraText("Hello, "), RapiraText("world!"), RapiraText("Hello, world!"))
+        Triple(RapiraText("Hello, "), RapiraText("world!"), RapiraText("Hello, world!")),
+        Triple(
+            RapiraSequence(emptyList()),
+            RapiraSequence(emptyList()),
+            RapiraSequence(emptyList())
+        ),
+        Triple(
+            RapiraSequence(listOf(RapiraInteger(1))),
+            RapiraSequence(listOf(RapiraInteger(2), RapiraInteger((3)))),
+            RapiraSequence(listOf(RapiraInteger(1), RapiraInteger(2), RapiraInteger((3))))
+        )
     ).map { (first, second, expected) ->
         dynamicTest("$first + $second = $expected") {
             assertEquals(
@@ -127,7 +137,29 @@ class MultiplicationTest {
         Triple(RapiraReal(7.1), RapiraReal(3.8), RapiraReal(26.98)),
         Triple(RapiraReal(3.8), RapiraReal(7.1), RapiraReal(26.98)),
         Triple(RapiraText("hello"), RapiraInteger(3), RapiraText("hellohellohello")),
-        Triple(RapiraInteger(3), RapiraText("hello"), RapiraText("hellohellohello"))
+        Triple(RapiraInteger(3), RapiraText("hello"), RapiraText("hellohellohello")),
+        Triple(
+            RapiraInteger(3),
+            RapiraSequence(listOf(RapiraText("hello"), RapiraText("world"))),
+            RapiraSequence(
+                listOf(
+                    RapiraText("hello"), RapiraText("world"),
+                    RapiraText("hello"), RapiraText("world"),
+                    RapiraText("hello"), RapiraText("world")
+                )
+            )
+        ),
+        Triple(
+            RapiraSequence(listOf(RapiraText("hello"), RapiraText("world"))),
+            RapiraInteger(3),
+            RapiraSequence(
+                listOf(
+                    RapiraText("hello"), RapiraText("world"),
+                    RapiraText("hello"), RapiraText("world"),
+                    RapiraText("hello"), RapiraText("world")
+                )
+            )
+        )
     ).map { (first, second, expected) ->
         dynamicTest("$first * $second = $expected") {
             assertEquals(

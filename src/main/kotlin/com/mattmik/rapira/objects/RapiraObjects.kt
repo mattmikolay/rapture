@@ -65,6 +65,7 @@ data class RapiraInteger(val value: Int) : RapiraObject("integer") {
         is RapiraInteger -> RapiraInteger(value * other.value)
         is RapiraReal -> RapiraReal(value * other.value)
         is RapiraText -> RapiraText(other.value.repeat(value))
+        is RapiraSequence -> RapiraSequence(arrayOfNulls<RapiraObject>(value).flatMap { other.entries })
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
@@ -152,5 +153,15 @@ data class RapiraText(val value: String) : RapiraObject("text") {
 }
 
 data class RapiraSequence(val entries: List<RapiraObject> = emptyList()) : RapiraObject("sequence") {
+    override fun add(other: RapiraObject) = when (other) {
+        is RapiraSequence -> RapiraSequence(entries + other.entries)
+        else -> throw RapiraInvalidOperationError(Operation.Addition, other)
+    }
+
+    override fun multiply(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraSequence(arrayOfNulls<RapiraObject>(other.value).flatMap { entries })
+        else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
+    }
+
     override fun toString() = if (entries.isEmpty()) "<* *>" else entries.joinToString(prefix = "<* ", postfix = " *>")
 }
