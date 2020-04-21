@@ -1,60 +1,50 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.errors.Operation
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import kotlin.math.pow
 
-sealed class RapiraObject {
-    abstract fun add(other: RapiraObject): RapiraObject
-    abstract fun subtract(other: RapiraObject): RapiraObject
-    abstract fun negate(): RapiraObject
-    abstract fun multiply(other: RapiraObject): RapiraObject
-    abstract fun divide(other: RapiraObject): RapiraObject
-    abstract fun intDivide(other: RapiraObject): RapiraObject
-    abstract fun modulus(other: RapiraObject): RapiraObject
-    abstract fun power(other: RapiraObject): RapiraObject
+sealed class RapiraObject(val typeDescription: String) {
+    open fun add(other: RapiraObject): RapiraObject
+        = throw RapiraInvalidOperationError(Operation.Addition, this)
+
+    open fun subtract(other: RapiraObject): RapiraObject
+        = throw RapiraInvalidOperationError(Operation.Subtraction, this)
+
+    open fun negate(): RapiraObject
+        = throw RapiraInvalidOperationError(Operation.Negation, this)
+
+    open fun multiply(other: RapiraObject): RapiraObject
+        = throw RapiraInvalidOperationError(Operation.Multiplication, this)
+
+    open fun divide(other: RapiraObject): RapiraObject
+        = throw RapiraInvalidOperationError(Operation.Division, this)
+
+    open fun intDivide(other: RapiraObject): RapiraObject
+        = throw RapiraInvalidOperationError(Operation.IntDivision, this)
+
+    open fun modulus(other: RapiraObject): RapiraObject
+        = throw RapiraInvalidOperationError(Operation.Modulo, this)
+
+    open fun power(other: RapiraObject): RapiraObject
+        = throw RapiraInvalidOperationError(Operation.Exponentiation, this)
 }
 
-object RapiraEmpty : RapiraObject() {
-    override fun add(other: RapiraObject)
-            = throw RapiraInvalidOperationError("cannot perform addition using an empty value")
-
-    override fun subtract(other: RapiraObject)
-            = throw RapiraInvalidOperationError("cannot perform subtraction using an empty value")
-
-    override fun negate(): RapiraObject
-            = throw RapiraInvalidOperationError("cannot negate an empty value")
-
-    override fun multiply(other: RapiraObject)
-            = throw RapiraInvalidOperationError("cannot perform multiplication using an empty value")
-
-    override fun divide(other: RapiraObject)
-            = throw RapiraInvalidOperationError("cannot perform division using an empty value")
-
-    override fun intDivide(other: RapiraObject)
-            = throw RapiraInvalidOperationError("cannot perform integer division using an empty value")
-
-    override fun modulus(other: RapiraObject)
-            = throw RapiraInvalidOperationError("cannot perform modulo operation using an empty value")
-
-    override fun power(other: RapiraObject)
-            = throw RapiraInvalidOperationError("cannot perform exponentiation operation using an empty value")
-
+object RapiraEmpty : RapiraObject("empty") {
     override fun toString() = "empty"
 }
 
-data class RapiraInteger(val value: Int) : RapiraObject() {
+data class RapiraInteger(val value: Int) : RapiraObject("integer") {
     override fun add(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value + other.value)
         is RapiraReal -> RapiraReal(value + other.value)
-        is RapiraText -> TODO("Not yet implemented")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform addition using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Addition, other)
     }
 
     override fun subtract(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value - other.value)
         is RapiraReal -> RapiraReal(value - other.value)
-        is RapiraText -> TODO("Not yet implemented")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform subtraction using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Subtraction, other)
     }
 
     override fun negate(): RapiraObject = RapiraInteger(-value)
@@ -62,54 +52,43 @@ data class RapiraInteger(val value: Int) : RapiraObject() {
     override fun multiply(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value * other.value)
         is RapiraReal -> RapiraReal(value * other.value)
-        is RapiraText -> TODO("Not yet implemented")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform multiplication using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
     override fun divide(other: RapiraObject) = when (other) {
-        is RapiraInteger -> TODO("Not yet implemented")
         is RapiraReal -> RapiraReal(value / other.value)
-        is RapiraText -> TODO("Not yet implemented")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform division using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Division, other)
     }
 
     override fun intDivide(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value / other.value)
-        is RapiraReal -> throw RapiraInvalidOperationError("cannot perform integer division using a real number")
-        is RapiraText -> TODO("Not yet implemented")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform integer division using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.IntDivision, other)
     }
 
     override fun modulus(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value % other.value)
-        is RapiraReal -> TODO("Not yet implemented")
-        is RapiraText -> TODO("Not yet implemented")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform modulo operation using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Modulo, other)
     }
 
     override fun power(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value.toDouble().pow(other.value).toInt())
-        is RapiraReal -> TODO("Not yet implemented")
-        is RapiraText -> TODO("Not yet implemented")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform exponentiation operation using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Exponentiation, other)
     }
 
     override fun toString() = "$value"
 }
 
-data class RapiraReal(val value: Double) : RapiraObject() {
+data class RapiraReal(val value: Double) : RapiraObject("real number") {
     override fun add(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraReal(value + other.value)
         is RapiraReal -> RapiraReal(value + other.value)
-        is RapiraText -> throw RapiraInvalidOperationError("cannot perform addition using text value")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform addition using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Addition, other)
     }
 
     override fun subtract(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraReal(value - other.value)
         is RapiraReal -> RapiraReal(value - other.value)
-        is RapiraText -> throw RapiraInvalidOperationError("cannot subtraction addition using text value")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform subtraction using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Subtraction, other)
     }
 
     override fun negate(): RapiraObject = RapiraReal(-value)
@@ -117,69 +96,18 @@ data class RapiraReal(val value: Double) : RapiraObject() {
     override fun multiply(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraReal(value * other.value)
         is RapiraReal -> RapiraReal(value * other.value)
-        is RapiraText -> throw RapiraInvalidOperationError("cannot perform multiplication using text value")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform multiplication using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
     override fun divide(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraReal(value / other.value)
         is RapiraReal -> RapiraReal(value / other.value)
-        is RapiraText -> throw RapiraInvalidOperationError("cannot perform division using text value")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform division using an empty value")
-    }
-
-    override fun intDivide(other: RapiraObject)
-            = throw RapiraInvalidOperationError("cannot perform integer division using a real number")
-
-    override fun modulus(other: RapiraObject) = when (other) {
-        is RapiraInteger -> TODO("Not yet implemented")
-        is RapiraReal -> TODO("Not yet implemented")
-        is RapiraText -> throw RapiraInvalidOperationError("cannot perform modulo operation using text value")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform modulo operation using an empty value")
-    }
-
-    override fun power(other: RapiraObject) = when (other) {
-        is RapiraInteger -> TODO("Not yet implemented")
-        is RapiraReal -> TODO("Not yet implemented")
-        is RapiraText -> throw RapiraInvalidOperationError("cannot perform exponentiation operation using text value")
-        is RapiraEmpty -> throw RapiraInvalidOperationError("cannot perform exponentiation operation using an empty value")
+        else -> throw RapiraInvalidOperationError(Operation.Division, other)
     }
 
     override fun toString() = "$value"
 }
 
-class RapiraText(val value: String) : RapiraObject() {
-    override fun add(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
-
-    override fun subtract(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
-
-    override fun negate(): RapiraObject {
-        TODO("Not yet implemented")
-    }
-
-    override fun multiply(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
-
-    override fun divide(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
-
-    override fun intDivide(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
-
-    override fun modulus(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
-
-    override fun power(other: RapiraObject): RapiraObject {
-        TODO("Not yet implemented")
-    }
-
+class RapiraText(val value: String) : RapiraObject("text") {
     override fun toString() = "$value"
 }
