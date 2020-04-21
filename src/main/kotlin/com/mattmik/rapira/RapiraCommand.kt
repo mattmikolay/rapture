@@ -6,7 +6,7 @@ import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.file
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.visitors.ExpressionVisitor
+import com.mattmik.rapira.visitors.StatementVisitor
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 
@@ -26,7 +26,7 @@ class RapiraCommand : CliktCommand(
             val lexer = RapiraLangLexer(CharStreams.fromStream(it))
             val parser = RapiraLangParser(CommonTokenStream(lexer))
             val tree = parser.dialogUnit()
-            ExpressionVisitor().visit(tree)
+            StatementVisitor().visit(tree)
         }
     }
 }

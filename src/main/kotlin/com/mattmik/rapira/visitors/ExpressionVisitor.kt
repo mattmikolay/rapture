@@ -9,12 +9,7 @@ import com.mattmik.rapira.objects.RapiraReal
 class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
 
     override fun visitExpression(ctx: RapiraLangParser.ExpressionContext): RapiraObject {
-        val result = this.visit(ctx.logicalExpression())
-
-        // TODO ExpressionVisitor should not print to console
-        println(result)
-
-        return result
+        return visit(ctx.logicalExpression())
     }
 
     override fun visitExponentiationExpression(ctx: RapiraLangParser.ExponentiationExpressionContext): RapiraObject {

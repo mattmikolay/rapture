@@ -102,7 +102,7 @@ whileClause
     ;
 
 outputStatement
-    : 'output' 'nlf'? (':' expression (',' expression)*)?
+    : 'output' nlf='nlf'? (':' expression (',' expression)*)?
     ;
 
 inputStatement
