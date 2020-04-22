@@ -30,4 +30,13 @@ abstract class RapiraObject(val typeDescription: String) {
 
     open fun length(): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Length, this)
+
+    open fun and(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.And, this)
+
+    open fun or(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.Or, this)
+
+    open fun not(): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.Not, this)
 }

@@ -385,12 +385,6 @@ class StringRepresentationTest {
     fun emptyToStringReturnsUserFriendlyRepresentation() = Assertions.assertEquals("empty", RapiraEmpty.toString())
 
     @Test
-    fun logicalToStringReturnsUserFriendlyRepresentation() {
-        Assertions.assertEquals("yes", RapiraLogical(true).toString())
-        Assertions.assertEquals("no", RapiraLogical(false).toString())
-    }
-
-    @Test
     fun procedureToStringReturnsUserFriendlyRepresentation() =
         Assertions.assertEquals("procedure", RapiraProcedure.toString())
 

@@ -12,6 +12,9 @@ enum class Operation(val description: String) {
     Modulo("modulo"),
     Exponentiation("exponentiation"),
     Length("length operation"),
+    And("logical and operation"),
+    Or("logical or operation"),
+    Not("logical not operation"),
 }
 
 class RapiraInvalidOperationError(cause: String) : RapiraRuntimeError(cause) {
