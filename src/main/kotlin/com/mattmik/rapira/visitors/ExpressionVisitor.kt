@@ -52,7 +52,17 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
 
     override fun visitTextValue(ctx: RapiraLangParser.TextValueContext) = parseEscapedText(ctx.text)
 
+    override fun visitSequenceValue(ctx: RapiraLangParser.SequenceValueContext): RapiraObject {
+        val commaExpression = ctx.commaExpression()
+        return if (commaExpression != null) visit(commaExpression) else RapiraSequence()
+    }
+
     override fun visitParentheticalExpression(
         ctx: RapiraLangParser.ParentheticalExpressionContext
     ): RapiraObject = this.visit(ctx.expression())
+
+    override fun visitCommaExpression(ctx: RapiraLangParser.CommaExpressionContext): RapiraObject {
+        val expressionResults = ctx.expression().map { visit(it) }
+        return RapiraSequence(expressionResults)
+    }
 }
