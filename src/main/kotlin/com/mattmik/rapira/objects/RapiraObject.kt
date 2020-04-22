@@ -2,9 +2,6 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.Operation
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import kotlin.math.exp
-import kotlin.math.ln
-import kotlin.math.pow
 
 abstract class RapiraObject(val typeDescription: String) {
 
@@ -30,6 +27,18 @@ abstract class RapiraObject(val typeDescription: String) {
 
     open fun length(): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Length, this)
+
+    open fun lessThan(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.LessThan, this)
+
+    open fun greaterThan(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.GreaterThan, this)
+
+    open fun lessThanEqualTo(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.LessThanEqualTo, this)
+
+    open fun greaterThanEqualTo(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.GreaterThanEqualTo, this)
 
     open fun and(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.And, this)

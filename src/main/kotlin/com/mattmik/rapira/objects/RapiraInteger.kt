@@ -59,5 +59,29 @@ data class RapiraInteger(val value: Int) : RapiraObject("integer") {
         else -> throw RapiraInvalidOperationError(Operation.Exponentiation, other)
     }
 
+    override fun lessThan(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraLogical(value < other.value)
+        is RapiraReal -> RapiraLogical(value < other.value)
+        else -> throw RapiraInvalidOperationError(Operation.LessThan, other)
+    }
+
+    override fun greaterThan(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraLogical(value > other.value)
+        is RapiraReal -> RapiraLogical(value > other.value)
+        else -> throw RapiraInvalidOperationError(Operation.GreaterThan, other)
+    }
+
+    override fun lessThanEqualTo(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraLogical(value <= other.value)
+        is RapiraReal -> RapiraLogical(value <= other.value)
+        else -> throw RapiraInvalidOperationError(Operation.LessThanEqualTo, other)
+    }
+
+    override fun greaterThanEqualTo(other: RapiraObject) = when (other) {
+        is RapiraInteger -> RapiraLogical(value >= other.value)
+        is RapiraReal -> RapiraLogical(value >= other.value)
+        else -> throw RapiraInvalidOperationError(Operation.GreaterThanEqualTo, other)
+    }
+
     override fun toString() = "$value"
 }

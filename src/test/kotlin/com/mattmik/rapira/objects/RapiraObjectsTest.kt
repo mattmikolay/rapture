@@ -12,6 +12,19 @@ fun assertEquals(expected: RapiraObject, actual: RapiraObject) {
     return Assertions.assertEquals(expected, actual)
 }
 
+fun makeObjectOperationTests(
+    operator: String,
+    operation: (RapiraObject, RapiraObject) -> RapiraObject,
+    vararg testData: Triple<RapiraObject, RapiraObject, RapiraObject>
+) = testData.map { (first, second, expected) ->
+    dynamicTest("$first $operator $second = $expected") {
+        assertEquals(
+            expected,
+            operation(first, second)
+        )
+    }
+}
+
 class AdditionTest {
 
     private val addOperation = { a: RapiraObject, b: RapiraObject -> a.add(b) };
@@ -380,20 +393,6 @@ class LengthTest {
 }
 
 class StringRepresentationTest {
-
-    @Test
-    fun integerToStringReturnsUserFriendlyRepresentation() {
-        Assertions.assertEquals("0", RapiraInteger(0).toString())
-        Assertions.assertEquals("123", RapiraInteger(123).toString())
-        Assertions.assertEquals("-123", RapiraInteger(-123).toString())
-    }
-
-    @Test
-    fun realToStringReturnsUserFriendlyRepresentation() {
-        Assertions.assertEquals("0.0", RapiraReal(0.0).toString())
-        Assertions.assertEquals("1.23456789", RapiraReal(1.23456789).toString())
-        Assertions.assertEquals("-1.23456789", RapiraReal(-1.23456789).toString())
-    }
 
     @Test
     fun textToStringReturnsUserFriendlyRepresentation() {
