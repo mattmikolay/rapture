@@ -395,15 +395,6 @@ class LengthTest {
 class StringRepresentationTest {
 
     @Test
-    fun textToStringReturnsUserFriendlyRepresentation() {
-        Assertions.assertEquals("\"Hello, world!\"", RapiraText("Hello, world!").toString())
-        Assertions.assertEquals(
-            "\"How about some \"double quotes\"? Fancy, eh?\"",
-            RapiraText("How about some \"\"double quotes\"\"? Fancy, eh?").toString()
-        )
-    }
-
-    @Test
     fun sequenceToStringReturnsUserFriendlyRepresentation() {
         Assertions.assertEquals("<* *>", RapiraSequence().toString())
         Assertions.assertEquals(
