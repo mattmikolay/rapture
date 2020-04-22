@@ -382,17 +382,6 @@ class LengthTest {
 class StringRepresentationTest {
 
     @Test
-    fun emptyToStringReturnsUserFriendlyRepresentation() = Assertions.assertEquals("empty", RapiraEmpty.toString())
-
-    @Test
-    fun procedureToStringReturnsUserFriendlyRepresentation() =
-        Assertions.assertEquals("procedure", RapiraProcedure.toString())
-
-    @Test
-    fun functionToStringReturnsUserFriendlyRepresentation() =
-        Assertions.assertEquals("function", RapiraFunction.toString())
-
-    @Test
     fun integerToStringReturnsUserFriendlyRepresentation() {
         Assertions.assertEquals("0", RapiraInteger(0).toString())
         Assertions.assertEquals("123", RapiraInteger(123).toString())
