@@ -4,6 +4,7 @@ grammar RapiraLang;
 
 dialogUnit
     : statement STMT_END EOF
+    | expressionStatement STMT_END EOF
     | routineDefinition STMT_END EOF
     ;
 
@@ -115,6 +116,10 @@ exitStatement
 
 returnStatement
     : RETURN expression?
+    ;
+
+expressionStatement
+    : expression
     ;
 
 expression

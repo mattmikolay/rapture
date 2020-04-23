@@ -61,4 +61,11 @@ class StatementVisitor : RapiraLangBaseVisitor<Unit>() {
         super.visitReturnStatement(ctx)
         TODO("Not yet implemented")
     }
+
+    // Expression statements are only valid in the REPL
+    override fun visitExpressionStatement(ctx: RapiraLangParser.ExpressionStatementContext) {
+        val expressionVisitor = ExpressionVisitor()
+        val expressionResult = expressionVisitor.visit(ctx.expression())
+        println(expressionResult)
+    }
 }
