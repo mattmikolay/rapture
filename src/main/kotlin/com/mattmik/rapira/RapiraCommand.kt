@@ -2,13 +2,11 @@ package com.mattmik.rapira
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
+import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.file
-import com.mattmik.rapira.antlr.RapiraLangLexer
-import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.visitors.StatementVisitor
-import org.antlr.v4.runtime.CharStreams
-import org.antlr.v4.runtime.CommonTokenStream
+
+const val VERSION = "0.1"
 
 class RapiraCommand : CliktCommand(
     name = "rapira",
@@ -16,17 +14,31 @@ class RapiraCommand : CliktCommand(
 ) {
     private val inputFile by argument(name = "file")
         .file(mustExist = true, mustBeReadable = true, canBeDir = false)
+        .optional()
 
     init {
-        versionOption("0.1")
+        versionOption(VERSION)
     }
 
     override fun run() {
-        inputFile.inputStream().use {
-            val lexer = RapiraLangLexer(CharStreams.fromStream(it))
-            val parser = RapiraLangParser(CommonTokenStream(lexer))
-            val tree = parser.fileInput()
-            StatementVisitor().visit(tree)
+        val interpreter = Interpreter()
+
+        if (inputFile == null) {
+            printREPLHeader()
+
+            var line: String?
+            while (true) {
+                line = readREPLStatement()
+
+                if (line == null || line == "quit")
+                    return
+
+                interpreter.interpretStatement(line)
+            }
+        }
+
+        inputFile?.inputStream()?.use {
+            interpreter.interpretInputStream(it)
         }
     }
 }
