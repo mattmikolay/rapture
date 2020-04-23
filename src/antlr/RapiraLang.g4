@@ -75,7 +75,7 @@ extern
     ;
 
 ifStatement
-    : 'if' expression 'then' stmts ('else' stmts)? 'fi'
+    : 'if' condition=expression 'then' ifBody=stmts ('else' elseBody=stmts)? 'fi'
     ;
 
 caseStatement

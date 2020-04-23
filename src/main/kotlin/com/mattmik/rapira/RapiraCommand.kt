@@ -25,7 +25,7 @@ class RapiraCommand : CliktCommand(
         inputFile.inputStream().use {
             val lexer = RapiraLangLexer(CharStreams.fromStream(it))
             val parser = RapiraLangParser(CommonTokenStream(lexer))
-            val tree = parser.dialogUnit()
+            val tree = parser.fileInput()
             StatementVisitor().visit(tree)
         }
     }
