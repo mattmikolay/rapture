@@ -1,8 +1,11 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.assertThrows
 
 fun assertEquals(expected: RapiraObject, actual: RapiraObject) {
     // TODO Figure out a better way to deal with double equality
@@ -27,7 +30,7 @@ fun makeObjectOperationTests(
 
 class AdditionTest {
 
-    private val addOperation = { a: RapiraObject, b: RapiraObject -> a.add(b) };
+    private val addOperation = { a: RapiraObject, b: RapiraObject -> a.add(b) }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -75,7 +78,7 @@ class AdditionTest {
 
 class SubtractionTest {
 
-    private val subtractOperation = { a: RapiraObject, b: RapiraObject -> a.subtract(b) };
+    private val subtractOperation = { a: RapiraObject, b: RapiraObject -> a.subtract(b) }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -112,7 +115,7 @@ class SubtractionTest {
 
 class NegationTest {
 
-    private val negateOperation = { a: RapiraObject -> a.negate() };
+    private val negateOperation = { a: RapiraObject -> a.negate() }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -141,7 +144,7 @@ class NegationTest {
 
 class MultiplicationTest {
 
-    private val multiplyOperation = { a: RapiraObject, b: RapiraObject -> a.multiply(b) };
+    private val multiplyOperation = { a: RapiraObject, b: RapiraObject -> a.multiply(b) }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -202,7 +205,7 @@ class MultiplicationTest {
 
 class DivisionTest {
 
-    private val divideOperation = { a: RapiraObject, b: RapiraObject -> a.divide(b) };
+    private val divideOperation = { a: RapiraObject, b: RapiraObject -> a.divide(b) }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -241,7 +244,7 @@ class DivisionTest {
 
 class IntDivisionTest {
 
-    private val intDivideOperation = { a: RapiraObject, b: RapiraObject -> a.intDivide(b) };
+    private val intDivideOperation = { a: RapiraObject, b: RapiraObject -> a.intDivide(b) }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -280,7 +283,7 @@ class IntDivisionTest {
 
 class ModulusTest {
 
-    private val moduloOperation = { a: RapiraObject, b: RapiraObject -> a.modulus(b) };
+    private val moduloOperation = { a: RapiraObject, b: RapiraObject -> a.modulus(b) }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -315,7 +318,7 @@ class ModulusTest {
 
 class ExponentiationTest {
 
-    private val powerOperation = { a: RapiraObject, b: RapiraObject -> a.power(b) };
+    private val powerOperation = { a: RapiraObject, b: RapiraObject -> a.power(b) }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
@@ -353,7 +356,7 @@ class ExponentiationTest {
 
 class LengthTest {
 
-    private val lengthOperation = { a: RapiraObject -> a.length() };
+    private val lengthOperation = { a: RapiraObject -> a.length() }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(

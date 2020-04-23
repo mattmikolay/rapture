@@ -2,7 +2,12 @@ package com.mattmik.rapira.visitors
 
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.objects.*
+import com.mattmik.rapira.objects.RapiraInteger
+import com.mattmik.rapira.objects.RapiraLogical
+import com.mattmik.rapira.objects.RapiraObject
+import com.mattmik.rapira.objects.RapiraReal
+import com.mattmik.rapira.objects.RapiraSequence
+import com.mattmik.rapira.objects.parseEscapedText
 
 class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
 

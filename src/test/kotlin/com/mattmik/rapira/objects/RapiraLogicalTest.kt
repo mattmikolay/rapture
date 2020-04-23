@@ -1,7 +1,9 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class RapiraLogicalTest {
 
