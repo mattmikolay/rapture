@@ -10,6 +10,19 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
         return visit(ctx.logicalExpression())
     }
 
+    override fun visitEqualityExpression(ctx: RapiraLangParser.EqualityExpressionContext): RapiraObject {
+        val (leftExpression, rightExpression) = ctx.comparisonExpression()
+        val leftResult = this.visit(leftExpression)
+        val rightResult = this.visit(rightExpression)
+        return RapiraLogical(
+            if (ctx.op.type == RapiraLangParser.EQ)
+                leftResult == rightResult
+            else {
+                leftResult != rightResult
+            }
+        )
+    }
+
     override fun visitExponentiationExpression(ctx: RapiraLangParser.ExponentiationExpressionContext): RapiraObject {
         val (leftExpression, rightExpression) = ctx.arithmeticExpression()
         val leftResult = this.visit(leftExpression)

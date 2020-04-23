@@ -121,9 +121,9 @@ logicalExpression
     ;
 
 comparisonExpression
-    : comparisonExpression ('<' | '>' | '>=' | '<=') comparisonExpression
-    | comparisonExpression ('=' | '/=') comparisonExpression
-    | arithmeticExpression
+    : comparisonExpression op=(LESS | GREATER | LESSEQ | GREATEREQ) comparisonExpression #relationalExpression
+    | comparisonExpression op=(EQ | NEQ) comparisonExpression #equalityExpression
+    | arithmeticExpression #baseComparisonExpression
     ;
 
 arithmeticExpression
@@ -173,6 +173,18 @@ functionArguments
 LARROW : '<*' ;
 
 RARROW : '*>' ;
+
+LESS : '<' ;
+
+GREATER : '>' ;
+
+LESSEQ : '<=' ;
+
+GREATEREQ : '>=' ;
+
+EQ : '=' ;
+
+NEQ : '/=' ;
 
 PLUS : '+' ;
 
