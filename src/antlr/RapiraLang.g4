@@ -143,9 +143,9 @@ arithmeticExpression
     ;
 
 subopExpression
-    : subopExpression (indexExpression | functionArguments)
-    | '#' subopExpression
-    | baseExpression
+    : subopExpression (indexExpression | functionArguments) #subopModifiedExpression
+    | '#' subopExpression #lengthExpression
+    | baseExpression #baseSubopExpression
     ;
 
 baseExpression

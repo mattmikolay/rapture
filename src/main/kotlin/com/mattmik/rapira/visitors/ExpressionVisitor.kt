@@ -96,6 +96,11 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
         return if (ctx.op?.type == RapiraLangParser.MINUS) result.negate() else result
     }
 
+    override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext): RapiraObject {
+        val result = visit(ctx.subopExpression())
+        return result.length()
+    }
+
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) = RapiraInteger(Integer.valueOf(ctx.text))
 
     override fun visitRealValue(ctx: RapiraLangParser.RealValueContext) = RapiraReal(ctx.text.toDouble())
