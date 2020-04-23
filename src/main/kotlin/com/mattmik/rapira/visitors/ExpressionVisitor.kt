@@ -10,6 +10,19 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
         return visit(ctx.logicalExpression())
     }
 
+    override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext): RapiraObject {
+        val (leftExpression, rightExpression) = ctx.comparisonExpression()
+        val leftResult = this.visit(leftExpression)
+        val rightResult = this.visit(rightExpression)
+        return when (ctx.op.type) {
+            RapiraLangParser.LESS -> leftResult.lessThan(rightResult)
+            RapiraLangParser.GREATER -> leftResult.greaterThan(rightResult)
+            RapiraLangParser.LESSEQ -> leftResult.lessThanEqualTo(rightResult)
+            RapiraLangParser.GREATEREQ -> leftResult.greaterThanEqualTo(rightResult)
+            else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
+        }
+    }
+
     override fun visitEqualityExpression(ctx: RapiraLangParser.EqualityExpressionContext): RapiraObject {
         val (leftExpression, rightExpression) = ctx.comparisonExpression()
         val leftResult = this.visit(leftExpression)
