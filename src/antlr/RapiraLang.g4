@@ -28,8 +28,8 @@ statement
     | loopStatement
     | outputStatement
     | inputStatement
-    | LOOP_EXIT
-    | RETURN expression?
+    | exitStatement
+    | returnStatement
     ;
 
 assignStatement
@@ -107,6 +107,14 @@ outputStatement
 
 inputStatement
     : 'input' 'text'? ':' IDENTIFIER (',' IDENTIFIER)*
+    ;
+
+exitStatement
+    : LOOP_EXIT
+    ;
+
+returnStatement
+    : RETURN expression?
     ;
 
 expression
