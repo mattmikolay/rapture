@@ -122,10 +122,10 @@ expression
     ;
 
 logicalExpression
-    : logicalExpression 'and' logicalExpression
-    | logicalExpression 'or' logicalExpression
-    | 'not' comparisonExpression
-    | comparisonExpression
+    : logicalExpression AND logicalExpression #andExpression
+    | logicalExpression OR logicalExpression #orExpression
+    | NOT comparisonExpression #notExpression
+    | comparisonExpression #baseLogicalExpression
     ;
 
 comparisonExpression
@@ -205,6 +205,12 @@ DIVIDE : '/' ;
 INTDIVIDE : '//' ;
 
 MOD : '/%' ;
+
+AND : 'and' ;
+
+OR : 'or' ;
+
+NOT : 'not' ;
 
 LOOP_EXIT
     : 'exit'

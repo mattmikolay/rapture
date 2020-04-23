@@ -10,6 +10,25 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
         return visit(ctx.logicalExpression())
     }
 
+    override fun visitAndExpression(ctx: RapiraLangParser.AndExpressionContext): RapiraObject {
+        val (leftExpression, rightExpression) = ctx.logicalExpression()
+        val leftResult = this.visit(leftExpression)
+        val rightResult = this.visit(rightExpression)
+        return leftResult.and(rightResult)
+    }
+
+    override fun visitOrExpression(ctx: RapiraLangParser.OrExpressionContext): RapiraObject {
+        val (leftExpression, rightExpression) = ctx.logicalExpression()
+        val leftResult = this.visit(leftExpression)
+        val rightResult = this.visit(rightExpression)
+        return leftResult.or(rightResult)
+    }
+
+    override fun visitNotExpression(ctx: RapiraLangParser.NotExpressionContext): RapiraObject {
+        val result = visit(ctx.comparisonExpression())
+        return result.not()
+    }
+
     override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext): RapiraObject {
         val (leftExpression, rightExpression) = ctx.comparisonExpression()
         val leftResult = this.visit(leftExpression)
