@@ -1,11 +1,10 @@
 package com.mattmik.rapira.objects
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
-class RapiraFunctionTest {
-
-    @Test
-    fun toStringReturnsUserFriendlyRepresentation() =
-        Assertions.assertEquals("function", RapiraFunction.toString())
-}
+class RapiraFunctionTest : StringSpec({
+    "toString returns user friendly representation" {
+        RapiraFunction.toString() shouldBe "function"
+    }
+})
