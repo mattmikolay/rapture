@@ -1,31 +1,96 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import org.junit.jupiter.api.Assertions
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.property.forAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertThrows
 
+class NewRapiraIntegerTest : StringSpec({
+    "addition with integer returns integer" {
+        forAll<Int, Int> { a, b ->
+            RapiraInteger(a).add(RapiraInteger(b)) == RapiraInteger(a + b)
+        }
+    }
+
+    "addition with real returns real" {
+        forAll<Int, Double> { a, b ->
+            RapiraInteger(a).add(RapiraReal(b)) == RapiraReal(a + b)
+        }
+    }
+
+    "subtraction with integer returns integer" {
+        forAll<Int, Int> { a, b ->
+            RapiraInteger(a).subtract(RapiraInteger(b)) == RapiraInteger(a - b)
+        }
+    }
+
+    "subtraction with real returns real" {
+        forAll<Int, Double> { a, b ->
+            RapiraInteger(a).subtract(RapiraReal(b)) == RapiraReal(a - b)
+        }
+    }
+
+    "less than with integer returns logical" {
+        forAll<Int, Int> { a, b ->
+            RapiraInteger(a).lessThan(RapiraInteger(b)) == RapiraLogical(a < b)
+        }
+    }
+
+    "less than with real returns logical" {
+        forAll<Int, Double> { a, b ->
+            RapiraInteger(a).lessThan(RapiraReal(b)) == RapiraLogical(a < b)
+        }
+    }
+
+    "less than or equal to with integer returns logical" {
+        forAll<Int, Int> { a, b ->
+            RapiraInteger(a).lessThanEqualTo(RapiraInteger(b)) == RapiraLogical(a <= b)
+        }
+    }
+
+    "less than or equal to with real returns logical" {
+        forAll<Int, Double> { a, b ->
+            RapiraInteger(a).lessThanEqualTo(RapiraReal(b)) == RapiraLogical(a <= b)
+        }
+    }
+
+    "greater than with integer returns logical" {
+        forAll<Int, Int> { a, b ->
+            RapiraInteger(a).greaterThan(RapiraInteger(b)) == RapiraLogical(a > b)
+        }
+    }
+
+    "greater than with real returns logical" {
+        forAll<Int, Double> { a, b ->
+            RapiraInteger(a).greaterThan(RapiraReal(b)) == RapiraLogical(a > b)
+        }
+    }
+
+    "greater than or equal to with integer returns logical" {
+        forAll<Int, Int> { a, b ->
+            RapiraInteger(a).greaterThanEqualTo(RapiraInteger(b)) == RapiraLogical(a >= b)
+        }
+    }
+
+    "greater than or equal to with real returns logical" {
+        forAll<Int, Double> { a, b ->
+            RapiraInteger(a).greaterThanEqualTo(RapiraReal(b)) == RapiraLogical(a >= b)
+        }
+    }
+
+    // "modulus with integer returns integer" {
+    //     forAll<Int, Int> { a, b ->
+    //         RapiraInteger(a).modulus(RapiraInteger(b)) == RapiraInteger(a % b)
+    //     }
+    // }
+
+    "toString returns user friendly representation" {
+        forAll<Int> { num -> RapiraInteger(num).toString() == "$num" }
+    }
+})
+
 class RapiraIntegerTest {
-
-    private val trueLogical = RapiraLogical(true)
-    private val falseLogical = RapiraLogical(false)
-
-    @TestFactory
-    fun lessThanWithNumberReturnsLogical() = makeObjectOperationTests(
-        "<",
-        { a: RapiraObject, b: RapiraObject -> a.lessThan(b) },
-
-        // Integer
-        Triple(RapiraInteger(0), RapiraInteger(10), trueLogical),
-        Triple(RapiraInteger(10), RapiraInteger(0), falseLogical),
-        Triple(RapiraInteger(10), RapiraInteger(10), falseLogical),
-
-        // Real
-        Triple(RapiraInteger(0), RapiraReal(10.0), trueLogical),
-        Triple(RapiraInteger(10), RapiraReal(0.0), falseLogical),
-        Triple(RapiraInteger(10), RapiraReal(10.0), falseLogical)
-    )
 
     @Test
     fun lessThanWithOtherTypesThrowsException() = listOf(
@@ -41,22 +106,6 @@ class RapiraIntegerTest {
         assertThrows<RapiraInvalidOperationError> { RapiraInteger(-10).lessThan(it) }
     }
 
-    @TestFactory
-    fun greaterThanWithNumberReturnsLogical() = makeObjectOperationTests(
-        ">",
-        { a: RapiraObject, b: RapiraObject -> a.greaterThan(b) },
-
-        // Integer
-        Triple(RapiraInteger(0), RapiraInteger(10), falseLogical),
-        Triple(RapiraInteger(10), RapiraInteger(0), trueLogical),
-        Triple(RapiraInteger(10), RapiraInteger(10), falseLogical),
-
-        // Real
-        Triple(RapiraInteger(0), RapiraReal(10.0), falseLogical),
-        Triple(RapiraInteger(10), RapiraReal(0.0), trueLogical),
-        Triple(RapiraInteger(10), RapiraReal(10.0), falseLogical)
-    )
-
     @Test
     fun greaterThanWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
@@ -70,22 +119,6 @@ class RapiraIntegerTest {
         assertThrows<RapiraInvalidOperationError> { RapiraInteger(0).greaterThan(it) }
         assertThrows<RapiraInvalidOperationError> { RapiraInteger(-10).greaterThan(it) }
     }
-
-    @TestFactory
-    fun lessThanEqualToWithNumberReturnsLogical() = makeObjectOperationTests(
-        "<=",
-        { a: RapiraObject, b: RapiraObject -> a.lessThanEqualTo(b) },
-
-        // Integer
-        Triple(RapiraInteger(0), RapiraInteger(10), trueLogical),
-        Triple(RapiraInteger(10), RapiraInteger(0), falseLogical),
-        Triple(RapiraInteger(10), RapiraInteger(10), trueLogical),
-
-        // Real
-        Triple(RapiraInteger(0), RapiraReal(10.0), trueLogical),
-        Triple(RapiraInteger(10), RapiraReal(0.0), falseLogical),
-        Triple(RapiraInteger(10), RapiraReal(10.0), trueLogical)
-    )
 
     @Test
     fun lessThanEqualToWithOtherTypesThrowsException() = listOf(
@@ -101,22 +134,6 @@ class RapiraIntegerTest {
         assertThrows<RapiraInvalidOperationError> { RapiraInteger(-10).lessThanEqualTo(it) }
     }
 
-    @TestFactory
-    fun greaterThanEqualToWithNumberReturnsLogical() = makeObjectOperationTests(
-        ">=",
-        { a: RapiraObject, b: RapiraObject -> a.greaterThanEqualTo(b) },
-
-        // Integer
-        Triple(RapiraInteger(0), RapiraInteger(10), falseLogical),
-        Triple(RapiraInteger(10), RapiraInteger(0), trueLogical),
-        Triple(RapiraInteger(10), RapiraInteger(10), trueLogical),
-
-        // Real
-        Triple(RapiraInteger(0), RapiraReal(10.0), falseLogical),
-        Triple(RapiraInteger(10), RapiraReal(0.0), trueLogical),
-        Triple(RapiraInteger(10), RapiraReal(10.0), trueLogical)
-    )
-
     @Test
     fun greaterThanEqualToWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
@@ -129,12 +146,5 @@ class RapiraIntegerTest {
         assertThrows<RapiraInvalidOperationError> { RapiraInteger(10).greaterThanEqualTo(it) }
         assertThrows<RapiraInvalidOperationError> { RapiraInteger(0).greaterThanEqualTo(it) }
         assertThrows<RapiraInvalidOperationError> { RapiraInteger(-10).greaterThanEqualTo(it) }
-    }
-
-    @Test
-    fun toStringReturnsUserFriendlyRepresentation() {
-        Assertions.assertEquals("0", RapiraInteger(0).toString())
-        Assertions.assertEquals("123", RapiraInteger(123).toString())
-        Assertions.assertEquals("-123", RapiraInteger(-123).toString())
     }
 }
