@@ -1,58 +1,26 @@
 package com.mattmik.rapira.objects
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
-class ObjectUtilsTest {
+class ObjectUtilsTest : StringSpec({
 
-    @Test
-    fun parseEscapedTextHandlesDoubleQuotes() {
-        assertEquals(
-            RapiraText(""),
-            parseEscapedText("\"\"")
-        )
-        assertEquals(
-            RapiraText("Test!"),
-            parseEscapedText("\"Test!\"")
-        )
-        assertEquals(
-            RapiraText("How about some \"double quotes\"?"),
-            parseEscapedText("\"How about some \"\"double quotes\"\"?\"")
-        )
+    "parseEscapedText handles double quotes" {
+        parseEscapedText("\"\"") shouldBe RapiraText("")
+        parseEscapedText("\"Test!\"") shouldBe RapiraText("Test!")
+        parseEscapedText("\"How about some \"\"double quotes\"\"?\"") shouldBe RapiraText("How about some \"double quotes\"?")
     }
 
-    @Test
-    fun formatRapiraObjectReturnsCorrectRepresentations() {
-        Assertions.assertEquals(
-            "empty",
-            formatRapiraObject(RapiraEmpty))
-        Assertions.assertEquals(
-            "procedure",
-            formatRapiraObject(RapiraProcedure))
-        Assertions.assertEquals(
-            "function",
-            formatRapiraObject(RapiraFunction))
-        Assertions.assertEquals(
-            "yes",
-            formatRapiraObject(RapiraLogical(true)))
-        Assertions.assertEquals(
-            "no",
-            formatRapiraObject(RapiraLogical(false)))
-        Assertions.assertEquals(
-            "123",
-            formatRapiraObject(RapiraInteger(123)))
-        Assertions.assertEquals(
-            "1.4",
-            formatRapiraObject(RapiraReal(1.4)))
-        Assertions.assertEquals(
-            "",
-            formatRapiraObject(RapiraText("")))
-        Assertions.assertEquals(
-            "Hello!",
-            formatRapiraObject(RapiraText("Hello!")))
-        Assertions.assertEquals(
-            "How about some \"double quotes\"?",
-            formatRapiraObject(RapiraText("How about some \"double quotes\"?"))
-        )
+    "formatRapiraObject returns correct string representations" {
+        formatRapiraObject(RapiraEmpty) shouldBe "empty"
+        formatRapiraObject(RapiraProcedure) shouldBe "procedure"
+        formatRapiraObject(RapiraFunction) shouldBe "function"
+        formatRapiraObject(RapiraLogical(true)) shouldBe "yes"
+        formatRapiraObject(RapiraLogical(false)) shouldBe "no"
+        formatRapiraObject(RapiraInteger(123)) shouldBe "123"
+        formatRapiraObject(RapiraReal(1.4)) shouldBe "1.4"
+        formatRapiraObject(RapiraText("")) shouldBe ""
+        formatRapiraObject(RapiraText("Hello!")) shouldBe "Hello!"
+        formatRapiraObject(RapiraText("How about some \"double quotes\"?")) shouldBe "How about some \"double quotes\"?"
     }
-}
+})
