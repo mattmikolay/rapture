@@ -63,7 +63,7 @@ class RapiraLogicalTest : StringSpec({
     }
 
     "toString returns user friendly representation" {
-        RapiraLogical(true).toString() shouldBe "yes"
-        RapiraLogical(false).toString() shouldBe "no"
+        RapiraLogical(true) shouldConvertToString "yes"
+        RapiraLogical(false) shouldConvertToString "no"
     }
 })

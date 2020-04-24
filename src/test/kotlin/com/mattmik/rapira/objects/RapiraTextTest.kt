@@ -2,7 +2,6 @@ package com.mattmik.rapira.objects
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.forAll
-import io.kotest.matchers.shouldBe
 
 class RapiraTextTest : StringSpec({
     "addition with text returns text" {
@@ -22,7 +21,7 @@ class RapiraTextTest : StringSpec({
     }
 
     "toString returns user friendly representation" {
-        RapiraText("Hello, world!").toString() shouldBe "\"Hello, world!\""
-        RapiraText("How about some \"\"double quotes\"\"? Fancy, eh?").toString() shouldBe "\"How about some \"double quotes\"? Fancy, eh?\""
+        RapiraText("Hello, world!") shouldConvertToString "\"Hello, world!\""
+        RapiraText("How about some \"\"double quotes\"\"? Fancy, eh?") shouldConvertToString "\"How about some \"double quotes\"? Fancy, eh?\""
     }
 })

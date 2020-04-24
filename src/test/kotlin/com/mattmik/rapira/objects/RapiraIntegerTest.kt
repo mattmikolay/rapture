@@ -2,6 +2,7 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -86,7 +87,7 @@ class NewRapiraIntegerTest : StringSpec({
     // }
 
     "toString returns user friendly representation" {
-        forAll<Int> { num -> RapiraInteger(num).toString() == "$num" }
+        checkAll<Int> { num -> RapiraInteger(num) shouldConvertToString "$num" }
     }
 })
 
