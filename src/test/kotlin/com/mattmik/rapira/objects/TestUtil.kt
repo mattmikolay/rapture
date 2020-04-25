@@ -4,8 +4,8 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
-fun convertToString(expected: String) = object : Matcher<Any> {
-    override fun test(value: Any) =
+fun convertToString(expected: String) = object : Matcher<RapiraObject> {
+    override fun test(value: RapiraObject) =
         MatcherResult(
             value.toString() == expected,
             "Object $value should convert to string $expected",
@@ -13,4 +13,4 @@ fun convertToString(expected: String) = object : Matcher<Any> {
         )
 }
 
-infix fun Any.shouldConvertToString(expected: String) = this should convertToString(expected)
+infix fun RapiraObject.shouldConvertToString(expected: String) = this should convertToString(expected)

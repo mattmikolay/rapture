@@ -12,7 +12,11 @@ data class RapiraText(val value: String) : RapiraObject("text") {
     }
 
     override fun multiply(other: RapiraObject) = when (other) {
-        is RapiraInteger -> RapiraText(value.repeat(other.value))
+        is RapiraInteger ->
+            if (other.value >= 0)
+                value.repeat(other.value).toRapiraText()
+            else
+                throw RapiraInvalidOperationError("Cannot multiply text by negative number")
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
