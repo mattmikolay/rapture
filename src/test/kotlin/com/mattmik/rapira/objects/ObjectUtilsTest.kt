@@ -2,6 +2,7 @@ package com.mattmik.rapira.objects
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.checkAll
 
 class ObjectUtilsTest : StringSpec({
 
@@ -22,5 +23,11 @@ class ObjectUtilsTest : StringSpec({
         formatRapiraObject(RapiraText("")) shouldBe ""
         formatRapiraObject(RapiraText("Hello!")) shouldBe "Hello!"
         formatRapiraObject(RapiraText("How about some \"double quotes\"?")) shouldBe "How about some \"double quotes\"?"
+    }
+
+    "toRapiraText converts string" {
+        checkAll<String> {
+            str -> str.toRapiraText() shouldBe RapiraText(str)
+        }
     }
 })

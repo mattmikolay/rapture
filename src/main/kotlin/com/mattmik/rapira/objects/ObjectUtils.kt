@@ -19,3 +19,5 @@ fun formatRapiraObject(obj: RapiraObject) = when (obj) {
     is RapiraText -> obj.value
     else -> obj.toString()
 }
+
+fun String.toRapiraText(): RapiraText = RapiraText(this)

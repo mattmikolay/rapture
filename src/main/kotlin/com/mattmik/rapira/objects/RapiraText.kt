@@ -24,7 +24,7 @@ data class RapiraText(val value: String) : RapiraObject("text") {
             if (index < 1 || index > value.length) {
                 throw RapiraIndexOutOfBoundsError(index)
             }
-            RapiraText(value[index - 1].toString())
+            value[index - 1].toString().toRapiraText()
         }
         else -> throw RapiraInvalidOperationError(Operation.ElementAt, other)
     }
