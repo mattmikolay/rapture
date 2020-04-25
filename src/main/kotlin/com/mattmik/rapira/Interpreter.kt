@@ -2,6 +2,7 @@ package com.mattmik.rapira
 
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.errors.RapiraRuntimeError
 import com.mattmik.rapira.visitors.StatementVisitor
 import java.io.InputStream
 import org.antlr.v4.runtime.CharStreams
@@ -16,7 +17,12 @@ class Interpreter {
         val lexer = RapiraLangLexer(CharStreams.fromString("$statement\n"))
         val parser = RapiraLangParser(CommonTokenStream(lexer))
         val tree = parser.dialogUnit()
-        statementVisitor.visit(tree)
+
+        try {
+            statementVisitor.visit(tree)
+        } catch (error: RapiraRuntimeError) {
+            println("Error: ${error.message}")
+        }
     }
 
     fun interpretInputStream(inputStream: InputStream) {
