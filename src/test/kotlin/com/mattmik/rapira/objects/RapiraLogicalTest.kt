@@ -22,7 +22,7 @@ class RapiraLogicalTest : StringSpec({
         forAll(
             row(RapiraEmpty),
             row(RapiraProcedure),
-            row(RapiraFunction),
+            row(RapiraFunction()),
             row(RapiraInteger(1)),
             row(RapiraReal(1.0)),
             row(RapiraText("hello")),
@@ -45,7 +45,7 @@ class RapiraLogicalTest : StringSpec({
         forAll(
             row(RapiraEmpty),
             row(RapiraProcedure),
-            row(RapiraFunction),
+            row(RapiraFunction()),
             row(RapiraInteger(1)),
             row(RapiraReal(1.0)),
             row(RapiraText("hello")),

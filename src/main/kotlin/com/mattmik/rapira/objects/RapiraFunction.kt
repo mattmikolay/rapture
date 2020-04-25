@@ -1,5 +1,8 @@
 package com.mattmik.rapira.objects
 
-object RapiraFunction : RapiraObject("function") {
+import com.mattmik.rapira.antlr.RapiraLangParser
+
+// TODO: Add params and intern/extern declarations
+class RapiraFunction(val bodyStatements: RapiraLangParser.StmtsContext? = null) : RapiraObject("function") {
     override fun toString() = "function"
 }

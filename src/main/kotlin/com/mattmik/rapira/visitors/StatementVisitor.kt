@@ -3,10 +3,25 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.objects.RapiraFunction
 import com.mattmik.rapira.objects.RapiraLogical
 import com.mattmik.rapira.objects.formatRapiraObject
 
 class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
+    override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext) {
+        val procedure = ExpressionVisitor(environment).visit(ctx)
+        ctx.IDENTIFIER()?.let {
+            environment.setObject(it.text, procedure)
+        }
+    }
+
+    override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext) {
+        val function = ExpressionVisitor(environment).visit(ctx)
+        ctx.IDENTIFIER()?.let {
+            environment.setObject(it.text, function)
+        }
+    }
 
     override fun visitAssignStatement(ctx: RapiraLangParser.AssignStatementContext) {
         // TODO Handle index expressions
@@ -15,9 +30,14 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         environment.setObject(variableName.text, evaluatedExpression)
     }
 
-    override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext?) {
-        super.visitCallStatement(ctx)
-        TODO("Not yet implemented")
+    override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
+        val callable = ctx.IDENTIFIER()?.let { environment.getObject(it.text) }
+            ?: ExpressionVisitor(environment).visit(ctx.expression())
+        when (callable) {
+            is RapiraFunction -> visit(callable.bodyStatements)
+            else -> throw RapiraInvalidOperationError("Cannot call non-function")
+        }
+        // TODO Implement parsing of arguments
     }
 
     override fun visitIfStatement(ctx: RapiraLangParser.IfStatementContext) {

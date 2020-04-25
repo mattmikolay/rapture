@@ -31,7 +31,7 @@ class RapiraRealTest {
     fun lessThanWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
         RapiraProcedure,
-        RapiraFunction,
+        RapiraFunction(),
         RapiraText("hello"),
         RapiraLogical(true),
         RapiraSequence()
@@ -61,7 +61,7 @@ class RapiraRealTest {
     fun greaterThanWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
         RapiraProcedure,
-        RapiraFunction,
+        RapiraFunction(),
         RapiraText("hello"),
         RapiraLogical(true),
         RapiraSequence()
@@ -91,7 +91,7 @@ class RapiraRealTest {
     fun lessThanEqualToWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
         RapiraProcedure,
-        RapiraFunction,
+        RapiraFunction(),
         RapiraText("hello"),
         RapiraLogical(true),
         RapiraSequence()
@@ -121,7 +121,7 @@ class RapiraRealTest {
     fun greaterThanEqualToWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
         RapiraProcedure,
-        RapiraFunction,
+        RapiraFunction(),
         RapiraText("hello"),
         RapiraLogical(true),
         RapiraSequence()

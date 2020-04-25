@@ -385,7 +385,7 @@ class LengthTest {
         RapiraEmpty,
         RapiraLogical(true),
         RapiraProcedure,
-        RapiraFunction,
+        RapiraFunction(),
         RapiraInteger(1),
         RapiraReal(1.0)
     ).map { value ->

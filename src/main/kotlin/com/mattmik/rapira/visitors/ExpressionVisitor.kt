@@ -3,9 +3,11 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.objects.RapiraFunction
 import com.mattmik.rapira.objects.RapiraInteger
 import com.mattmik.rapira.objects.RapiraLogical
 import com.mattmik.rapira.objects.RapiraObject
+import com.mattmik.rapira.objects.RapiraProcedure
 import com.mattmik.rapira.objects.RapiraReal
 import com.mattmik.rapira.objects.RapiraSequence
 import com.mattmik.rapira.objects.parseEscapedText
@@ -110,6 +112,10 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     override fun visitRealValue(ctx: RapiraLangParser.RealValueContext) = RapiraReal(ctx.text.toDouble())
 
     override fun visitTextValue(ctx: RapiraLangParser.TextValueContext) = parseEscapedText(ctx.text)
+
+    override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext) = RapiraProcedure
+
+    override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext) = RapiraFunction(ctx.stmts())
 
     override fun visitSequenceValue(ctx: RapiraLangParser.SequenceValueContext): RapiraObject {
         val commaExpression = ctx.commaExpression()
