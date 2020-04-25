@@ -48,4 +48,7 @@ abstract class RapiraObject(val typeDescription: String) {
 
     open fun not(): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Not, this)
+
+    open fun elementAt(other: RapiraObject): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.ElementAt, this)
 }
