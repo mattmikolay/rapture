@@ -1,5 +1,6 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.objects.RapiraInteger
@@ -9,7 +10,7 @@ import com.mattmik.rapira.objects.RapiraReal
 import com.mattmik.rapira.objects.RapiraSequence
 import com.mattmik.rapira.objects.parseEscapedText
 
-class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
+class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVisitor<RapiraObject>() {
 
     override fun visitExpression(ctx: RapiraLangParser.ExpressionContext): RapiraObject {
         return visit(ctx.logicalExpression())
@@ -100,6 +101,9 @@ class ExpressionVisitor : RapiraLangBaseVisitor<RapiraObject>() {
         val result = visit(ctx.subopExpression())
         return result.length()
     }
+
+    override fun visitIdentifierValue(ctx: RapiraLangParser.IdentifierValueContext) =
+        environment.getObject(ctx.IDENTIFIER().text)
 
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) = RapiraInteger(Integer.valueOf(ctx.text))
 

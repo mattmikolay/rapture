@@ -9,7 +9,8 @@ import org.antlr.v4.runtime.CommonTokenStream
 
 class Interpreter {
 
-    private val statementVisitor = StatementVisitor()
+    private var environment = Environment()
+    private val statementVisitor = StatementVisitor(environment)
 
     fun interpretStatement(statement: String) {
         val lexer = RapiraLangLexer(CharStreams.fromString("$statement\n"))

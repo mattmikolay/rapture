@@ -1,15 +1,18 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.objects.RapiraLogical
 import com.mattmik.rapira.objects.formatRapiraObject
 
-class StatementVisitor : RapiraLangBaseVisitor<Unit>() {
+class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
 
-    override fun visitAssignStatement(ctx: RapiraLangParser.AssignStatementContext?) {
-        super.visitAssignStatement(ctx)
-        TODO("Not yet implemented")
+    override fun visitAssignStatement(ctx: RapiraLangParser.AssignStatementContext) {
+        // TODO Handle index expressions
+        val variableName = ctx.IDENTIFIER()
+        val evaluatedExpression = ExpressionVisitor(environment).visit(ctx.expression())
+        environment.setObject(variableName.text, evaluatedExpression)
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext?) {
@@ -18,7 +21,7 @@ class StatementVisitor : RapiraLangBaseVisitor<Unit>() {
     }
 
     override fun visitIfStatement(ctx: RapiraLangParser.IfStatementContext) {
-        val conditionResult = ExpressionVisitor().visit(ctx.condition)
+        val conditionResult = ExpressionVisitor(environment).visit(ctx.condition)
         if (conditionResult == RapiraLogical(true)) {
             visit(ctx.ifBody)
         } else ctx.elseBody?.let {
@@ -37,7 +40,7 @@ class StatementVisitor : RapiraLangBaseVisitor<Unit>() {
     }
 
     override fun visitOutputStatement(ctx: RapiraLangParser.OutputStatementContext) {
-        val expressionVisitor = ExpressionVisitor()
+        val expressionVisitor = ExpressionVisitor(environment)
         val expressionResults = ctx.expression().map { expression -> expressionVisitor.visit(expression) }
         val formattedOutput = expressionResults.joinToString(
             separator = " ",
@@ -64,7 +67,7 @@ class StatementVisitor : RapiraLangBaseVisitor<Unit>() {
 
     // Expression statements are only valid in the REPL
     override fun visitExpressionStatement(ctx: RapiraLangParser.ExpressionStatementContext) {
-        val expressionVisitor = ExpressionVisitor()
+        val expressionVisitor = ExpressionVisitor(environment)
         val expressionResult = expressionVisitor.visit(ctx.expression())
         println(expressionResult)
     }
