@@ -7,7 +7,7 @@ import kotlin.math.ln
 import kotlin.math.pow
 
 data class RapiraInteger(val value: Int) : RapiraObject("integer") {
-    override fun add(other: RapiraObject) = when (other) {
+    override fun plus(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value + other.value)
         is RapiraReal -> RapiraReal(value + other.value)
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)

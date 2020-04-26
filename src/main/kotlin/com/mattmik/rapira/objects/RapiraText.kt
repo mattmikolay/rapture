@@ -6,7 +6,7 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
 data class RapiraText(val value: String) : RapiraObject("text") {
 
-    override fun add(other: RapiraObject) = when (other) {
+    override fun plus(other: RapiraObject) = when (other) {
         is RapiraText -> RapiraText(value + other.value)
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)
     }

@@ -88,7 +88,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val leftResult = this.visit(leftExpression)
         val rightResult = this.visit(rightExpression)
         return when (ctx.op.type) {
-            RapiraLangParser.PLUS -> leftResult.add(rightResult)
+            RapiraLangParser.PLUS -> leftResult + rightResult
             RapiraLangParser.MINUS -> leftResult.subtract(rightResult)
             else -> super.visitAdditionExpression(ctx)
         }

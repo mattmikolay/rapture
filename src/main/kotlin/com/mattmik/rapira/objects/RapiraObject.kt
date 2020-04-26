@@ -5,7 +5,7 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
 abstract class RapiraObject(val typeDescription: String) {
 
-    open fun add(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Addition, this)
+    open operator fun plus(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Addition, this)
 
     open fun subtract(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Subtraction, this)

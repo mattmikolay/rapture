@@ -12,7 +12,7 @@ class RapiraObjectTest : StringSpec({
     "binary operations throw exception" {
         val otherObject = RapiraEmpty
         forAll(
-            row { obj: RapiraObject -> obj.add(otherObject) },
+            row { obj: RapiraObject -> obj + otherObject },
             row { obj: RapiraObject -> obj.subtract(otherObject) },
             row { obj: RapiraObject -> obj.multiply(otherObject) },
             row { obj: RapiraObject -> obj.divide(otherObject) },

@@ -5,7 +5,7 @@ import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
 data class RapiraSequence(val entries: List<RapiraObject> = emptyList()) : RapiraObject("sequence") {
-    override fun add(other: RapiraObject) = when (other) {
+    override fun plus(other: RapiraObject) = when (other) {
         is RapiraSequence -> RapiraSequence(entries + other.entries)
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)
     }

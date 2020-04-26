@@ -29,7 +29,7 @@ fun makeObjectOperationTests(
 
 class AdditionTest {
 
-    private val addOperation = { a: RapiraObject, b: RapiraObject -> a.add(b) }
+    private val addOperation = { a: RapiraObject, b: RapiraObject -> a + b }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(

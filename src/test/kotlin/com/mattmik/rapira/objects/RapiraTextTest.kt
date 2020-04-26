@@ -14,7 +14,7 @@ import io.kotest.property.checkAll
 class RapiraTextTest : StringSpec({
     "addition with text returns text" {
         checkAll<String, String> { a, b ->
-            RapiraText(a).add(RapiraText(b)) shouldBe RapiraText(a + b)
+            a.toRapiraText() + b.toRapiraText() shouldBe RapiraText(a + b)
         }
     }
 
