@@ -22,14 +22,14 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val (leftExpression, rightExpression) = ctx.logicalExpression()
         val leftResult = this.visit(leftExpression)
         val rightResult = this.visit(rightExpression)
-        return leftResult.and(rightResult)
+        return leftResult and rightResult
     }
 
     override fun visitOrExpression(ctx: RapiraLangParser.OrExpressionContext): RapiraObject {
         val (leftExpression, rightExpression) = ctx.logicalExpression()
         val leftResult = this.visit(leftExpression)
         val rightResult = this.visit(rightExpression)
-        return leftResult.or(rightResult)
+        return leftResult or rightResult
     }
 
     override fun visitNotExpression(ctx: RapiraLangParser.NotExpressionContext): RapiraObject {

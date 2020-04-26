@@ -40,10 +40,10 @@ abstract class RapiraObject(val typeDescription: String) {
     open fun greaterThanEqualTo(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.GreaterThanEqualTo, this)
 
-    open fun and(other: RapiraObject): RapiraObject =
+    open infix fun and(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.And, this)
 
-    open fun or(other: RapiraObject): RapiraObject =
+    open infix fun or(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Or, this)
 
     open fun not(): RapiraObject =

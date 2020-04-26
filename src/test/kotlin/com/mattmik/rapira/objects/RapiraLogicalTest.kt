@@ -12,7 +12,7 @@ class RapiraLogicalTest : StringSpec({
 
     "and with logical returns logical" {
         checkAll<Boolean, Boolean> { a, b ->
-            RapiraLogical(a).and(RapiraLogical(b)) shouldBe RapiraLogical(a && b)
+            RapiraLogical(a) and RapiraLogical(b) shouldBe RapiraLogical(a && b)
         }
     }
 
@@ -28,14 +28,14 @@ class RapiraLogicalTest : StringSpec({
             row(RapiraText("hello")),
             row(RapiraSequence())
         ) { obj ->
-            shouldThrow<RapiraInvalidOperationError> { trueLogical.and(obj) }
-            shouldThrow<RapiraInvalidOperationError> { falseLogical.and(obj) }
+            shouldThrow<RapiraInvalidOperationError> { trueLogical and obj }
+            shouldThrow<RapiraInvalidOperationError> { falseLogical and obj }
         }
     }
 
     "or with logical returns logical" {
         checkAll<Boolean, Boolean> { a, b ->
-            RapiraLogical(a).or(RapiraLogical(b)) shouldBe RapiraLogical(a || b)
+            RapiraLogical(a) or RapiraLogical(b) shouldBe RapiraLogical(a || b)
         }
     }
 
@@ -51,8 +51,8 @@ class RapiraLogicalTest : StringSpec({
             row(RapiraText("hello")),
             row(RapiraSequence())
         ) { obj ->
-            shouldThrow<RapiraInvalidOperationError> { trueLogical.or(obj) }
-            shouldThrow<RapiraInvalidOperationError> { falseLogical.or(obj) }
+            shouldThrow<RapiraInvalidOperationError> { trueLogical or obj }
+            shouldThrow<RapiraInvalidOperationError> { falseLogical or obj }
         }
     }
 
