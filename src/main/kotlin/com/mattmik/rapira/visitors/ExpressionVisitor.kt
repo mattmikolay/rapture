@@ -42,7 +42,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val leftResult = this.visit(leftExpression)
         val rightResult = this.visit(rightExpression)
         return when (ctx.op.type) {
-            RapiraLangParser.LESS -> leftResult.lessThan(rightResult)
+            RapiraLangParser.LESS -> leftResult lessThan rightResult
             RapiraLangParser.GREATER -> leftResult.greaterThan(rightResult)
             RapiraLangParser.LESSEQ -> leftResult.lessThanEqualTo(rightResult)
             RapiraLangParser.GREATEREQ -> leftResult.greaterThanEqualTo(rightResult)

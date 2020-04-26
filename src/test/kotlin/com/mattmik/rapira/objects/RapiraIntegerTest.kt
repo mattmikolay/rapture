@@ -34,13 +34,13 @@ class NewRapiraIntegerTest : StringSpec({
 
     "less than with integer returns logical" {
         checkAll<Int, Int> { a, b ->
-            a.toRapiraInteger().lessThan(b.toRapiraInteger()) shouldBe RapiraLogical(a < b)
+            a.toRapiraInteger() lessThan b.toRapiraInteger() shouldBe RapiraLogical(a < b)
         }
     }
 
     "less than with real returns logical" {
         checkAll<Int, Double> { a, b ->
-            a.toRapiraInteger().lessThan(b.toRapiraReal()) shouldBe RapiraLogical(a < b)
+            a.toRapiraInteger() lessThan b.toRapiraReal() shouldBe RapiraLogical(a < b)
         }
     }
 

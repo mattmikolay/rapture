@@ -28,7 +28,7 @@ abstract class RapiraObject(val typeDescription: String) {
     open fun length(): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Length, this)
 
-    open fun lessThan(other: RapiraObject): RapiraObject =
+    open infix fun lessThan(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.LessThan, this)
 
     open fun greaterThan(other: RapiraObject): RapiraObject =
