@@ -1,10 +1,21 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.property.checkAll
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertThrows
+
+class NewRapiraRealTest : StringSpec({
+    "negate returns integer" {
+        checkAll<Double> {
+                num -> num.toRapiraReal().negate() shouldBe (-num).toRapiraReal()
+        }
+    }
+})
 
 class RapiraRealTest {
 

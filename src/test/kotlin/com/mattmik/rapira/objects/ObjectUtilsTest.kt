@@ -34,6 +34,12 @@ class ObjectUtilsTest : StringSpec({
         }
     }
 
+    "toRapiraReal converts double" {
+        checkAll<Double> { num ->
+            num.toRapiraReal() shouldBe RapiraReal(num)
+        }
+    }
+
     "toRapiraText converts string" {
         checkAll<String> { str ->
             str.toRapiraText() shouldBe RapiraText(str)

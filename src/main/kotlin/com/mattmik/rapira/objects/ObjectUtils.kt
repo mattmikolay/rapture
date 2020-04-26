@@ -22,6 +22,8 @@ fun formatRapiraObject(obj: RapiraObject) = when (obj) {
 
 fun Int.toRapiraInteger(): RapiraInteger = RapiraInteger(this)
 
+fun Double.toRapiraReal(): RapiraReal = RapiraReal(this)
+
 fun String.toRapiraText(): RapiraText = RapiraText(this)
 
 fun List<RapiraObject>.toRapiraSequence(): RapiraSequence = RapiraSequence(this)

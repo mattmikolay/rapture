@@ -2,6 +2,7 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 import io.kotest.property.forAll
 import org.junit.jupiter.api.Test
@@ -77,6 +78,12 @@ class NewRapiraIntegerTest : StringSpec({
     "greater than or equal to with real returns logical" {
         forAll<Int, Double> { a, b ->
             RapiraInteger(a).greaterThanEqualTo(RapiraReal(b)) == RapiraLogical(a >= b)
+        }
+    }
+
+    "negate returns integer" {
+        checkAll<Int> {
+            num -> num.toRapiraInteger().negate() shouldBe (-num).toRapiraInteger()
         }
     }
 

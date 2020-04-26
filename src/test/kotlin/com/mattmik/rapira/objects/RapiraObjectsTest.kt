@@ -117,21 +117,6 @@ class NegationTest {
     private val negateOperation = { a: RapiraObject -> a.negate() }
 
     @TestFactory
-    fun validOperationsReturnNewObject() = listOf(
-        Pair(RapiraInteger(7), RapiraInteger(-7)),
-        Pair(RapiraInteger(-7), RapiraInteger(7)),
-        Pair(RapiraReal(3.8), RapiraReal(-3.8)),
-        Pair(RapiraReal(-3.8), RapiraReal(3.8))
-    ).map { (value, expected) ->
-        dynamicTest("-($value) = $expected") {
-            assertEquals(
-                expected,
-                negateOperation(value)
-            )
-        }
-    }
-
-    @TestFactory
     fun invalidOperationsThrowError() = listOf(
         RapiraEmpty
     ).map { value ->
