@@ -14,7 +14,7 @@ class RapiraObjectTest : StringSpec({
         forAll(
             row { obj: RapiraObject -> obj + otherObject },
             row { obj: RapiraObject -> obj - otherObject },
-            row { obj: RapiraObject -> obj.multiply(otherObject) },
+            row { obj: RapiraObject -> obj * otherObject },
             row { obj: RapiraObject -> obj.divide(otherObject) },
             row { obj: RapiraObject -> obj.intDivide(otherObject) },
             row { obj: RapiraObject -> obj.modulus(otherObject) },

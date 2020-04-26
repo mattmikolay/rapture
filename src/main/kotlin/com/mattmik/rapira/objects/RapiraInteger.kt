@@ -21,7 +21,7 @@ data class RapiraInteger(val value: Int) : RapiraObject("integer") {
 
     override fun negate(): RapiraObject = RapiraInteger(-value)
 
-    override fun multiply(other: RapiraObject) = when (other) {
+    override fun times(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value * other.value)
         is RapiraReal -> RapiraReal(value * other.value)
         is RapiraText -> RapiraText(other.value.repeat(value))

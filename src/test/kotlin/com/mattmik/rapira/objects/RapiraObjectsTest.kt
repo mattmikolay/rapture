@@ -128,7 +128,7 @@ class NegationTest {
 
 class MultiplicationTest {
 
-    private val multiplyOperation = { a: RapiraObject, b: RapiraObject -> a.multiply(b) }
+    private val multiplyOperation = { a: RapiraObject, b: RapiraObject -> a * b }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(

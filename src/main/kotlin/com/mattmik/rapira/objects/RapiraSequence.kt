@@ -10,7 +10,7 @@ data class RapiraSequence(val entries: List<RapiraObject> = emptyList()) : Rapir
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)
     }
 
-    override fun multiply(other: RapiraObject) = when (other) {
+    override fun times(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraSequence(arrayOfNulls<RapiraObject>(other.value).flatMap { entries })
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }

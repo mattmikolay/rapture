@@ -20,7 +20,7 @@ data class RapiraReal(val value: Double) : RapiraObject("real number") {
 
     override fun negate(): RapiraObject = RapiraReal(-value)
 
-    override fun multiply(other: RapiraObject) = when (other) {
+    override fun times(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraReal(value * other.value)
         is RapiraReal -> RapiraReal(value * other.value)
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)

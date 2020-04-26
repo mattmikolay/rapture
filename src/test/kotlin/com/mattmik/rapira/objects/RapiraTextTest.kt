@@ -20,20 +20,20 @@ class RapiraTextTest : StringSpec({
 
     "multiplication with zero returns empty string" {
         checkAll<String> {
-            str -> str.toRapiraText().multiply(RapiraInteger(0)) shouldBe "".toRapiraText()
+            str -> str.toRapiraText() * 0.toRapiraInteger() shouldBe "".toRapiraText()
         }
     }
 
     "multiplication with positive integer returns text" {
         checkAll(Arb.string(), Arb.positiveInts(max = 500)) { str, num ->
-            str.toRapiraText().multiply(RapiraInteger(num)) shouldBe str.repeat(num).toRapiraText()
+            str.toRapiraText() * num.toRapiraInteger() shouldBe str.repeat(num).toRapiraText()
         }
     }
 
     "multiplication with negative integer throws exception" {
         checkAll(Arb.string(), Arb.negativeInts()) { str, num ->
             shouldThrow<RapiraInvalidOperationError> {
-                str.toRapiraText().multiply(RapiraInteger(num))
+                str.toRapiraText() * num.toRapiraInteger()
             }
         }
     }

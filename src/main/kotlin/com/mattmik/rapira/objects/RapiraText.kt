@@ -11,7 +11,7 @@ data class RapiraText(val value: String) : RapiraObject("text") {
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)
     }
 
-    override fun multiply(other: RapiraObject) = when (other) {
+    override fun times(other: RapiraObject) = when (other) {
         is RapiraInteger ->
             if (other.value >= 0)
                 value.repeat(other.value).toRapiraText()

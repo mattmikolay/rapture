@@ -12,7 +12,7 @@ abstract class RapiraObject(val typeDescription: String) {
 
     open fun negate(): RapiraObject = throw RapiraInvalidOperationError(Operation.Negation, this)
 
-    open fun multiply(other: RapiraObject): RapiraObject =
+    open operator fun times(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Multiplication, this)
 
     open fun divide(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Division, this)
