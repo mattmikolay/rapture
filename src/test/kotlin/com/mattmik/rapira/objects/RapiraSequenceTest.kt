@@ -4,8 +4,17 @@ import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.list
+import io.kotest.property.checkAll
 
 class RapiraSequenceTest : StringSpec({
+    "length returns integer" {
+        checkAll(Arb.list(rapiraObjectArb)) { objectList ->
+            objectList.toRapiraSequence().length() shouldBe objectList.size.toRapiraInteger()
+        }
+    }
+
     "element at with integer returns object" {
         val sequence = listOf(
             1.toRapiraInteger(),
