@@ -85,7 +85,7 @@ class RapiraRealTest {
     @TestFactory
     fun lessThanEqualToWithNumberReturnsLogical() = makeObjectOperationTests(
         "<=",
-        { a: RapiraObject, b: RapiraObject -> a.lessThanEqualTo(b) },
+        { a: RapiraObject, b: RapiraObject -> a lessThanEqualTo b },
 
         // Integer
         Triple(RapiraReal(0.0), RapiraInteger(10), trueLogical),
@@ -107,9 +107,9 @@ class RapiraRealTest {
         RapiraLogical(true),
         RapiraSequence()
     ).forEach {
-        assertThrows<RapiraInvalidOperationError> { RapiraReal(10.0).lessThanEqualTo(it) }
-        assertThrows<RapiraInvalidOperationError> { RapiraReal(0.0).lessThanEqualTo(it) }
-        assertThrows<RapiraInvalidOperationError> { RapiraReal(-10.0).lessThanEqualTo(it) }
+        assertThrows<RapiraInvalidOperationError> { RapiraReal(10.0) lessThanEqualTo it }
+        assertThrows<RapiraInvalidOperationError> { RapiraReal(0.0) lessThanEqualTo it }
+        assertThrows<RapiraInvalidOperationError> { RapiraReal(-10.0) lessThanEqualTo it }
     }
 
     @TestFactory

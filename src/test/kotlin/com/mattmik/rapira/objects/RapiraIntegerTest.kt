@@ -46,13 +46,13 @@ class NewRapiraIntegerTest : StringSpec({
 
     "less than or equal to with integer returns logical" {
         checkAll<Int, Int> { a, b ->
-            a.toRapiraInteger().lessThanEqualTo(b.toRapiraInteger()) shouldBe RapiraLogical(a <= b)
+            a.toRapiraInteger() lessThanEqualTo b.toRapiraInteger() shouldBe RapiraLogical(a <= b)
         }
     }
 
     "less than or equal to with real returns logical" {
         checkAll<Int, Double> { a, b ->
-            a.toRapiraInteger().lessThanEqualTo(b.toRapiraReal()) shouldBe RapiraLogical(a <= b)
+            a.toRapiraInteger() lessThanEqualTo b.toRapiraReal() shouldBe RapiraLogical(a <= b)
         }
     }
 
@@ -136,9 +136,9 @@ class RapiraIntegerTest {
         RapiraLogical(true),
         RapiraSequence()
     ).forEach {
-        assertThrows<RapiraInvalidOperationError> { RapiraInteger(10).lessThanEqualTo(it) }
-        assertThrows<RapiraInvalidOperationError> { RapiraInteger(0).lessThanEqualTo(it) }
-        assertThrows<RapiraInvalidOperationError> { RapiraInteger(-10).lessThanEqualTo(it) }
+        assertThrows<RapiraInvalidOperationError> { RapiraInteger(10) lessThanEqualTo it }
+        assertThrows<RapiraInvalidOperationError> { RapiraInteger(0) lessThanEqualTo it }
+        assertThrows<RapiraInvalidOperationError> { RapiraInteger(-10) lessThanEqualTo it }
     }
 
     @Test
