@@ -20,7 +20,7 @@ abstract class RapiraObject(val typeDescription: String) {
     open fun intDivide(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.IntDivision, this)
 
-    open fun modulus(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Modulo, this)
+    open operator fun rem(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Modulo, this)
 
     open fun power(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Exponentiation, this)

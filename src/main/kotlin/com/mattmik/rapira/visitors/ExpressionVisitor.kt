@@ -78,7 +78,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             RapiraLangParser.MULT -> leftResult * rightResult
             RapiraLangParser.DIVIDE -> leftResult / rightResult
             RapiraLangParser.INTDIVIDE -> leftResult.intDivide(rightResult)
-            RapiraLangParser.MOD -> leftResult.modulus(rightResult)
+            RapiraLangParser.MOD -> leftResult % rightResult
             else -> super.visitMultiplicationExpression(ctx)
         }
     }

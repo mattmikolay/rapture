@@ -47,7 +47,7 @@ data class RapiraInteger(val value: Int) : RapiraObject("integer") {
         else -> throw RapiraInvalidOperationError(Operation.IntDivision, other)
     }
 
-    override fun modulus(other: RapiraObject) = when (other) {
+    override fun rem(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraInteger(value % other.value)
         else -> throw RapiraInvalidOperationError(Operation.Modulo, other)
     }

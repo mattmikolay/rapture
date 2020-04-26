@@ -267,7 +267,7 @@ class IntDivisionTest {
 
 class ModulusTest {
 
-    private val moduloOperation = { a: RapiraObject, b: RapiraObject -> a.modulus(b) }
+    private val moduloOperation = { a: RapiraObject, b: RapiraObject -> a % b }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
