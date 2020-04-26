@@ -12,7 +12,7 @@ data class RapiraReal(val value: Double) : RapiraObject("real number") {
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)
     }
 
-    override fun subtract(other: RapiraObject) = when (other) {
+    override fun minus(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraReal(value - other.value)
         is RapiraReal -> RapiraReal(value - other.value)
         else -> throw RapiraInvalidOperationError(Operation.Subtraction, other)

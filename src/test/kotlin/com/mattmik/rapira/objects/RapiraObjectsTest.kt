@@ -77,7 +77,7 @@ class AdditionTest {
 
 class SubtractionTest {
 
-    private val subtractOperation = { a: RapiraObject, b: RapiraObject -> a.subtract(b) }
+    private val subtractOperation = { a: RapiraObject, b: RapiraObject -> a - b }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(

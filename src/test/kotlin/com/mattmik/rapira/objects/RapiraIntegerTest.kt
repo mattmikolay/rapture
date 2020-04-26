@@ -22,13 +22,13 @@ class NewRapiraIntegerTest : StringSpec({
 
     "subtraction with integer returns integer" {
         checkAll<Int, Int> { a, b ->
-            a.toRapiraInteger().subtract(b.toRapiraInteger()) shouldBe (a - b).toRapiraInteger()
+            a.toRapiraInteger() - b.toRapiraInteger() shouldBe (a - b).toRapiraInteger()
         }
     }
 
     "subtraction with real returns real" {
         checkAll<Int, Double> { a, b ->
-            a.toRapiraInteger().subtract(b.toRapiraReal()) shouldBe (a - b).toRapiraReal()
+            a.toRapiraInteger() - b.toRapiraReal() shouldBe (a - b).toRapiraReal()
         }
     }
 

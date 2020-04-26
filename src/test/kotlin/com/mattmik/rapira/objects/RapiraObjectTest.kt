@@ -13,7 +13,7 @@ class RapiraObjectTest : StringSpec({
         val otherObject = RapiraEmpty
         forAll(
             row { obj: RapiraObject -> obj + otherObject },
-            row { obj: RapiraObject -> obj.subtract(otherObject) },
+            row { obj: RapiraObject -> obj - otherObject },
             row { obj: RapiraObject -> obj.multiply(otherObject) },
             row { obj: RapiraObject -> obj.divide(otherObject) },
             row { obj: RapiraObject -> obj.intDivide(otherObject) },

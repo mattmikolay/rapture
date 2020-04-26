@@ -7,7 +7,7 @@ abstract class RapiraObject(val typeDescription: String) {
 
     open operator fun plus(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Addition, this)
 
-    open fun subtract(other: RapiraObject): RapiraObject =
+    open operator fun minus(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Subtraction, this)
 
     open fun negate(): RapiraObject = throw RapiraInvalidOperationError(Operation.Negation, this)
