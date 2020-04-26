@@ -20,7 +20,7 @@ class RapiraObjectTest : StringSpec({
             row { obj: RapiraObject -> obj.modulus(otherObject) },
             row { obj: RapiraObject -> obj.power(otherObject) },
             row { obj: RapiraObject -> obj lessThan otherObject },
-            row { obj: RapiraObject -> obj.greaterThan(otherObject) },
+            row { obj: RapiraObject -> obj greaterThan otherObject },
             row { obj: RapiraObject -> obj.lessThanEqualTo(otherObject) },
             row { obj: RapiraObject -> obj.greaterThanEqualTo(otherObject) },
             row { obj: RapiraObject -> obj.and(otherObject) },

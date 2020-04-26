@@ -58,13 +58,13 @@ class NewRapiraIntegerTest : StringSpec({
 
     "greater than with integer returns logical" {
         checkAll<Int, Int> { a, b ->
-            a.toRapiraInteger().greaterThan(b.toRapiraInteger()) shouldBe RapiraLogical(a > b)
+            a.toRapiraInteger() greaterThan b.toRapiraInteger() shouldBe RapiraLogical(a > b)
         }
     }
 
     "greater than with real returns logical" {
         checkAll<Int, Double> { a, b ->
-            a.toRapiraInteger().greaterThan(b.toRapiraReal()) shouldBe RapiraLogical(a > b)
+            a.toRapiraInteger() greaterThan b.toRapiraReal() shouldBe RapiraLogical(a > b)
         }
     }
 
@@ -122,9 +122,9 @@ class RapiraIntegerTest {
         RapiraLogical(true),
         RapiraSequence()
     ).forEach {
-        assertThrows<RapiraInvalidOperationError> { RapiraInteger(10).greaterThan(it) }
-        assertThrows<RapiraInvalidOperationError> { RapiraInteger(0).greaterThan(it) }
-        assertThrows<RapiraInvalidOperationError> { RapiraInteger(-10).greaterThan(it) }
+        assertThrows<RapiraInvalidOperationError> { RapiraInteger(10) greaterThan it }
+        assertThrows<RapiraInvalidOperationError> { RapiraInteger(0) greaterThan it }
+        assertThrows<RapiraInvalidOperationError> { RapiraInteger(-10) greaterThan it }
     }
 
     @Test
