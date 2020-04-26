@@ -3,7 +3,6 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest.dynamicTest
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.assertThrows
 
@@ -392,49 +391,5 @@ class LengthTest {
         dynamicTest("#($value) throws error") {
             assertThrows<RapiraInvalidOperationError> { lengthOperation(value) }
         }
-    }
-}
-
-class StringRepresentationTest {
-
-    @Test
-    fun sequenceToStringReturnsUserFriendlyRepresentation() {
-        Assertions.assertEquals("<* *>", RapiraSequence().toString())
-        Assertions.assertEquals(
-            "<* 1, 2, 3 *>",
-            RapiraSequence(
-                listOf(
-                    RapiraInteger(1),
-                    RapiraInteger(2),
-                    RapiraInteger(3)
-                )
-            ).toString()
-        )
-        Assertions.assertEquals(
-            "<* 1, <* 2, 3, 4 *>, 5 *>",
-            RapiraSequence(
-                listOf(
-                    RapiraInteger(1),
-                    RapiraSequence(
-                        listOf(
-                            RapiraInteger(2),
-                            RapiraInteger(3),
-                            RapiraInteger(4)
-                        )
-                    ),
-                    RapiraInteger(5)
-                )
-            ).toString()
-        )
-        Assertions.assertEquals(
-            "<* 1, 2.5, \"okay\" *>",
-            RapiraSequence(
-                listOf(
-                    RapiraInteger(1),
-                    RapiraReal(2.5),
-                    RapiraText("okay")
-                )
-            ).toString()
-        )
     }
 }

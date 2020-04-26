@@ -35,4 +35,32 @@ class RapiraSequenceTest : StringSpec({
             sequence.elementAt(5.toRapiraInteger())
         }
     }
+
+    "toString returns user friendly representation" {
+        val emptySequence = emptyList<RapiraObject>().toRapiraSequence()
+        emptySequence shouldConvertToString "<* *>"
+
+        val simpleNumberSequence = listOf(1, 2, 3)
+            .map { num -> num.toRapiraInteger() }
+            .toRapiraSequence()
+        simpleNumberSequence shouldConvertToString "<* 1, 2, 3 *>"
+
+        val nestedSequences = listOf(
+            1.toRapiraInteger(),
+            listOf(
+                2.toRapiraInteger(),
+                3.toRapiraInteger(),
+                4.toRapiraInteger()
+            ).toRapiraSequence(),
+            5.toRapiraInteger()
+        ).toRapiraSequence()
+        nestedSequences shouldConvertToString "<* 1, <* 2, 3, 4 *>, 5 *>"
+
+        val sequenceOfMixedTypes = listOf(
+            1.toRapiraInteger(),
+            RapiraReal(2.5),
+            "okay".toRapiraText()
+        ).toRapiraSequence()
+        sequenceOfMixedTypes shouldConvertToString "<* 1, 2.5, \"okay\" *>"
+    }
 })
