@@ -29,7 +29,7 @@ data class RapiraInteger(val value: Int) : RapiraObject("integer") {
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
-    override fun divide(other: RapiraObject) = when (other) {
+    override fun div(other: RapiraObject) = when (other) {
         is RapiraInteger -> if (value % other.value == 0)
             RapiraInteger(value / other.value)
         else RapiraReal(value.toDouble() / other.value)

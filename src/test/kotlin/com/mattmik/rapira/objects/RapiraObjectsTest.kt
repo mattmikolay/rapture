@@ -189,7 +189,7 @@ class MultiplicationTest {
 
 class DivisionTest {
 
-    private val divideOperation = { a: RapiraObject, b: RapiraObject -> a.divide(b) }
+    private val divideOperation = { a: RapiraObject, b: RapiraObject -> a / b }
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(

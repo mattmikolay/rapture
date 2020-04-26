@@ -15,7 +15,7 @@ abstract class RapiraObject(val typeDescription: String) {
     open operator fun times(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.Multiplication, this)
 
-    open fun divide(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Division, this)
+    open operator fun div(other: RapiraObject): RapiraObject = throw RapiraInvalidOperationError(Operation.Division, this)
 
     open fun intDivide(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.IntDivision, this)

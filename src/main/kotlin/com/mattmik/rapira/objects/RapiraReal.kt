@@ -26,7 +26,7 @@ data class RapiraReal(val value: Double) : RapiraObject("real number") {
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
-    override fun divide(other: RapiraObject) = when (other) {
+    override fun div(other: RapiraObject) = when (other) {
         is RapiraInteger -> RapiraReal(value / other.value)
         is RapiraReal -> RapiraReal(value / other.value)
         else -> throw RapiraInvalidOperationError(Operation.Division, other)
