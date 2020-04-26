@@ -2,6 +2,9 @@ package com.mattmik.rapira.objects
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.list
 import io.kotest.property.checkAll
 
 class ObjectUtilsTest : StringSpec({
@@ -25,9 +28,22 @@ class ObjectUtilsTest : StringSpec({
         formatRapiraObject(RapiraText("How about some \"double quotes\"?")) shouldBe "How about some \"double quotes\"?"
     }
 
+    "toRapiraInteger converts int" {
+        checkAll<Int> { num ->
+            num.toRapiraInteger() shouldBe RapiraInteger(num)
+        }
+    }
+
     "toRapiraText converts string" {
-        checkAll<String> {
-            str -> str.toRapiraText() shouldBe RapiraText(str)
+        checkAll<String> { str ->
+            str.toRapiraText() shouldBe RapiraText(str)
+        }
+    }
+
+    "toRapiraSequence converts list" {
+        checkAll(Arb.list(Arb.int())) { list ->
+            val rapiraObjectList = list.map { num -> num.toRapiraInteger() }
+            rapiraObjectList.toRapiraSequence() shouldBe RapiraSequence(rapiraObjectList)
         }
     }
 })
