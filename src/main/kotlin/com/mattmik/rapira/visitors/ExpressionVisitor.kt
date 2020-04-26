@@ -45,7 +45,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             RapiraLangParser.LESS -> leftResult lessThan rightResult
             RapiraLangParser.GREATER -> leftResult greaterThan rightResult
             RapiraLangParser.LESSEQ -> leftResult lessThanEqualTo rightResult
-            RapiraLangParser.GREATEREQ -> leftResult.greaterThanEqualTo(rightResult)
+            RapiraLangParser.GREATEREQ -> leftResult greaterThanEqualTo rightResult
             else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
         }
     }

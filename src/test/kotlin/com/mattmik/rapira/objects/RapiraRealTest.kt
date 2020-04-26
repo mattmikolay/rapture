@@ -115,7 +115,7 @@ class RapiraRealTest {
     @TestFactory
     fun greaterThanEqualToWithNumberReturnsLogical() = makeObjectOperationTests(
         ">=",
-        { a: RapiraObject, b: RapiraObject -> a.greaterThanEqualTo(b) },
+        { a: RapiraObject, b: RapiraObject -> a greaterThanEqualTo b },
 
         // Integer
         Triple(RapiraReal(0.0), RapiraInteger(10), falseLogical),
@@ -137,9 +137,9 @@ class RapiraRealTest {
         RapiraLogical(true),
         RapiraSequence()
     ).forEach {
-        assertThrows<RapiraInvalidOperationError> { RapiraReal(10.0).greaterThanEqualTo(it) }
-        assertThrows<RapiraInvalidOperationError> { RapiraReal(0.0).greaterThanEqualTo(it) }
-        assertThrows<RapiraInvalidOperationError> { RapiraReal(-10.0).greaterThanEqualTo(it) }
+        assertThrows<RapiraInvalidOperationError> { RapiraReal(10.0) greaterThanEqualTo it }
+        assertThrows<RapiraInvalidOperationError> { RapiraReal(0.0) greaterThanEqualTo it }
+        assertThrows<RapiraInvalidOperationError> { RapiraReal(-10.0) greaterThanEqualTo it }
     }
 
     @Test
