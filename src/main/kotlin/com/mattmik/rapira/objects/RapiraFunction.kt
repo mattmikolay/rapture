@@ -9,8 +9,9 @@ class RapiraFunction(
 
     constructor(
         bodyStatements: RapiraLangParser.StmtsContext? = null,
-        params: List<String> = emptyList()
-    ) : this(RapiraProcedure(bodyStatements, params))
+        params: List<String> = emptyList(),
+        extern: List<String> = emptyList()
+    ) : this(RapiraProcedure(bodyStatements, params, extern))
 
     override fun call(environment: Environment, arguments: List<RapiraObject>): RapiraObject? {
         // TODO Check arguments, throw error if any is in-out

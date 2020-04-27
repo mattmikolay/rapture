@@ -117,13 +117,15 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         // TODO Add parsing of in-out params
         val params = ctx.procedureParams()?.IDENTIFIER()?.map { identifier -> identifier.text }
             ?: emptyList<String>()
-        return RapiraProcedure(ctx.stmts(), params)
+        val extern = readExternIdentifiers(ctx.declarations())
+        return RapiraProcedure(ctx.stmts(), params, extern)
     }
 
     override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext): RapiraObject {
         val params = ctx.functionParams()?.IDENTIFIER()?.map { identifier -> identifier.text }
             ?: emptyList<String>()
-        return RapiraFunction(ctx.stmts(), params)
+        val extern = readExternIdentifiers(ctx.declarations())
+        return RapiraFunction(ctx.stmts(), params, extern)
     }
 
     override fun visitSequenceValue(ctx: RapiraLangParser.SequenceValueContext): RapiraObject {
@@ -139,4 +141,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val expressionResults = ctx.expression().map { visit(it) }
         return RapiraSequence(expressionResults)
     }
+
+    private fun readExternIdentifiers(ctx: RapiraLangParser.DeclarationsContext?) =
+        ctx?.extern()?.IDENTIFIER()?.map { identifier -> identifier.text } ?: emptyList()
 }
