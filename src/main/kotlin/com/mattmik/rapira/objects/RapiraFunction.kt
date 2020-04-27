@@ -11,13 +11,12 @@ class RapiraFunction(
     private val params: List<String> = emptyList()
 ) : RapiraObject("function"), RapiraCallable {
     override fun call(environment: Environment, arguments: List<RapiraObject>): RapiraObject? {
-        // TODO Compute new environment by reading intern values from passed in environment
-        val newEnvironment = Environment()
-
         if (params.size != arguments.size) {
             throw RapiraInvalidOperationError("Number of params does not match number of arguments")
         }
 
+        // TODO Compute new environment by reading intern values from passed in environment
+        val newEnvironment = Environment()
         params.zip(arguments).forEach { (paramName, argument) ->
             newEnvironment.setObject(paramName, argument)
         }

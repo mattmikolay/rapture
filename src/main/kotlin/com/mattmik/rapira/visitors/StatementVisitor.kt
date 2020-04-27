@@ -6,6 +6,7 @@ import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.RapiraLogical
+import com.mattmik.rapira.objects.RapiraObject
 import com.mattmik.rapira.objects.formatRapiraObject
 
 class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
@@ -31,13 +32,18 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
+        val expressionVisitor = ExpressionVisitor(environment)
         val callable = ctx.IDENTIFIER()?.let { environment.getObject(it.text) }
-            ?: ExpressionVisitor(environment).visit(ctx.expression())
+            ?: expressionVisitor.visit(ctx.expression())
+
+        // TODO Add support for in-out params
+        val arguments = ctx.procedureArguments()?.expression()?.map { expressionVisitor.visit(it) }
+            ?: emptyList<RapiraObject>()
+
         when (callable) {
-            is RapiraCallable -> callable.call(environment, emptyList())
+            is RapiraCallable -> callable.call(environment, arguments)
             else -> throw RapiraInvalidOperationError("Cannot invoke object that is neither a procedure nor function")
         }
-        // TODO Implement parsing of arguments
     }
 
     override fun visitIfStatement(ctx: RapiraLangParser.IfStatementContext) {
