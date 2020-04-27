@@ -21,7 +21,7 @@ class RapiraLogicalTest : StringSpec({
         val falseLogical = RapiraLogical(false)
         forAll(
             row(RapiraEmpty),
-            row(RapiraProcedure),
+            row(RapiraProcedure()),
             row(RapiraFunction()),
             row(RapiraInteger(1)),
             row(RapiraReal(1.0)),
@@ -44,7 +44,7 @@ class RapiraLogicalTest : StringSpec({
         val falseLogical = RapiraLogical(false)
         forAll(
             row(RapiraEmpty),
-            row(RapiraProcedure),
+            row(RapiraProcedure()),
             row(RapiraFunction()),
             row(RapiraInteger(1)),
             row(RapiraReal(1.0)),

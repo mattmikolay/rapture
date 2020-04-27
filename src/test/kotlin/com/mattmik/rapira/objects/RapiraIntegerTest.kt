@@ -102,7 +102,7 @@ class RapiraIntegerTest {
     @Test
     fun lessThanWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
-        RapiraProcedure,
+        RapiraProcedure(),
         RapiraFunction(),
         RapiraText("hello"),
         RapiraLogical(true),
@@ -116,7 +116,7 @@ class RapiraIntegerTest {
     @Test
     fun greaterThanWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
-        RapiraProcedure,
+        RapiraProcedure(),
         RapiraFunction(),
         RapiraText("hello"),
         RapiraLogical(true),
@@ -130,7 +130,7 @@ class RapiraIntegerTest {
     @Test
     fun lessThanEqualToWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
-        RapiraProcedure,
+        RapiraProcedure(),
         RapiraFunction(),
         RapiraText("hello"),
         RapiraLogical(true),
@@ -144,7 +144,7 @@ class RapiraIntegerTest {
     @Test
     fun greaterThanEqualToWithOtherTypesThrowsException() = listOf(
         RapiraEmpty,
-        RapiraProcedure,
+        RapiraProcedure(),
         RapiraFunction(),
         RapiraText("hello"),
         RapiraLogical(true),

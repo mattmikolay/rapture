@@ -368,7 +368,7 @@ class LengthTest {
     fun invalidOperationsThrowError() = listOf(
         RapiraEmpty,
         RapiraLogical(true),
-        RapiraProcedure,
+        RapiraProcedure(),
         RapiraFunction(),
         RapiraInteger(1),
         RapiraReal(1.0)

@@ -17,7 +17,7 @@ class ObjectUtilsTest : StringSpec({
 
     "formatRapiraObject returns correct string representations" {
         formatRapiraObject(RapiraEmpty) shouldBe "empty"
-        formatRapiraObject(RapiraProcedure) shouldBe "procedure"
+        formatRapiraObject(RapiraProcedure()) shouldBe "procedure"
         formatRapiraObject(RapiraFunction()) shouldBe "function"
         formatRapiraObject(RapiraLogical(true)) shouldBe "yes"
         formatRapiraObject(RapiraLogical(false)) shouldBe "no"
