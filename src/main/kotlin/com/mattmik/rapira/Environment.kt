@@ -3,7 +3,7 @@ package com.mattmik.rapira
 import com.mattmik.rapira.objects.RapiraEmpty
 import com.mattmik.rapira.objects.RapiraObject
 
-class Environment(val previousEnvironment: Environment? = null) {
+class Environment {
     private val bindings = mutableMapOf<String, RapiraObject>()
 
     fun setObject(name: String, value: RapiraObject) {

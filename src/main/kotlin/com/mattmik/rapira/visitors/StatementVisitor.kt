@@ -4,7 +4,7 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import com.mattmik.rapira.objects.RapiraFunction
+import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.RapiraLogical
 import com.mattmik.rapira.objects.formatRapiraObject
 
@@ -34,8 +34,8 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val callable = ctx.IDENTIFIER()?.let { environment.getObject(it.text) }
             ?: ExpressionVisitor(environment).visit(ctx.expression())
         when (callable) {
-            is RapiraFunction -> visit(callable.bodyStatements)
-            else -> throw RapiraInvalidOperationError("Cannot call non-function")
+            is RapiraCallable -> callable.call(environment, emptyList())
+            else -> throw RapiraInvalidOperationError("Cannot invoke object that is neither a procedure nor function")
         }
         // TODO Implement parsing of arguments
     }
