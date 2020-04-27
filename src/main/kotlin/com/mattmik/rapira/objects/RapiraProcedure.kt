@@ -23,7 +23,7 @@ class RapiraProcedure(
         extern.map { Pair(it, environment.getObject(it)) }
             .forEach { (name, value) -> newEnvironment.setObject(name, value) }
 
-        StatementVisitor(newEnvironment).visit(bodyStatements)
+        bodyStatements?.let { StatementVisitor(newEnvironment).visit(it) }
 
         // TODO After execution, update previous environment using intern fields of this function
 
