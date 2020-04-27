@@ -115,7 +115,11 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext) = RapiraProcedure
 
-    override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext) = RapiraFunction(ctx.stmts())
+    override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext): RapiraObject {
+        val params = ctx.functionParams()?.IDENTIFIER()?.map { identifier -> identifier.text }
+            ?: emptyList<String>()
+        return RapiraFunction(ctx.stmts(), params)
+    }
 
     override fun visitSequenceValue(ctx: RapiraLangParser.SequenceValueContext): RapiraObject {
         val commaExpression = ctx.commaExpression()
