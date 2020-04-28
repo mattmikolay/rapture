@@ -3,6 +3,7 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.visitors.ProcedureReturnException
 import com.mattmik.rapira.visitors.StatementVisitor
 
 // TODO: Add support for intern/extern
@@ -23,12 +24,17 @@ class RapiraProcedure(
         extern.map { Pair(it, environment[it]) }
             .forEach { (name, value) -> newEnvironment[name] = value }
 
-        bodyStatements?.let { StatementVisitor(newEnvironment).visit(it) }
+        var returnValue: RapiraObject? = null
+
+        try {
+            bodyStatements?.let { StatementVisitor(newEnvironment).visit(it) }
+        } catch (exception: ProcedureReturnException) {
+            returnValue = exception.returnValue
+        }
 
         // TODO After execution, update previous environment using intern fields of this function
 
-        // TODO Return any return value from function call
-        return null
+        return returnValue
     }
 
     override fun toString() = "procedure"

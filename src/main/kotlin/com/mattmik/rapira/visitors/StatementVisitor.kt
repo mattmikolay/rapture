@@ -86,9 +86,11 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         TODO("Not yet implemented")
     }
 
-    override fun visitReturnStatement(ctx: RapiraLangParser.ReturnStatementContext?) {
-        super.visitReturnStatement(ctx)
-        TODO("Not yet implemented")
+    override fun visitReturnStatement(ctx: RapiraLangParser.ReturnStatementContext) {
+        val returnValue = ctx.expression()?.let {
+            ExpressionVisitor(environment).visit(it)
+        }
+        throw ProcedureReturnException(returnValue)
     }
 
     // Expression statements are only valid in the REPL

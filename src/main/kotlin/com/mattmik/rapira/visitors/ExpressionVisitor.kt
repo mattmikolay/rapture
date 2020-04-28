@@ -3,6 +3,9 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.objects.RapiraCallable
+import com.mattmik.rapira.objects.RapiraEmpty
 import com.mattmik.rapira.objects.RapiraFunction
 import com.mattmik.rapira.objects.RapiraInteger
 import com.mattmik.rapira.objects.RapiraLogical
@@ -99,6 +102,23 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         return if (ctx.op?.type == RapiraLangParser.MINUS) result.negate() else result
     }
 
+    override fun visitSubopModifiedExpression(ctx: RapiraLangParser.SubopModifiedExpressionContext): RapiraObject {
+        val leftResult = visit(ctx.subopExpression())
+
+        ctx.functionArguments()?.let {
+            val arguments = readFunctionArguments(it)
+
+            when (leftResult) {
+                is RapiraProcedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
+                is RapiraCallable -> return leftResult.call(environment, arguments) ?: RapiraEmpty
+                else -> throw RapiraInvalidOperationError("Cannot invoke object that not a function")
+            }
+        }
+
+        // TODO Add support for index expressions
+        return RapiraEmpty
+    }
+
     override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext): RapiraObject {
         val result = visit(ctx.subopExpression())
         return result.length()
@@ -141,6 +161,9 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val expressionResults = ctx.expression().map { visit(it) }
         return RapiraSequence(expressionResults)
     }
+
+    private fun readFunctionArguments(ctx: RapiraLangParser.FunctionArgumentsContext) =
+        ctx.expression().map { expr -> visit(expr) }
 
     private fun readExternIdentifiers(ctx: RapiraLangParser.DeclarationsContext?) =
         ctx?.extern()?.IDENTIFIER()?.map { identifier -> identifier.text } ?: emptyList()
