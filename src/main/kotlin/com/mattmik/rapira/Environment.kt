@@ -4,8 +4,9 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RapiraEmpty
 import com.mattmik.rapira.objects.RapiraLogical
 import com.mattmik.rapira.objects.RapiraObject
+import com.mattmik.rapira.objects.nativeFunctions
 
-private val specialValues = mapOf(
+private val specialValues = nativeFunctions + mapOf(
     "empty" to RapiraEmpty,
     "yes" to RapiraLogical(true),
     "no" to RapiraLogical(false)
