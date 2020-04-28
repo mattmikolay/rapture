@@ -13,14 +13,14 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext) {
         val procedure = ExpressionVisitor(environment).visit(ctx)
         ctx.IDENTIFIER()?.let {
-            environment.setObject(it.text, procedure)
+            environment[it.text] = procedure
         }
     }
 
     override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext) {
         val function = ExpressionVisitor(environment).visit(ctx)
         ctx.IDENTIFIER()?.let {
-            environment.setObject(it.text, function)
+            environment[it.text] = function
         }
     }
 
@@ -28,12 +28,12 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         // TODO Handle index expressions
         val variableName = ctx.IDENTIFIER()
         val evaluatedExpression = ExpressionVisitor(environment).visit(ctx.expression())
-        environment.setObject(variableName.text, evaluatedExpression)
+        environment[variableName.text] = evaluatedExpression
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
         val expressionVisitor = ExpressionVisitor(environment)
-        val callable = ctx.IDENTIFIER()?.let { environment.getObject(it.text) }
+        val callable = ctx.IDENTIFIER()?.let { environment[it.text] }
             ?: expressionVisitor.visit(ctx.expression())
 
         // TODO Add support for in-out params

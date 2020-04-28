@@ -17,15 +17,15 @@ class RapiraFunctionTest : WordSpec({
                 "externVariable2",
                 "externVariable3"
             )
-            every { mockEnvironment.getObject(any()) } returns RapiraEmpty
+            every { mockEnvironment[any()] } returns RapiraEmpty
             val function = RapiraFunction(extern = extern)
 
             function.call(mockEnvironment, emptyList())
 
             verifyAll {
-                mockEnvironment.getObject("externVariable1")
-                mockEnvironment.getObject("externVariable2")
-                mockEnvironment.getObject("externVariable3")
+                mockEnvironment["externVariable1"]
+                mockEnvironment["externVariable2"]
+                mockEnvironment["externVariable3"]
             }
         }
 

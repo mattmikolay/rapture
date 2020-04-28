@@ -9,26 +9,26 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 
 class EnvironmentTest : WordSpec({
-    "getObject" should {
+    "get" should {
         "return empty as default" {
             val environment = Environment()
-            environment.getObject("not_present") shouldBe RapiraEmpty
+            environment["not_present"] shouldBe RapiraEmpty
         }
 
         "return special values" {
             val environment = Environment()
-            environment.getObject("empty") shouldBe RapiraEmpty
-            environment.getObject("yes") shouldBe RapiraLogical(true)
-            environment.getObject("no") shouldBe RapiraLogical(false)
+            environment["empty"] shouldBe RapiraEmpty
+            environment["yes"] shouldBe RapiraLogical(true)
+            environment["no"] shouldBe RapiraLogical(false)
         }
     }
 
-    "setObject" should {
+    "set" should {
         "store custom objects" {
             val environment = Environment()
             val obj = RapiraInteger(123)
-            environment.setObject("abc", obj)
-            environment.getObject("abc") shouldBe obj
+            environment["abc"] = obj
+            environment["abc"] shouldBe obj
         }
 
         "throw exception with reserved names" {
@@ -39,7 +39,7 @@ class EnvironmentTest : WordSpec({
                 "no"
             ).forEach { name ->
                 shouldThrow<RapiraInvalidOperationError> {
-                    environment.setObject(name, RapiraEmpty)
+                    environment.set(name, RapiraEmpty)
                 }
             }
         }

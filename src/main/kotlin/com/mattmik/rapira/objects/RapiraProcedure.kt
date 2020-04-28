@@ -18,10 +18,10 @@ class RapiraProcedure(
 
         val newEnvironment = Environment()
         params.zip(arguments).forEach { (paramName, argument) ->
-            newEnvironment.setObject(paramName, argument)
+            newEnvironment[paramName] = argument
         }
-        extern.map { Pair(it, environment.getObject(it)) }
-            .forEach { (name, value) -> newEnvironment.setObject(name, value) }
+        extern.map { Pair(it, environment[it]) }
+            .forEach { (name, value) -> newEnvironment[name] = value }
 
         bodyStatements?.let { StatementVisitor(newEnvironment).visit(it) }
 

@@ -14,12 +14,12 @@ private val specialValues = mapOf(
 class Environment {
     private val bindings = mutableMapOf<String, RapiraObject>()
 
-    fun setObject(name: String, value: RapiraObject) {
+    operator fun set(name: String, value: RapiraObject) {
         if (specialValues.containsKey(name)) {
             throw RapiraInvalidOperationError("Cannot overwrite reserved word $name")
         }
         bindings[name] = value
     }
 
-    fun getObject(name: String) = specialValues[name] ?: bindings.getOrDefault(name, RapiraEmpty)
+    operator fun get(name: String) = specialValues[name] ?: bindings.getOrDefault(name, RapiraEmpty)
 }
