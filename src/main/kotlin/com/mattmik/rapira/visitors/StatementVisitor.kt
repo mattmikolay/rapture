@@ -3,7 +3,9 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
+import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.RapiraLogical
@@ -36,8 +38,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val callable = ctx.IDENTIFIER()?.let { environment[it.text] }
             ?: expressionVisitor.visit(ctx.expression())
 
-        // TODO Add support for in-out params
-        val arguments = ctx.procedureArguments()?.expression()?.map { InArgument(it) } ?: emptyList()
+        val arguments = readProcedureArguments(ctx.procedureArguments())
 
         when (callable) {
             is RapiraCallable -> callable.call(environment, arguments)
@@ -97,5 +98,13 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val expressionVisitor = ExpressionVisitor(environment)
         val expressionResult = expressionVisitor.visit(ctx.expression())
         println(expressionResult)
+    }
+
+    private fun readProcedureArguments(ctx: RapiraLangParser.ProcedureArgumentsContext): List<Argument> {
+        return ctx.procedureArgument().map {
+            it.expression()?.let { expr -> InArgument(expr) }
+                ?: it.variable()?.let { variable -> InOutArgument(variable) }
+                ?: throw RapiraInvalidOperationError("Invalid argument type")
+        }
     }
 }

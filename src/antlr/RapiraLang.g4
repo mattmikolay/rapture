@@ -174,7 +174,12 @@ indexExpression
     ;
 
 procedureArguments
-    : '(' (('<=' variable | '=>'? expression))? (',' ('<=' variable | '=>'? expression))* ')'
+    : '(' procedureArgument? (',' procedureArgument)* ')'
+    ;
+
+procedureArgument
+    : '<=' variable
+    | '=>'? expression
     ;
 
 functionArguments
