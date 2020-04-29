@@ -2,6 +2,7 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.visitors.ProcedureReturnException
 import com.mattmik.rapira.visitors.StatementVisitor
@@ -12,14 +13,14 @@ class RapiraProcedure(
     private val params: List<String> = emptyList(),
     private val extern: List<String> = emptyList()
 ) : RapiraObject("procedure"), RapiraCallable {
-    override fun call(environment: Environment, arguments: List<RapiraObject>): RapiraObject? {
+    override fun call(environment: Environment, arguments: List<Argument>): RapiraObject? {
         if (params.size != arguments.size) {
             throw RapiraInvalidOperationError("Number of params does not match number of arguments")
         }
 
         val newEnvironment = Environment()
         params.zip(arguments).forEach { (paramName, argument) ->
-            newEnvironment[paramName] = argument
+            newEnvironment[paramName] = argument.evaluate(environment)
         }
         extern.map { Pair(it, environment[it]) }
             .forEach { (name, value) -> newEnvironment[name] = value }

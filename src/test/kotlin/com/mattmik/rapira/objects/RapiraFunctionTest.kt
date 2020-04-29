@@ -1,6 +1,7 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
+import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
@@ -32,8 +33,8 @@ class RapiraFunctionTest : WordSpec({
         "throw exception when param and argument count differ" {
             val params = listOf("param1", "param2", "param3")
             val arguments = listOf(
-                "arg1".toRapiraText(),
-                "arg2".toRapiraText()
+                InArgument(mockk()),
+                InArgument(mockk())
             )
             val function = RapiraFunction(null, params)
             shouldThrow<RapiraInvalidOperationError> {

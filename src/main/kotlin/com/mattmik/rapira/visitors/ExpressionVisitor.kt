@@ -3,6 +3,8 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.args.Argument
+import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.RapiraEmpty
@@ -162,8 +164,8 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         return RapiraSequence(expressionResults)
     }
 
-    private fun readFunctionArguments(ctx: RapiraLangParser.FunctionArgumentsContext) =
-        ctx.expression().map { expr -> visit(expr) }
+    private fun readFunctionArguments(ctx: RapiraLangParser.FunctionArgumentsContext): List<Argument> =
+        ctx.expression().map { expr -> InArgument(expr) }
 
     private fun readExternIdentifiers(ctx: RapiraLangParser.DeclarationsContext?) =
         ctx?.extern()?.IDENTIFIER()?.map { identifier -> identifier.text } ?: emptyList()

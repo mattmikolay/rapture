@@ -3,10 +3,10 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.RapiraLogical
-import com.mattmik.rapira.objects.RapiraObject
 import com.mattmik.rapira.objects.formatRapiraObject
 
 class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
@@ -37,8 +37,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             ?: expressionVisitor.visit(ctx.expression())
 
         // TODO Add support for in-out params
-        val arguments = ctx.procedureArguments()?.expression()?.map { expressionVisitor.visit(it) }
-            ?: emptyList<RapiraObject>()
+        val arguments = ctx.procedureArguments()?.expression()?.map { InArgument(it) } ?: emptyList()
 
         when (callable) {
             is RapiraCallable -> callable.call(environment, arguments)
