@@ -93,7 +93,36 @@ class ExpressionVisitorTest : WordSpec({
             resultObject shouldBe "Hello".toRapiraText().length()
         }
 
-        // TODO Test index expressions
+        "evaluate index expressions with commas" {
+            val resultObject1 = evaluateExpression("<* 100, 200, 300 *>[2]")
+            resultObject1 shouldBe 200.toRapiraInteger()
+            val resultObject2 = evaluateExpression("<* 100, <* 2000, 3000, 4000, 5000 *>, 300 *>[2][4]")
+            resultObject2 shouldBe 5000.toRapiraInteger()
+        }
+
+        "evaluate index expressions with colons" {
+            val resultObject1 = evaluateExpression("<* 100, 200, 300 *>[:]")
+            resultObject1 shouldBe listOf(
+                100.toRapiraInteger(),
+                200.toRapiraInteger(),
+                300.toRapiraInteger()
+            ).toRapiraSequence()
+            val resultObject2 = evaluateExpression("<* 100, 200, 300 *>[2:3]")
+            resultObject2 shouldBe listOf(
+                200.toRapiraInteger(),
+                300.toRapiraInteger()
+            ).toRapiraSequence()
+            val resultObject3 = evaluateExpression("<* 100, 200, 300 *>[2:]")
+            resultObject3 shouldBe listOf(
+                200.toRapiraInteger(),
+                300.toRapiraInteger()
+            ).toRapiraSequence()
+            val resultObject4 = evaluateExpression("<* 100, 200, 300 *>[:2]")
+            resultObject4 shouldBe listOf(
+                100.toRapiraInteger(),
+                200.toRapiraInteger()
+            ).toRapiraSequence()
+        }
 
         "evaluate function calls" {
             val resultObject1 = evaluateExpression("is_text(\"Hello\")")

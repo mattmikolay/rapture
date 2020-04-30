@@ -170,7 +170,7 @@ commaExpression
 
 indexExpression
     : '[' commaExpression ']'
-    | '[' expression? ':' expression? ']'
+    | '[' leftIndex=expression? ':' rightIndex=expression? ']'
     ;
 
 procedureArguments

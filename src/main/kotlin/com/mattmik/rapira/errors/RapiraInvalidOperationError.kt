@@ -19,7 +19,8 @@ enum class Operation(val description: String) {
     And("logical and operation"),
     Or("logical or operation"),
     Not("logical not operation"),
-    ElementAt("element at operation")
+    ElementAt("element at operation"),
+    Slice("slice")
 }
 
 class RapiraInvalidOperationError(cause: String) : RapiraRuntimeError(cause) {

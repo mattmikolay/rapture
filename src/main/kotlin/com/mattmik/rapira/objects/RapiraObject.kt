@@ -51,4 +51,7 @@ abstract class RapiraObject(val typeDescription: String) {
 
     open fun elementAt(other: RapiraObject): RapiraObject =
         throw RapiraInvalidOperationError(Operation.ElementAt, this)
+
+    open fun slice(start: RapiraObject?, end: RapiraObject?): RapiraObject =
+        throw RapiraInvalidOperationError(Operation.Slice, this)
 }

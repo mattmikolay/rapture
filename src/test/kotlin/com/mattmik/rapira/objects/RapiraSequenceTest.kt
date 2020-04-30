@@ -36,6 +36,31 @@ class RapiraSequenceTest : StringSpec({
         }
     }
 
+    "slice with integers returns object" {
+        val sequence = listOf(
+            1.toRapiraInteger(),
+            2.toRapiraInteger(),
+            3.toRapiraInteger(),
+            4.toRapiraInteger()
+        ).toRapiraSequence()
+
+        sequence.slice(null, null) shouldBe sequence
+        sequence.slice(2.toRapiraInteger(), null) shouldBe listOf(
+            2.toRapiraInteger(),
+            3.toRapiraInteger(),
+            4.toRapiraInteger()
+        ).toRapiraSequence()
+        sequence.slice(2.toRapiraInteger(), 3.toRapiraInteger()) shouldBe listOf(
+            2.toRapiraInteger(),
+            3.toRapiraInteger()
+        ).toRapiraSequence()
+        sequence.slice(null, 3.toRapiraInteger()) shouldBe listOf(
+            1.toRapiraInteger(),
+            2.toRapiraInteger(),
+            3.toRapiraInteger()
+        ).toRapiraSequence()
+    }
+
     "toString returns user friendly representation" {
         val emptySequence = emptyList<RapiraObject>().toRapiraSequence()
         emptySequence shouldConvertToString "<* *>"

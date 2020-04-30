@@ -110,19 +110,31 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitSubopModifiedExpression(ctx: RapiraLangParser.SubopModifiedExpressionContext): RapiraObject {
-        val leftResult = visit(ctx.subopExpression())
+        val baseResult = visit(ctx.subopExpression())
+
+        ctx.indexExpression()?.let {
+            val evaluatedCommaExpressions = it.commaExpression()?.expression()?.map { expr -> visit(expr) }
+            if (evaluatedCommaExpressions != null) {
+                return evaluatedCommaExpressions.fold(baseResult) { result, index ->
+                    result.elementAt(index)
+                }
+            }
+
+            val leftOfColon = it.leftIndex?.let { expr -> visit(expr) }
+            val rightOfColon = it.rightIndex?.let { expr -> visit(expr) }
+            return baseResult.slice(leftOfColon, rightOfColon)
+        }
 
         ctx.functionArguments()?.let {
             val arguments = readFunctionArguments(it)
 
-            when (leftResult) {
+            when (baseResult) {
                 is RapiraProcedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
-                is RapiraCallable -> return leftResult.call(environment, arguments) ?: RapiraEmpty
+                is RapiraCallable -> return baseResult.call(environment, arguments) ?: RapiraEmpty
                 else -> throw RapiraInvalidOperationError("Cannot invoke object that not a function")
             }
         }
 
-        // TODO Add support for index expressions
         return RapiraEmpty
     }
 

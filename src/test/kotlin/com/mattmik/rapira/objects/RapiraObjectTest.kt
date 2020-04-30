@@ -40,4 +40,14 @@ class RapiraObjectTest : StringSpec({
             shouldThrow<RapiraInvalidOperationError> { operation(testObject) }
         }
     }
+
+    "ternary operations throw exception" {
+        val otherObject1 = RapiraEmpty
+        val otherObject2 = RapiraEmpty
+        forAll(
+            row { obj: RapiraObject -> obj.slice(otherObject1, otherObject2) }
+        ) { operation ->
+            shouldThrow<RapiraInvalidOperationError> { operation(testObject) }
+        }
+    }
 })
