@@ -80,10 +80,16 @@ ifStatement
     ;
 
 caseStatement
-    : (
-        ('case' expression ('when' expression (',' expression)* ':' stmts)*) |
-        ('case' ('when' expression ':' stmts)*)
-      ) ('else' stmts)? 'esac'
+    : 'case' condition=expression multiWhenClause* ('else' elseBody=stmts)? 'esac' #conditionCaseStatement
+    | 'case' singleWhenClause* ('else' elseBody=stmts)? 'esac' #conditionlessCaseStatement
+    ;
+
+multiWhenClause
+    : 'when' expression (',' expression)* ':' stmts
+    ;
+
+singleWhenClause
+    : 'when' expression ':' stmts
     ;
 
 loopStatement
