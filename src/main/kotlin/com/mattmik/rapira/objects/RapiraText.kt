@@ -1,6 +1,7 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.Operation
+import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
@@ -31,6 +32,15 @@ data class RapiraText(val value: String) : RapiraObject("text") {
             value[index - 1].toString().toRapiraText()
         }
         else -> throw RapiraInvalidOperationError(Operation.ElementAt, other)
+    }
+
+    override fun slice(start: RapiraObject?, end: RapiraObject?): RapiraObject {
+        val startIndex = start ?: 1.toRapiraInteger()
+        val endIndex = end ?: length()
+        if (startIndex !is RapiraInteger || endIndex !is RapiraInteger) {
+            throw RapiraIllegalArgumentException("Cannot invoke slice with non-integer arguments")
+        }
+        return value.substring(startIndex.value - 1, endIndex.value).toRapiraText()
     }
 
     override fun toString() = "\"${value.replace("\"\"", "\"")}\""

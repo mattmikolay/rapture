@@ -52,6 +52,15 @@ class RapiraTextTest : StringSpec({
         }
     }
 
+    "slice with integers returns text" {
+        val text = "Hello, world!".toRapiraText()
+
+        text.slice(null, null) shouldBe text
+        text.slice(8.toRapiraInteger(), null) shouldBe "world!".toRapiraText()
+        text.slice(4.toRapiraInteger(), 9.toRapiraInteger()) shouldBe "lo, wo".toRapiraText()
+        text.slice(null, 5.toRapiraInteger()) shouldBe "Hello".toRapiraText()
+    }
+
     "toString returns user friendly representation" {
         "Hello, world!".toRapiraText() shouldConvertToString "\"Hello, world!\""
         "How about some \"\"double quotes\"\"? Fancy, eh?".toRapiraText() shouldConvertToString "\"How about some \"double quotes\"? Fancy, eh?\""
