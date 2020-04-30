@@ -12,8 +12,8 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.string
 
-fun convertToString(expected: String) = object : Matcher<RapiraObject> {
-    override fun test(value: RapiraObject) =
+fun convertToString(expected: String) = object : Matcher<RObject> {
+    override fun test(value: RObject) =
         MatcherResult(
             value.toString() == expected,
             "Object $value should convert to string $expected",
@@ -21,15 +21,15 @@ fun convertToString(expected: String) = object : Matcher<RapiraObject> {
         )
 }
 
-infix fun RapiraObject.shouldConvertToString(expected: String) = this should convertToString(expected)
+infix fun RObject.shouldConvertToString(expected: String) = this should convertToString(expected)
 
-val rapiraEmptyArb = Arb.create { RapiraEmpty }
-val rapiraFunctionArb = Arb.create { RapiraFunction() }
-val rapiraIntegerArb = Arb.int().map { num -> num.toRapiraInteger() }
-val rapiraLogicalArb = Arb.bool().map { bool -> RapiraLogical(bool) }
-val rapiraProcedureArb = Arb.create { RapiraProcedure() }
-val rapiraRealArb = Arb.double().map { double -> RapiraReal(double) }
-val rapiraTextArb = Arb.string().map { str -> str.toRapiraText() }
+val rapiraEmptyArb = Arb.create { REmpty }
+val rapiraFunctionArb = Arb.create { RFunction() }
+val rapiraIntegerArb = Arb.int().map { num -> num.toRInteger() }
+val rapiraLogicalArb = Arb.bool().map { bool -> RLogical(bool) }
+val rapiraProcedureArb = Arb.create { RProcedure() }
+val rapiraRealArb = Arb.double().map { double -> RReal(double) }
+val rapiraTextArb = Arb.string().map { str -> str.toRText() }
 val rapiraObjectArb = Arb.choice(
     rapiraEmptyArb,
     rapiraFunctionArb,

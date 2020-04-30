@@ -14,55 +14,55 @@ import io.kotest.property.checkAll
 class RapiraTextTest : StringSpec({
     "addition with text returns text" {
         checkAll<String, String> { a, b ->
-            a.toRapiraText() + b.toRapiraText() shouldBe RapiraText(a + b)
+            a.toRText() + b.toRText() shouldBe RText(a + b)
         }
     }
 
     "multiplication with zero returns empty string" {
         checkAll<String> {
-            str -> str.toRapiraText() * 0.toRapiraInteger() shouldBe "".toRapiraText()
+            str -> str.toRText() * 0.toRInteger() shouldBe "".toRText()
         }
     }
 
     "multiplication with positive integer returns text" {
         checkAll(Arb.string(), Arb.positiveInts(max = 500)) { str, num ->
-            str.toRapiraText() * num.toRapiraInteger() shouldBe str.repeat(num).toRapiraText()
+            str.toRText() * num.toRInteger() shouldBe str.repeat(num).toRText()
         }
     }
 
     "multiplication with negative integer throws exception" {
         checkAll(Arb.string(), Arb.negativeInts()) { str, num ->
             shouldThrow<RapiraInvalidOperationError> {
-                str.toRapiraText() * num.toRapiraInteger()
+                str.toRText() * num.toRInteger()
             }
         }
     }
 
     "length returns integer" {
-        checkAll<String> { str -> str.toRapiraText().length() shouldBe RapiraInteger(str.length) }
+        checkAll<String> { str -> str.toRText().length() shouldBe RInteger(str.length) }
     }
 
     "element at with integer returns text" {
-        "case".toRapiraText().elementAt(RapiraInteger(2)) shouldBe "a".toRapiraText()
+        "case".toRText().elementAt(RInteger(2)) shouldBe "a".toRText()
         shouldThrow<RapiraIndexOutOfBoundsError> {
-            "case".toRapiraText().elementAt(RapiraInteger(0))
+            "case".toRText().elementAt(RInteger(0))
         }
         shouldThrow<RapiraIndexOutOfBoundsError> {
-            "case".toRapiraText().elementAt(RapiraInteger(5))
+            "case".toRText().elementAt(RInteger(5))
         }
     }
 
     "slice with integers returns text" {
-        val text = "Hello, world!".toRapiraText()
+        val text = "Hello, world!".toRText()
 
         text.slice(null, null) shouldBe text
-        text.slice(8.toRapiraInteger(), null) shouldBe "world!".toRapiraText()
-        text.slice(4.toRapiraInteger(), 9.toRapiraInteger()) shouldBe "lo, wo".toRapiraText()
-        text.slice(null, 5.toRapiraInteger()) shouldBe "Hello".toRapiraText()
+        text.slice(8.toRInteger(), null) shouldBe "world!".toRText()
+        text.slice(4.toRInteger(), 9.toRInteger()) shouldBe "lo, wo".toRText()
+        text.slice(null, 5.toRInteger()) shouldBe "Hello".toRText()
     }
 
     "toString returns user friendly representation" {
-        "Hello, world!".toRapiraText() shouldConvertToString "\"Hello, world!\""
-        "How about some \"\"double quotes\"\"? Fancy, eh?".toRapiraText() shouldConvertToString "\"How about some \"double quotes\"? Fancy, eh?\""
+        "Hello, world!".toRText() shouldConvertToString "\"Hello, world!\""
+        "How about some \"\"double quotes\"\"? Fancy, eh?".toRText() shouldConvertToString "\"How about some \"double quotes\"? Fancy, eh?\""
     }
 })

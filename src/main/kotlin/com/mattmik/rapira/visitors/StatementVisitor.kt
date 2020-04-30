@@ -7,9 +7,9 @@ import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.objects.RLogical
 import com.mattmik.rapira.objects.RapiraCallable
-import com.mattmik.rapira.objects.RapiraLogical
-import com.mattmik.rapira.objects.formatRapiraObject
+import com.mattmik.rapira.objects.formatRObject
 
 class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext) {
@@ -48,7 +48,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
     override fun visitIfStatement(ctx: RapiraLangParser.IfStatementContext) {
         val conditionResult = ExpressionVisitor(environment).visit(ctx.condition)
-        if (conditionResult == RapiraLogical(true)) {
+        if (conditionResult == RLogical(true)) {
             visit(ctx.ifBody)
         } else ctx.elseBody?.let {
             visit(it)
@@ -65,7 +65,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
         for (whenClause in ctx.singleWhenClause()) {
             val whenResult = expressionVisitor.visit(whenClause.expression())
-            if (whenResult == RapiraLogical(true)) {
+            if (whenResult == RLogical(true)) {
                 visit(whenClause.stmts())
                 return
             }
@@ -85,7 +85,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val formattedOutput = expressionResults.joinToString(
             separator = " ",
             postfix = if (ctx.nlf === null) System.lineSeparator() else "",
-            transform = { obj -> formatRapiraObject(obj) }
+            transform = { obj -> formatRObject(obj) }
         )
         print(formattedOutput)
     }

@@ -1,6 +1,6 @@
 package com.mattmik.rapira.errors
 
-import com.mattmik.rapira.objects.RapiraObject
+import com.mattmik.rapira.objects.RObject
 
 enum class Operation(val description: String) {
     Addition("addition"),
@@ -26,6 +26,6 @@ enum class Operation(val description: String) {
 class RapiraInvalidOperationError(cause: String) : RapiraRuntimeError(cause) {
     constructor(
         operation: Operation,
-        rootCauseObject: RapiraObject
+        rootCauseObject: RObject
     ) : this("cannot perform ${operation.description} using object of type ${rootCauseObject.typeDescription}")
 }

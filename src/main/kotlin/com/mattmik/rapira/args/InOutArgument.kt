@@ -2,11 +2,11 @@ package com.mattmik.rapira.args
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.objects.RapiraObject
+import com.mattmik.rapira.objects.RObject
 
 // TODO: Add support for index expressions
 class InOutArgument(private val variable: RapiraLangParser.VariableContext) : Argument {
-    override fun evaluate(environment: Environment): RapiraObject {
+    override fun evaluate(environment: Environment): RObject {
         return environment[variable.IDENTIFIER().text]
     }
 }

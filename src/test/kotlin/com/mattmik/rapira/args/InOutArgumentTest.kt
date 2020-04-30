@@ -3,7 +3,7 @@ package com.mattmik.rapira.args
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.objects.toRapiraText
+import com.mattmik.rapira.objects.toRText
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import org.antlr.v4.runtime.CharStreams
@@ -17,11 +17,11 @@ class InOutArgumentTest : WordSpec() {
     init {
         beforeTest {
             environment = Environment()
-            environment[VARIABLE_NAME] = "Hello, world!".toRapiraText()
+            environment[VARIABLE_NAME] = "Hello, world!".toRText()
         }
         "evaluate" should {
             "return value of simple identifier in environment" {
-                val variableValue = "Hello, world!".toRapiraText()
+                val variableValue = "Hello, world!".toRText()
                 val lexer = RapiraLangLexer(CharStreams.fromString(VARIABLE_NAME))
                 val parser = RapiraLangParser(CommonTokenStream(lexer))
                 val tree = parser.variable()

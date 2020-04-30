@@ -8,12 +8,12 @@ import com.mattmik.rapira.visitors.ProcedureReturnException
 import com.mattmik.rapira.visitors.StatementVisitor
 
 // TODO: Add support for intern/extern
-class RapiraProcedure(
+class RProcedure(
     private val bodyStatements: RapiraLangParser.StmtsContext? = null,
     private val params: List<String> = emptyList(),
     private val extern: List<String> = emptyList()
-) : RapiraObject("procedure"), RapiraCallable {
-    override fun call(environment: Environment, arguments: List<Argument>): RapiraObject? {
+) : RObject("procedure"), RapiraCallable {
+    override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         if (params.size != arguments.size) {
             throw RapiraInvalidOperationError("Number of params does not match number of arguments")
         }
@@ -25,7 +25,7 @@ class RapiraProcedure(
         extern.map { Pair(it, environment[it]) }
             .forEach { (name, value) -> newEnvironment[name] = value }
 
-        var returnValue: RapiraObject? = null
+        var returnValue: RObject? = null
 
         try {
             bodyStatements?.let { StatementVisitor(newEnvironment).visit(it) }

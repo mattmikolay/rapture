@@ -1,5 +1,5 @@
 package com.mattmik.rapira.objects
 
-object RapiraEmpty : RapiraObject("empty") {
+object REmpty : RObject("empty") {
     override fun toString() = "empty"
 }

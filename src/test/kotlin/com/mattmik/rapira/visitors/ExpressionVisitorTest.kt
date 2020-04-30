@@ -3,14 +3,14 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.objects.RapiraFunction
-import com.mattmik.rapira.objects.RapiraLogical
-import com.mattmik.rapira.objects.RapiraObject
-import com.mattmik.rapira.objects.RapiraProcedure
-import com.mattmik.rapira.objects.toRapiraInteger
-import com.mattmik.rapira.objects.toRapiraReal
-import com.mattmik.rapira.objects.toRapiraSequence
-import com.mattmik.rapira.objects.toRapiraText
+import com.mattmik.rapira.objects.RFunction
+import com.mattmik.rapira.objects.RLogical
+import com.mattmik.rapira.objects.RObject
+import com.mattmik.rapira.objects.RProcedure
+import com.mattmik.rapira.objects.toRInteger
+import com.mattmik.rapira.objects.toRReal
+import com.mattmik.rapira.objects.toRSequence
+import com.mattmik.rapira.objects.toRText
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
@@ -21,7 +21,7 @@ import org.antlr.v4.runtime.CommonTokenStream
 class ExpressionVisitorTest : WordSpec({
     lateinit var environment: Environment
 
-    fun evaluateExpression(input: String): RapiraObject? {
+    fun evaluateExpression(input: String): RObject? {
         val lexer = RapiraLangLexer(CharStreams.fromString(input))
         val parser = RapiraLangParser(CommonTokenStream(lexer))
         val tree = parser.expression()
@@ -30,28 +30,28 @@ class ExpressionVisitorTest : WordSpec({
 
     beforeTest {
         environment = Environment()
-        environment["alpha"] = "Ready!".toRapiraText()
+        environment["alpha"] = "Ready!".toRText()
     }
 
     "visit" should {
         "evaluate variables" {
             val resultObject = evaluateExpression("alpha")
-            resultObject shouldBe "Ready!".toRapiraText()
+            resultObject shouldBe "Ready!".toRText()
         }
 
         "evaluate text" {
             val resultObject = evaluateExpression("\"Hello, world!\"")
-            resultObject shouldBe "Hello, world!".toRapiraText()
+            resultObject shouldBe "Hello, world!".toRText()
         }
 
         "evaluate unsigned integer numbers" {
             val resultObject = evaluateExpression("12345")
-            resultObject shouldBe 12345.toRapiraInteger()
+            resultObject shouldBe 12345.toRInteger()
         }
 
         "evaluate unsigned real numbers" {
             val resultObject = evaluateExpression("12.345")
-            resultObject shouldBe (12.345).toRapiraReal()
+            resultObject shouldBe (12.345).toRReal()
         }
 
         "evaluate procedure definitions" {
@@ -61,7 +61,7 @@ class ExpressionVisitorTest : WordSpec({
                     test := 3 + 4
                 end
             """.trimIndent())
-            resultObject should beOfType<RapiraProcedure>()
+            resultObject should beOfType<RProcedure>()
         }
 
         "evaluate function definitions" {
@@ -71,7 +71,7 @@ class ExpressionVisitorTest : WordSpec({
                     test := 3 + 4
                 end
             """.trimIndent())
-            resultObject should beOfType<RapiraFunction>()
+            resultObject should beOfType<RFunction>()
         }
 
         "evaluate sequences" {
@@ -79,158 +79,158 @@ class ExpressionVisitorTest : WordSpec({
                 "<* 1, 2, 3, \"a\", \"b\", \"c\" *>"
             )
             resultObject shouldBe listOf(
-                1.toRapiraInteger(),
-                2.toRapiraInteger(),
-                3.toRapiraInteger(),
-                "a".toRapiraText(),
-                "b".toRapiraText(),
-                "c".toRapiraText()
-            ).toRapiraSequence()
+                1.toRInteger(),
+                2.toRInteger(),
+                3.toRInteger(),
+                "a".toRText(),
+                "b".toRText(),
+                "c".toRText()
+            ).toRSequence()
         }
 
         "evaluate length" {
             val resultObject = evaluateExpression("#\"Hello\"")
-            resultObject shouldBe "Hello".toRapiraText().length()
+            resultObject shouldBe "Hello".toRText().length()
         }
 
         "evaluate index expressions with commas" {
             val resultObject1 = evaluateExpression("<* 100, 200, 300 *>[2]")
-            resultObject1 shouldBe 200.toRapiraInteger()
+            resultObject1 shouldBe 200.toRInteger()
             val resultObject2 = evaluateExpression("<* 100, <* 2000, 3000, 4000, 5000 *>, 300 *>[2][4]")
-            resultObject2 shouldBe 5000.toRapiraInteger()
+            resultObject2 shouldBe 5000.toRInteger()
         }
 
         "evaluate index expressions with colons" {
             val resultObject1 = evaluateExpression("<* 100, 200, 300 *>[:]")
             resultObject1 shouldBe listOf(
-                100.toRapiraInteger(),
-                200.toRapiraInteger(),
-                300.toRapiraInteger()
-            ).toRapiraSequence()
+                100.toRInteger(),
+                200.toRInteger(),
+                300.toRInteger()
+            ).toRSequence()
             val resultObject2 = evaluateExpression("<* 100, 200, 300 *>[2:3]")
             resultObject2 shouldBe listOf(
-                200.toRapiraInteger(),
-                300.toRapiraInteger()
-            ).toRapiraSequence()
+                200.toRInteger(),
+                300.toRInteger()
+            ).toRSequence()
             val resultObject3 = evaluateExpression("<* 100, 200, 300 *>[2:]")
             resultObject3 shouldBe listOf(
-                200.toRapiraInteger(),
-                300.toRapiraInteger()
-            ).toRapiraSequence()
+                200.toRInteger(),
+                300.toRInteger()
+            ).toRSequence()
             val resultObject4 = evaluateExpression("<* 100, 200, 300 *>[:2]")
             resultObject4 shouldBe listOf(
-                100.toRapiraInteger(),
-                200.toRapiraInteger()
-            ).toRapiraSequence()
+                100.toRInteger(),
+                200.toRInteger()
+            ).toRSequence()
         }
 
         "evaluate function calls" {
             val resultObject1 = evaluateExpression("is_text(\"Hello\")")
-            resultObject1 shouldBe RapiraLogical(true)
+            resultObject1 shouldBe RLogical(true)
             val resultObject2 = evaluateExpression("abs(=>-123)")
-            resultObject2 shouldBe 123.toRapiraInteger()
+            resultObject2 shouldBe 123.toRInteger()
         }
 
         "evaluate unary positive" {
             val resultObject = evaluateExpression("+12345")
-            resultObject shouldBe 12345.toRapiraInteger()
+            resultObject shouldBe 12345.toRInteger()
         }
 
         "evaluate unary negative" {
             val resultObject = evaluateExpression("-12345")
-            resultObject shouldBe (-12345).toRapiraInteger()
+            resultObject shouldBe (-12345).toRInteger()
         }
 
         "evaluate addition" {
             val resultObject = evaluateExpression("2 + 4")
-            resultObject shouldBe 6.toRapiraInteger()
+            resultObject shouldBe 6.toRInteger()
         }
 
         "evaluate subtraction" {
             val resultObject = evaluateExpression("50 - 25")
-            resultObject shouldBe 25.toRapiraInteger()
+            resultObject shouldBe 25.toRInteger()
         }
 
         "evaluate multiplication" {
             val resultObject = evaluateExpression("2 * 12")
-            resultObject shouldBe 24.toRapiraInteger()
+            resultObject shouldBe 24.toRInteger()
         }
 
         "evaluate division" {
             val resultObject = evaluateExpression("100 / 25")
-            resultObject shouldBe 4.toRapiraInteger()
+            resultObject shouldBe 4.toRInteger()
         }
 
         "evaluate integer division" {
             val resultObject = evaluateExpression("7 // 3")
-            resultObject shouldBe 2.toRapiraInteger()
+            resultObject shouldBe 2.toRInteger()
         }
 
         "evaluate modulo" {
             val resultObject = evaluateExpression("7 /% 3")
-            resultObject shouldBe 1.toRapiraInteger()
+            resultObject shouldBe 1.toRInteger()
         }
 
         "evaluate exponentiation" {
             val resultObject = evaluateExpression("3 ** 4")
-            resultObject shouldBe 81.toRapiraInteger()
+            resultObject shouldBe 81.toRInteger()
         }
 
         "evaluate equality" {
             val resultObject = evaluateExpression("1 = 1")
-            resultObject shouldBe RapiraLogical(true)
+            resultObject shouldBe RLogical(true)
         }
 
         "evaluate inequality" {
             val resultObject = evaluateExpression("1 /= 1")
-            resultObject shouldBe RapiraLogical(false)
+            resultObject shouldBe RLogical(false)
         }
 
         "evaluate < relation" {
             val resultObject = evaluateExpression("4 < 5")
-            resultObject shouldBe RapiraLogical(true)
+            resultObject shouldBe RLogical(true)
         }
 
         "evaluate > relation" {
             val resultObject = evaluateExpression("4 > 5")
-            resultObject shouldBe RapiraLogical(false)
+            resultObject shouldBe RLogical(false)
         }
 
         "evaluate <= relation" {
             val resultObject = evaluateExpression("4 <= 4")
-            resultObject shouldBe RapiraLogical(true)
+            resultObject shouldBe RLogical(true)
         }
 
         "evaluate >= relation" {
             val resultObject = evaluateExpression("4 >= 4")
-            resultObject shouldBe RapiraLogical(true)
+            resultObject shouldBe RLogical(true)
         }
 
         "evaluate logical not" {
             val resultObject = evaluateExpression("not yes")
-            resultObject shouldBe RapiraLogical(false)
+            resultObject shouldBe RLogical(false)
         }
 
         "evaluate logical or" {
             val resultObject = evaluateExpression("yes or no")
-            resultObject shouldBe RapiraLogical(true)
+            resultObject shouldBe RLogical(true)
         }
 
         "evaluate logical and" {
             val resultObject = evaluateExpression("yes and no")
-            resultObject shouldBe RapiraLogical(false)
+            resultObject shouldBe RLogical(false)
         }
 
         "evaluate parenthetical expressions" {
             val resultObject = evaluateExpression("(100 + 20 + 3)")
-            resultObject shouldBe (123).toRapiraInteger()
+            resultObject shouldBe (123).toRInteger()
         }
 
         "evaluate complex expressions" {
             val resultObject1 = evaluateExpression("(3 + 4) * 7 + #<* 1, 2 *> + (-2) ** (2 + 1)")
-            resultObject1 shouldBe 43.toRapiraInteger()
+            resultObject1 shouldBe 43.toRInteger()
             val resultObject2 = evaluateExpression("not (not (is_text(\"Hello!\") and no)) or (4 > 3 + 2) = no")
-            resultObject2 shouldBe RapiraLogical(true)
+            resultObject2 shouldBe RLogical(true)
         }
     }
 })
