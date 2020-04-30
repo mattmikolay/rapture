@@ -17,6 +17,11 @@ import com.mattmik.rapira.objects.RapiraReal
 import com.mattmik.rapira.objects.RapiraSequence
 import com.mattmik.rapira.objects.parseEscapedText
 
+/**
+ * A visitor that evaluates expressions while walking the tree within a given [Environment].
+ *
+ * @property environment the environment in which to evaluate expressions
+ */
 class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVisitor<RapiraObject>() {
 
     override fun visitExpression(ctx: RapiraLangParser.ExpressionContext): RapiraObject {
