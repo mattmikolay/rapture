@@ -5,11 +5,16 @@ import com.mattmik.rapira.objects.RapiraEmpty
 import com.mattmik.rapira.objects.RapiraLogical
 import com.mattmik.rapira.objects.RapiraObject
 import com.mattmik.rapira.objects.nativeFunctions
+import com.mattmik.rapira.objects.toRapiraReal
+import com.mattmik.rapira.objects.toRapiraText
+import kotlin.math.PI
 
 private val specialValues = nativeFunctions + mapOf(
     "empty" to RapiraEmpty,
     "yes" to RapiraLogical(true),
-    "no" to RapiraLogical(false)
+    "no" to RapiraLogical(false),
+    "lf" to System.lineSeparator().toRapiraText(),
+    "pi" to PI.toRapiraReal()
 )
 
 class Environment {

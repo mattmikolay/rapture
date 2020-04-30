@@ -4,9 +4,12 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RapiraEmpty
 import com.mattmik.rapira.objects.RapiraInteger
 import com.mattmik.rapira.objects.RapiraLogical
+import com.mattmik.rapira.objects.toRapiraReal
+import com.mattmik.rapira.objects.toRapiraText
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
+import kotlin.math.PI
 
 class EnvironmentTest : WordSpec({
     "get" should {
@@ -20,6 +23,8 @@ class EnvironmentTest : WordSpec({
             environment["empty"] shouldBe RapiraEmpty
             environment["yes"] shouldBe RapiraLogical(true)
             environment["no"] shouldBe RapiraLogical(false)
+            environment["lf"] shouldBe System.lineSeparator().toRapiraText()
+            environment["pi"] shouldBe PI.toRapiraReal()
         }
     }
 
