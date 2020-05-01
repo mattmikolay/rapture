@@ -3,12 +3,15 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.control.LoopExitException
+import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toText
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
@@ -101,6 +104,20 @@ class StatementVisitorTest : WordSpec({
 
             environment["season"] shouldBe Text("winter")
             environment["sound"] shouldBe Text("meow")
+        }
+
+        // TODO
+
+        "throw exception when exit statement occurs outside loop" {
+            shouldThrow<LoopExitException> {
+                evaluateStatements("exit")
+            }
+        }
+
+        "throw exception when return statement occurs outside procedure" {
+            shouldThrow<ProcedureReturnException> {
+                evaluateStatements("return")
+            }
         }
     }
 })
