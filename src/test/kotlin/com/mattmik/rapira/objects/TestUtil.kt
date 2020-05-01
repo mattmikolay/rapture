@@ -23,13 +23,13 @@ fun convertToString(expected: String) = object : Matcher<RObject> {
 
 infix fun RObject.shouldConvertToString(expected: String) = this should convertToString(expected)
 
-val rapiraEmptyArb = Arb.create { REmpty }
-val rapiraFunctionArb = Arb.create { RFunction() }
+val rapiraEmptyArb = Arb.create { Empty }
+val rapiraFunctionArb = Arb.create { Function() }
 val rapiraIntegerArb = Arb.int().map { num -> num.toRInteger() }
-val rapiraLogicalArb = Arb.bool().map { bool -> RLogical(bool) }
-val rapiraProcedureArb = Arb.create { RProcedure() }
-val rapiraRealArb = Arb.double().map { double -> RReal(double) }
-val rapiraTextArb = Arb.string().map { str -> str.toRText() }
+val rapiraLogicalArb = Arb.bool().map { bool -> Logical(bool) }
+val rapiraProcedureArb = Arb.create { Procedure() }
+val rapiraRealArb = Arb.double().map { double -> Real(double) }
+val rapiraTextArb = Arb.string().map { str -> str.toText() }
 val rapiraObjectArb = Arb.choice(
     rapiraEmptyArb,
     rapiraFunctionArb,

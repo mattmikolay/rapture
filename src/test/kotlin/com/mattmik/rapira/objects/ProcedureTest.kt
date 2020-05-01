@@ -9,7 +9,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyAll
 
-class RProcedureTest : WordSpec({
+class ProcedureTest : WordSpec({
     "call" should {
         "read extern objects from old environment" {
             val mockEnvironment = mockk<Environment>()
@@ -18,8 +18,8 @@ class RProcedureTest : WordSpec({
                 "externVariable2",
                 "externVariable3"
             )
-            every { mockEnvironment[any()] } returns REmpty
-            val procedure = RProcedure(extern = extern)
+            every { mockEnvironment[any()] } returns Empty
+            val procedure = Procedure(extern = extern)
 
             procedure.call(mockEnvironment, emptyList())
 
@@ -36,7 +36,7 @@ class RProcedureTest : WordSpec({
                 InArgument(mockk()),
                 InArgument(mockk())
             )
-            val procedure = RProcedure(null, params)
+            val procedure = Procedure(null, params)
             shouldThrow<RapiraInvalidOperationError> {
                 procedure.call(Environment(), arguments)
             }
@@ -45,7 +45,7 @@ class RProcedureTest : WordSpec({
 
     "toString" should {
         "return user friendly representation" {
-            RProcedure() shouldConvertToString "procedure"
+            Procedure() shouldConvertToString "procedure"
         }
     }
 })

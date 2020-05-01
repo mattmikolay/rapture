@@ -16,7 +16,7 @@ class NewRapiraIntegerTest : StringSpec({
 
     "addition with real returns real" {
         checkAll<Int, Double> { a, b ->
-            a.toRInteger() + b.toRReal() shouldBe (a + b).toRReal()
+            a.toRInteger() + b.toReal() shouldBe (a + b).toReal()
         }
     }
 
@@ -28,55 +28,55 @@ class NewRapiraIntegerTest : StringSpec({
 
     "subtraction with real returns real" {
         checkAll<Int, Double> { a, b ->
-            a.toRInteger() - b.toRReal() shouldBe (a - b).toRReal()
+            a.toRInteger() - b.toReal() shouldBe (a - b).toReal()
         }
     }
 
     "less than with integer returns logical" {
         checkAll<Int, Int> { a, b ->
-            a.toRInteger() lessThan b.toRInteger() shouldBe RLogical(a < b)
+            a.toRInteger() lessThan b.toRInteger() shouldBe Logical(a < b)
         }
     }
 
     "less than with real returns logical" {
         checkAll<Int, Double> { a, b ->
-            a.toRInteger() lessThan b.toRReal() shouldBe RLogical(a < b)
+            a.toRInteger() lessThan b.toReal() shouldBe Logical(a < b)
         }
     }
 
     "less than or equal to with integer returns logical" {
         checkAll<Int, Int> { a, b ->
-            a.toRInteger() lessThanEqualTo b.toRInteger() shouldBe RLogical(a <= b)
+            a.toRInteger() lessThanEqualTo b.toRInteger() shouldBe Logical(a <= b)
         }
     }
 
     "less than or equal to with real returns logical" {
         checkAll<Int, Double> { a, b ->
-            a.toRInteger() lessThanEqualTo b.toRReal() shouldBe RLogical(a <= b)
+            a.toRInteger() lessThanEqualTo b.toReal() shouldBe Logical(a <= b)
         }
     }
 
     "greater than with integer returns logical" {
         checkAll<Int, Int> { a, b ->
-            a.toRInteger() greaterThan b.toRInteger() shouldBe RLogical(a > b)
+            a.toRInteger() greaterThan b.toRInteger() shouldBe Logical(a > b)
         }
     }
 
     "greater than with real returns logical" {
         checkAll<Int, Double> { a, b ->
-            a.toRInteger() greaterThan b.toRReal() shouldBe RLogical(a > b)
+            a.toRInteger() greaterThan b.toReal() shouldBe Logical(a > b)
         }
     }
 
     "greater than or equal to with integer returns logical" {
         checkAll<Int, Int> { a, b ->
-            a.toRInteger() greaterThanEqualTo b.toRInteger() shouldBe RLogical(a >= b)
+            a.toRInteger() greaterThanEqualTo b.toRInteger() shouldBe Logical(a >= b)
         }
     }
 
     "greater than or equal to with real returns logical" {
         checkAll<Int, Double> { a, b ->
-            a.toRInteger() greaterThanEqualTo b.toRReal() shouldBe RLogical(a >= b)
+            a.toRInteger() greaterThanEqualTo b.toReal() shouldBe Logical(a >= b)
         }
     }
 
@@ -101,12 +101,12 @@ class RIntegerTest {
 
     @Test
     fun lessThanWithOtherTypesThrowsException() = listOf(
-        REmpty,
-        RProcedure(),
-        RFunction(),
-        RText("hello"),
-        RLogical(true),
-        RSequence()
+        Empty,
+        Procedure(),
+        Function(),
+        Text("hello"),
+        Logical(true),
+        Sequence()
     ).forEach {
         assertThrows<RapiraInvalidOperationError> { RInteger(10).lessThan(it) }
         assertThrows<RapiraInvalidOperationError> { RInteger(0).lessThan(it) }
@@ -115,12 +115,12 @@ class RIntegerTest {
 
     @Test
     fun greaterThanWithOtherTypesThrowsException() = listOf(
-        REmpty,
-        RProcedure(),
-        RFunction(),
-        RText("hello"),
-        RLogical(true),
-        RSequence()
+        Empty,
+        Procedure(),
+        Function(),
+        Text("hello"),
+        Logical(true),
+        Sequence()
     ).forEach {
         assertThrows<RapiraInvalidOperationError> { RInteger(10) greaterThan it }
         assertThrows<RapiraInvalidOperationError> { RInteger(0) greaterThan it }
@@ -129,12 +129,12 @@ class RIntegerTest {
 
     @Test
     fun lessThanEqualToWithOtherTypesThrowsException() = listOf(
-        REmpty,
-        RProcedure(),
-        RFunction(),
-        RText("hello"),
-        RLogical(true),
-        RSequence()
+        Empty,
+        Procedure(),
+        Function(),
+        Text("hello"),
+        Logical(true),
+        Sequence()
     ).forEach {
         assertThrows<RapiraInvalidOperationError> { RInteger(10) lessThanEqualTo it }
         assertThrows<RapiraInvalidOperationError> { RInteger(0) lessThanEqualTo it }
@@ -143,12 +143,12 @@ class RIntegerTest {
 
     @Test
     fun greaterThanEqualToWithOtherTypesThrowsException() = listOf(
-        REmpty,
-        RProcedure(),
-        RFunction(),
-        RText("hello"),
-        RLogical(true),
-        RSequence()
+        Empty,
+        Procedure(),
+        Function(),
+        Text("hello"),
+        Logical(true),
+        Sequence()
     ).forEach {
         assertThrows<RapiraInvalidOperationError> { RInteger(10) greaterThanEqualTo it }
         assertThrows<RapiraInvalidOperationError> { RInteger(0) greaterThanEqualTo it }

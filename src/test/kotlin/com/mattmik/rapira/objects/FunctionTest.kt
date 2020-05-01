@@ -9,7 +9,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyAll
 
-class RFunctionTest : WordSpec({
+class FunctionTest : WordSpec({
     "call" should {
         "read extern objects from old environment" {
             val mockEnvironment = mockk<Environment>()
@@ -18,8 +18,8 @@ class RFunctionTest : WordSpec({
                 "externVariable2",
                 "externVariable3"
             )
-            every { mockEnvironment[any()] } returns REmpty
-            val function = RFunction(extern = extern)
+            every { mockEnvironment[any()] } returns Empty
+            val function = Function(extern = extern)
 
             function.call(mockEnvironment, emptyList())
 
@@ -36,7 +36,7 @@ class RFunctionTest : WordSpec({
                 InArgument(mockk()),
                 InArgument(mockk())
             )
-            val function = RFunction(null, params)
+            val function = Function(null, params)
             shouldThrow<RapiraInvalidOperationError> {
                 function.call(Environment(), arguments)
             }
@@ -45,7 +45,7 @@ class RFunctionTest : WordSpec({
 
     "toString" should {
         "return user friendly representation" {
-            RFunction() shouldConvertToString "function"
+            Function() shouldConvertToString "function"
         }
     }
 })

@@ -7,7 +7,7 @@ import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import com.mattmik.rapira.objects.RLogical
+import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.formatRObject
 
@@ -50,7 +50,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
     override fun visitIfStatement(ctx: RapiraLangParser.IfStatementContext) {
         val conditionResult = expressionVisitor.visit(ctx.condition)
-        if (conditionResult == RLogical(true)) {
+        if (conditionResult == Logical(true)) {
             visit(ctx.ifBody)
         } else ctx.elseBody?.let {
             visit(it)
@@ -65,7 +65,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     override fun visitConditionlessCaseStatement(ctx: RapiraLangParser.ConditionlessCaseStatementContext) {
         for (whenClause in ctx.singleWhenClause()) {
             val whenResult = expressionVisitor.visit(whenClause.expression())
-            if (whenResult == RLogical(true)) {
+            if (whenResult == Logical(true)) {
                 visit(whenClause.stmts())
                 return
             }

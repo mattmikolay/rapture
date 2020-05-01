@@ -26,13 +26,13 @@ private abstract class NativeFunction(
 val nativeFunctions = mapOf<String, RObject>(
     "abs" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            if (arg !is RInteger && arg !is RReal) {
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            if (arg !is RInteger && arg !is Real) {
                 throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }
             return when (arg) {
                 is RInteger -> arg.value.absoluteValue.toRInteger()
-                is RReal -> arg.value.absoluteValue.toRReal()
+                is Real -> arg.value.absoluteValue.toReal()
                 else -> throw RapiraInvalidOperationError("Cannot compute absolute value of given type")
             }
         }
@@ -75,50 +75,50 @@ val nativeFunctions = mapOf<String, RObject>(
     // TODO
     "is_empty" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            return RLogical(arg is REmpty)
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            return Logical(arg is Empty)
         }
     },
     "is_log" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            return RLogical(arg is RLogical)
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            return Logical(arg is Logical)
         }
     },
     "is_int" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            return RLogical(arg is RInteger)
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            return Logical(arg is RInteger)
         }
     },
     "is_real" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            return RLogical(arg is RReal)
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            return Logical(arg is Real)
         }
     },
     "is_text" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            return RLogical(arg is RText)
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            return Logical(arg is Text)
         }
     },
     "is_seq" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            return RLogical(arg is RSequence)
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            return Logical(arg is Sequence)
         }
     },
     "is_proc" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            return RLogical(arg is RProcedure)
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            return Logical(arg is Procedure)
         }
     },
     "is_fun" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: REmpty
-            return RLogical(arg is RFunction || arg is NativeFunction)
+            val arg = arguments.getOrNull(0)?.evaluate(environment) ?: Empty
+            return Logical(arg is Function || arg is NativeFunction)
         }
     },
     "sin" to object : NativeFunction(1) {

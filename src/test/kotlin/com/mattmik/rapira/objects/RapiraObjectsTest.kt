@@ -8,7 +8,7 @@ import org.junit.jupiter.api.assertThrows
 
 fun assertEquals(expected: RObject, actual: RObject) {
     // TODO Figure out a better way to deal with double equality
-    if (expected is RReal && actual is RReal) {
+    if (expected is Real && actual is Real) {
         return Assertions.assertEquals(expected.value, actual.value, 0.00001)
     }
     return Assertions.assertEquals(expected, actual)
@@ -35,18 +35,18 @@ class AdditionTest {
     fun validOperationsReturnNewObject() = listOf(
         Triple(RInteger(7), RInteger(3), RInteger(10)),
         Triple(RInteger(3), RInteger(7), RInteger(10)),
-        Triple(RReal(7.1), RReal(3.8), RReal(10.9)),
-        Triple(RReal(3.8), RReal(7.1), RReal(10.9)),
-        Triple(RText("Hello, "), RText("world!"), RText("Hello, world!")),
+        Triple(Real(7.1), Real(3.8), Real(10.9)),
+        Triple(Real(3.8), Real(7.1), Real(10.9)),
+        Triple(Text("Hello, "), Text("world!"), Text("Hello, world!")),
         Triple(
-            RSequence(emptyList()),
-            RSequence(emptyList()),
-            RSequence(emptyList())
+            Sequence(emptyList()),
+            Sequence(emptyList()),
+            Sequence(emptyList())
         ),
         Triple(
-            RSequence(listOf(RInteger(1))),
-            RSequence(listOf(RInteger(2), RInteger((3)))),
-            RSequence(listOf(RInteger(1), RInteger(2), RInteger((3))))
+            Sequence(listOf(RInteger(1))),
+            Sequence(listOf(RInteger(2), RInteger((3)))),
+            Sequence(listOf(RInteger(1), RInteger(2), RInteger((3))))
         )
     ).map { (first, second, expected) ->
         dynamicTest("$first + $second = $expected") {
@@ -59,10 +59,10 @@ class AdditionTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        Pair(REmpty, RInteger(4)),
-        Pair(RInteger(4), REmpty),
-        Pair(REmpty, RReal(4.1)),
-        Pair(RReal(4.1), REmpty)
+        Pair(Empty, RInteger(4)),
+        Pair(RInteger(4), Empty),
+        Pair(Empty, Real(4.1)),
+        Pair(Real(4.1), Empty)
     ).map { (first, second) ->
         dynamicTest("$first + $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -83,8 +83,8 @@ class SubtractionTest {
     fun validOperationsReturnNewObject() = listOf(
         Triple(RInteger(7), RInteger(3), RInteger(4)),
         Triple(RInteger(3), RInteger(7), RInteger(-4)),
-        Triple(RReal(7.1), RReal(3.8), RReal(3.3)),
-        Triple(RReal(3.8), RReal(7.1), RReal(-3.3))
+        Triple(Real(7.1), Real(3.8), Real(3.3)),
+        Triple(Real(3.8), Real(7.1), Real(-3.3))
     ).map { (first, second, expected) ->
         dynamicTest("$first - $second = $expected") {
             assertEquals(
@@ -96,10 +96,10 @@ class SubtractionTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        Pair(REmpty, RInteger(4)),
-        Pair(RInteger(4), REmpty),
-        Pair(REmpty, RReal(4.1)),
-        Pair(RReal(4.1), REmpty)
+        Pair(Empty, RInteger(4)),
+        Pair(RInteger(4), Empty),
+        Pair(Empty, Real(4.1)),
+        Pair(Real(4.1), Empty)
     ).map { (first, second) ->
         dynamicTest("$first - $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -118,7 +118,7 @@ class NegationTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        REmpty
+        Empty
     ).map { value ->
         dynamicTest("-($value) throws error") {
             assertThrows<RapiraInvalidOperationError> { negateOperation(value) }
@@ -134,29 +134,29 @@ class MultiplicationTest {
     fun validOperationsReturnNewObject() = listOf(
         Triple(RInteger(7), RInteger(3), RInteger(21)),
         Triple(RInteger(3), RInteger(7), RInteger(21)),
-        Triple(RReal(7.1), RReal(3.8), RReal(26.98)),
-        Triple(RReal(3.8), RReal(7.1), RReal(26.98)),
-        Triple(RText("hello"), RInteger(3), RText("hellohellohello")),
-        Triple(RInteger(3), RText("hello"), RText("hellohellohello")),
+        Triple(Real(7.1), Real(3.8), Real(26.98)),
+        Triple(Real(3.8), Real(7.1), Real(26.98)),
+        Triple(Text("hello"), RInteger(3), Text("hellohellohello")),
+        Triple(RInteger(3), Text("hello"), Text("hellohellohello")),
         Triple(
             RInteger(3),
-            RSequence(listOf(RText("hello"), RText("world"))),
-            RSequence(
+            Sequence(listOf(Text("hello"), Text("world"))),
+            Sequence(
                 listOf(
-                    RText("hello"), RText("world"),
-                    RText("hello"), RText("world"),
-                    RText("hello"), RText("world")
+                    Text("hello"), Text("world"),
+                    Text("hello"), Text("world"),
+                    Text("hello"), Text("world")
                 )
             )
         ),
         Triple(
-            RSequence(listOf(RText("hello"), RText("world"))),
+            Sequence(listOf(Text("hello"), Text("world"))),
             RInteger(3),
-            RSequence(
+            Sequence(
                 listOf(
-                    RText("hello"), RText("world"),
-                    RText("hello"), RText("world"),
-                    RText("hello"), RText("world")
+                    Text("hello"), Text("world"),
+                    Text("hello"), Text("world"),
+                    Text("hello"), Text("world")
                 )
             )
         )
@@ -171,10 +171,10 @@ class MultiplicationTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        Pair(REmpty, RInteger(4)),
-        Pair(RInteger(4), REmpty),
-        Pair(REmpty, RReal(4.1)),
-        Pair(RReal(4.1), REmpty)
+        Pair(Empty, RInteger(4)),
+        Pair(RInteger(4), Empty),
+        Pair(Empty, Real(4.1)),
+        Pair(Real(4.1), Empty)
     ).map { (first, second) ->
         dynamicTest("$first * $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -194,11 +194,11 @@ class DivisionTest {
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
         Triple(RInteger(6), RInteger(3), RInteger(2)),
-        Triple(RInteger(7), RInteger(2), RReal(3.5)),
-        Triple(RReal(6.0), RReal(3.0), RReal(2.0)),
-        Triple(RReal(6.0), RInteger(3), RReal(2.0)),
-        Triple(RReal(3.0), RReal(6.0), RReal(0.5)),
-        Triple(RReal(3.0), RInteger(6), RReal(0.5))
+        Triple(RInteger(7), RInteger(2), Real(3.5)),
+        Triple(Real(6.0), Real(3.0), Real(2.0)),
+        Triple(Real(6.0), RInteger(3), Real(2.0)),
+        Triple(Real(3.0), Real(6.0), Real(0.5)),
+        Triple(Real(3.0), RInteger(6), Real(0.5))
     ).map { (first, second, expected) ->
         dynamicTest("$first / $second = $expected") {
             assertEquals(
@@ -210,10 +210,10 @@ class DivisionTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        Pair(REmpty, RInteger(4)),
-        Pair(RInteger(4), REmpty),
-        Pair(REmpty, RReal(4.1)),
-        Pair(RReal(4.1), REmpty)
+        Pair(Empty, RInteger(4)),
+        Pair(RInteger(4), Empty),
+        Pair(Empty, Real(4.1)),
+        Pair(Real(4.1), Empty)
     ).map { (first, second) ->
         dynamicTest("$first / $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -245,12 +245,12 @@ class IntDivisionTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        Pair(REmpty, RInteger(4)),
-        Pair(RInteger(4), REmpty),
-        Pair(REmpty, RReal(4.1)),
-        Pair(RReal(4.1), REmpty),
-        Pair(RReal(4.1), RInteger(2)),
-        Pair(RInteger(2), RReal(4.1)),
+        Pair(Empty, RInteger(4)),
+        Pair(RInteger(4), Empty),
+        Pair(Empty, Real(4.1)),
+        Pair(Real(4.1), Empty),
+        Pair(Real(4.1), RInteger(2)),
+        Pair(RInteger(2), Real(4.1)),
         Pair(RInteger(2), RInteger(0)),
         Pair(RInteger(2), RInteger(-1))
     ).map { (first, second) ->
@@ -284,10 +284,10 @@ class ModulusTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        Pair(REmpty, RInteger(4)),
-        Pair(RInteger(4), REmpty),
-        Pair(REmpty, RReal(4.1)),
-        Pair(RReal(4.1), REmpty)
+        Pair(Empty, RInteger(4)),
+        Pair(RInteger(4), Empty),
+        Pair(Empty, Real(4.1)),
+        Pair(Real(4.1), Empty)
     ).map { (first, second) ->
         dynamicTest("$first /% $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -308,9 +308,9 @@ class ExponentiationTest {
     fun validOperationsReturnNewObject() = listOf(
         Triple(RInteger(7), RInteger(3), RInteger(343)),
         Triple(RInteger(3), RInteger(7), RInteger(2187)),
-        Triple(RInteger(4), RReal(2.1), RReal(18.3791736)),
-        Triple(RReal(7.0), RReal(3.0), RReal(343.0)),
-        Triple(RReal(7.0), RInteger(3), RReal(343.0))
+        Triple(RInteger(4), Real(2.1), Real(18.3791736)),
+        Triple(Real(7.0), Real(3.0), Real(343.0)),
+        Triple(Real(7.0), RInteger(3), Real(343.0))
     ).map { (first, second, expected) ->
         dynamicTest("$first ** $second = $expected") {
             assertEquals(
@@ -322,10 +322,10 @@ class ExponentiationTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        Pair(REmpty, RInteger(4)),
-        Pair(RInteger(4), REmpty),
-        Pair(REmpty, RReal(4.1)),
-        Pair(RReal(4.1), REmpty)
+        Pair(Empty, RInteger(4)),
+        Pair(RInteger(4), Empty),
+        Pair(Empty, Real(4.1)),
+        Pair(Real(4.1), Empty)
     ).map { (first, second) ->
         dynamicTest("$first ** $second throws error") {
             assertThrows<RapiraInvalidOperationError> {
@@ -344,12 +344,12 @@ class LengthTest {
 
     @TestFactory
     fun validOperationsReturnNewObject() = listOf(
-        Pair(RText("Hello, world!"), RInteger(13)),
+        Pair(Text("Hello, world!"), RInteger(13)),
         Pair(
-            RSequence(
+            Sequence(
                 listOf(
                     RInteger(1),
-                    RText("hello"),
+                    Text("hello"),
                     RSequence()
                 )
             ),
@@ -366,12 +366,12 @@ class LengthTest {
 
     @TestFactory
     fun invalidOperationsThrowError() = listOf(
-        REmpty,
-        RLogical(true),
-        RProcedure(),
-        RFunction(),
+        Empty,
+        Logical(true),
+        Procedure(),
+        Function(),
         RInteger(1),
-        RReal(1.0)
+        Real(1.0)
     ).map { value ->
         dynamicTest("#($value) throws error") {
             assertThrows<RapiraInvalidOperationError> { lengthOperation(value) }

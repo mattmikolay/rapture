@@ -3,14 +3,14 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.objects.RFunction
-import com.mattmik.rapira.objects.RLogical
+import com.mattmik.rapira.objects.Function
+import com.mattmik.rapira.objects.Logical
+import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RObject
-import com.mattmik.rapira.objects.RProcedure
 import com.mattmik.rapira.objects.toRInteger
-import com.mattmik.rapira.objects.toRReal
-import com.mattmik.rapira.objects.toRSequence
-import com.mattmik.rapira.objects.toRText
+import com.mattmik.rapira.objects.toReal
+import com.mattmik.rapira.objects.toSequence
+import com.mattmik.rapira.objects.toText
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
@@ -30,18 +30,18 @@ class ExpressionVisitorTest : WordSpec({
 
     beforeTest {
         environment = Environment()
-        environment["alpha"] = "Ready!".toRText()
+        environment["alpha"] = "Ready!".toText()
     }
 
     "visit" should {
         "evaluate variables" {
             val resultObject = evaluateExpression("alpha")
-            resultObject shouldBe "Ready!".toRText()
+            resultObject shouldBe "Ready!".toText()
         }
 
         "evaluate text" {
             val resultObject = evaluateExpression("\"Hello, world!\"")
-            resultObject shouldBe "Hello, world!".toRText()
+            resultObject shouldBe "Hello, world!".toText()
         }
 
         "evaluate unsigned integer numbers" {
@@ -51,7 +51,7 @@ class ExpressionVisitorTest : WordSpec({
 
         "evaluate unsigned real numbers" {
             val resultObject = evaluateExpression("12.345")
-            resultObject shouldBe (12.345).toRReal()
+            resultObject shouldBe (12.345).toReal()
         }
 
         "evaluate procedure definitions" {
@@ -61,7 +61,7 @@ class ExpressionVisitorTest : WordSpec({
                     test := 3 + 4
                 end
             """.trimIndent())
-            resultObject should beOfType<RProcedure>()
+            resultObject should beOfType<Procedure>()
         }
 
         "evaluate function definitions" {
@@ -71,7 +71,7 @@ class ExpressionVisitorTest : WordSpec({
                     test := 3 + 4
                 end
             """.trimIndent())
-            resultObject should beOfType<RFunction>()
+            resultObject should beOfType<Function>()
         }
 
         "evaluate sequences" {
@@ -82,15 +82,15 @@ class ExpressionVisitorTest : WordSpec({
                 1.toRInteger(),
                 2.toRInteger(),
                 3.toRInteger(),
-                "a".toRText(),
-                "b".toRText(),
-                "c".toRText()
-            ).toRSequence()
+                "a".toText(),
+                "b".toText(),
+                "c".toText()
+            ).toSequence()
         }
 
         "evaluate length" {
             val resultObject = evaluateExpression("#\"Hello\"")
-            resultObject shouldBe "Hello".toRText().length()
+            resultObject shouldBe "Hello".toText().length()
         }
 
         "evaluate index expressions with commas" {
@@ -106,27 +106,27 @@ class ExpressionVisitorTest : WordSpec({
                 100.toRInteger(),
                 200.toRInteger(),
                 300.toRInteger()
-            ).toRSequence()
+            ).toSequence()
             val resultObject2 = evaluateExpression("<* 100, 200, 300 *>[2:3]")
             resultObject2 shouldBe listOf(
                 200.toRInteger(),
                 300.toRInteger()
-            ).toRSequence()
+            ).toSequence()
             val resultObject3 = evaluateExpression("<* 100, 200, 300 *>[2:]")
             resultObject3 shouldBe listOf(
                 200.toRInteger(),
                 300.toRInteger()
-            ).toRSequence()
+            ).toSequence()
             val resultObject4 = evaluateExpression("<* 100, 200, 300 *>[:2]")
             resultObject4 shouldBe listOf(
                 100.toRInteger(),
                 200.toRInteger()
-            ).toRSequence()
+            ).toSequence()
         }
 
         "evaluate function calls" {
             val resultObject1 = evaluateExpression("is_text(\"Hello\")")
-            resultObject1 shouldBe RLogical(true)
+            resultObject1 shouldBe Logical(true)
             val resultObject2 = evaluateExpression("abs(=>-123)")
             resultObject2 shouldBe 123.toRInteger()
         }
@@ -178,47 +178,47 @@ class ExpressionVisitorTest : WordSpec({
 
         "evaluate equality" {
             val resultObject = evaluateExpression("1 = 1")
-            resultObject shouldBe RLogical(true)
+            resultObject shouldBe Logical(true)
         }
 
         "evaluate inequality" {
             val resultObject = evaluateExpression("1 /= 1")
-            resultObject shouldBe RLogical(false)
+            resultObject shouldBe Logical(false)
         }
 
         "evaluate < relation" {
             val resultObject = evaluateExpression("4 < 5")
-            resultObject shouldBe RLogical(true)
+            resultObject shouldBe Logical(true)
         }
 
         "evaluate > relation" {
             val resultObject = evaluateExpression("4 > 5")
-            resultObject shouldBe RLogical(false)
+            resultObject shouldBe Logical(false)
         }
 
         "evaluate <= relation" {
             val resultObject = evaluateExpression("4 <= 4")
-            resultObject shouldBe RLogical(true)
+            resultObject shouldBe Logical(true)
         }
 
         "evaluate >= relation" {
             val resultObject = evaluateExpression("4 >= 4")
-            resultObject shouldBe RLogical(true)
+            resultObject shouldBe Logical(true)
         }
 
         "evaluate logical not" {
             val resultObject = evaluateExpression("not yes")
-            resultObject shouldBe RLogical(false)
+            resultObject shouldBe Logical(false)
         }
 
         "evaluate logical or" {
             val resultObject = evaluateExpression("yes or no")
-            resultObject shouldBe RLogical(true)
+            resultObject shouldBe Logical(true)
         }
 
         "evaluate logical and" {
             val resultObject = evaluateExpression("yes and no")
-            resultObject shouldBe RLogical(false)
+            resultObject shouldBe Logical(false)
         }
 
         "evaluate parenthetical expressions" {
@@ -230,7 +230,7 @@ class ExpressionVisitorTest : WordSpec({
             val resultObject1 = evaluateExpression("(3 + 4) * 7 + #<* 1, 2 *> + (-2) ** (2 + 1)")
             resultObject1 shouldBe 43.toRInteger()
             val resultObject2 = evaluateExpression("not (not (is_text(\"Hello!\") and no)) or (4 > 3 + 2) = no")
-            resultObject2 shouldBe RLogical(true)
+            resultObject2 shouldBe Logical(true)
         }
     }
 })

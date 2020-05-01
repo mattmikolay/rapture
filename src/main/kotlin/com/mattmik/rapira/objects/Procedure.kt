@@ -8,7 +8,7 @@ import com.mattmik.rapira.visitors.ProcedureReturnException
 import com.mattmik.rapira.visitors.StatementVisitor
 
 // TODO: Add support for intern/extern
-class RProcedure(
+class Procedure(
     private val bodyStatements: RapiraLangParser.StmtsContext? = null,
     private val params: List<String> = emptyList(),
     private val extern: List<String> = emptyList()

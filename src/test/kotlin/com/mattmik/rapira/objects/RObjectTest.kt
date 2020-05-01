@@ -10,7 +10,7 @@ private val testObject = object : RObject("test") {}
 
 class RObjectTest : StringSpec({
     "binary operations throw exception" {
-        val otherObject = REmpty
+        val otherObject = Empty
         forAll(
             row { obj: RObject -> obj + otherObject },
             row { obj: RObject -> obj - otherObject },
@@ -42,8 +42,8 @@ class RObjectTest : StringSpec({
     }
 
     "ternary operations throw exception" {
-        val otherObject1 = REmpty
-        val otherObject2 = REmpty
+        val otherObject1 = Empty
+        val otherObject2 = Empty
         forAll(
             row { obj: RObject -> obj.slice(otherObject1, otherObject2) }
         ) { operation ->

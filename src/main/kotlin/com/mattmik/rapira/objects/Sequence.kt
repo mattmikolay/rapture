@@ -5,31 +5,26 @@ import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
-data class RText(val value: String) : RObject("text") {
-
+data class Sequence(val entries: List<RObject> = emptyList()) : RObject("sequence") {
     override fun plus(other: RObject) = when (other) {
-        is RText -> RText(value + other.value)
+        is Sequence -> Sequence(entries + other.entries)
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)
     }
 
     override fun times(other: RObject) = when (other) {
-        is RInteger ->
-            if (other.value >= 0)
-                value.repeat(other.value).toRText()
-            else
-                throw RapiraInvalidOperationError("Cannot multiply text by negative number")
+        is RInteger -> Sequence(arrayOfNulls<RObject>(other.value).flatMap { entries })
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
-    override fun length() = RInteger(value.length)
+    override fun length() = RInteger(entries.size)
 
     override fun elementAt(other: RObject) = when (other) {
         is RInteger -> {
             val index = other.value
-            if (index < 1 || index > value.length) {
+            if (index < 1 || index > entries.size) {
                 throw RapiraIndexOutOfBoundsError(index)
             }
-            value[index - 1].toString().toRText()
+            entries[index - 1]
         }
         else -> throw RapiraInvalidOperationError(Operation.ElementAt, other)
     }
@@ -40,8 +35,8 @@ data class RText(val value: String) : RObject("text") {
         if (startIndex !is RInteger || endIndex !is RInteger) {
             throw RapiraIllegalArgumentException("Cannot invoke slice with non-integer arguments")
         }
-        return value.substring(startIndex.value - 1, endIndex.value).toRText()
+        return entries.subList(startIndex.value - 1, endIndex.value).toSequence()
     }
 
-    override fun toString() = "\"${value.replace("\"\"", "\"")}\""
+    override fun toString() = if (entries.isEmpty()) "<* *>" else entries.joinToString(prefix = "<* ", postfix = " *>")
 }

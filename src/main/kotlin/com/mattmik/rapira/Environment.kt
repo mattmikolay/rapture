@@ -1,20 +1,20 @@
 package com.mattmik.rapira
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import com.mattmik.rapira.objects.REmpty
-import com.mattmik.rapira.objects.RLogical
+import com.mattmik.rapira.objects.Empty
+import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.nativeFunctions
-import com.mattmik.rapira.objects.toRReal
-import com.mattmik.rapira.objects.toRText
+import com.mattmik.rapira.objects.toReal
+import com.mattmik.rapira.objects.toText
 import kotlin.math.PI
 
 private val specialValues = nativeFunctions + mapOf(
-    "empty" to REmpty,
-    "yes" to RLogical(true),
-    "no" to RLogical(false),
-    "lf" to System.lineSeparator().toRText(),
-    "pi" to PI.toRReal()
+    "empty" to Empty,
+    "yes" to Logical(true),
+    "no" to Logical(false),
+    "lf" to System.lineSeparator().toText(),
+    "pi" to PI.toReal()
 )
 
 class Environment {
@@ -27,5 +27,5 @@ class Environment {
         bindings[name] = value
     }
 
-    operator fun get(name: String) = specialValues[name] ?: bindings.getOrDefault(name, REmpty)
+    operator fun get(name: String) = specialValues[name] ?: bindings.getOrDefault(name, Empty)
 }

@@ -5,7 +5,7 @@ const val ESCAPE_SEQUENCE = "\"\""
 fun parseEscapedText(escapedText: String) =
     escapedText.substring(1, escapedText.length - 1)
         .replace(ESCAPE_SEQUENCE, "\"")
-        .toRText()
+        .toText()
 
 /**
  * Returns a formatted string representation of an [RObject] for use with
@@ -15,14 +15,14 @@ fun parseEscapedText(escapedText: String) =
  * @param obj the object to format
  */
 fun formatRObject(obj: RObject) = when (obj) {
-    is RText -> obj.value
+    is Text -> obj.value
     else -> obj.toString()
 }
 
 fun Int.toRInteger(): RInteger = RInteger(this)
 
-fun Double.toRReal(): RReal = RReal(this)
+fun Double.toReal(): Real = Real(this)
 
-fun String.toRText(): RText = RText(this)
+fun String.toText(): Text = Text(this)
 
-fun List<RObject>.toRSequence(): RSequence = RSequence(this)
+fun List<RObject>.toSequence(): Sequence = Sequence(this)

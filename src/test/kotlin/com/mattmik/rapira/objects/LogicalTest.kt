@@ -8,25 +8,25 @@ import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 
-class RLogicalTest : StringSpec({
+class LogicalTest : StringSpec({
 
     "and with logical returns logical" {
         checkAll<Boolean, Boolean> { a, b ->
-            RLogical(a) and RLogical(b) shouldBe RLogical(a && b)
+            Logical(a) and Logical(b) shouldBe Logical(a && b)
         }
     }
 
     "and with other types throws exception" {
-        val trueLogical = RLogical(true)
-        val falseLogical = RLogical(false)
+        val trueLogical = Logical(true)
+        val falseLogical = Logical(false)
         forAll(
-            row(REmpty),
-            row(RProcedure()),
-            row(RFunction()),
+            row(Empty),
+            row(Procedure()),
+            row(Function()),
             row(RInteger(1)),
-            row(RReal(1.0)),
-            row(RText("hello")),
-            row(RSequence())
+            row(Real(1.0)),
+            row(Text("hello")),
+            row(Sequence())
         ) { obj ->
             shouldThrow<RapiraInvalidOperationError> { trueLogical and obj }
             shouldThrow<RapiraInvalidOperationError> { falseLogical and obj }
@@ -35,21 +35,21 @@ class RLogicalTest : StringSpec({
 
     "or with logical returns logical" {
         checkAll<Boolean, Boolean> { a, b ->
-            RLogical(a) or RLogical(b) shouldBe RLogical(a || b)
+            Logical(a) or Logical(b) shouldBe Logical(a || b)
         }
     }
 
     "or with other types throws exception" {
-        val trueLogical = RLogical(true)
-        val falseLogical = RLogical(false)
+        val trueLogical = Logical(true)
+        val falseLogical = Logical(false)
         forAll(
-            row(REmpty),
-            row(RProcedure()),
-            row(RFunction()),
+            row(Empty),
+            row(Procedure()),
+            row(Function()),
             row(RInteger(1)),
-            row(RReal(1.0)),
-            row(RText("hello")),
-            row(RSequence())
+            row(Real(1.0)),
+            row(Text("hello")),
+            row(Sequence())
         ) { obj ->
             shouldThrow<RapiraInvalidOperationError> { trueLogical or obj }
             shouldThrow<RapiraInvalidOperationError> { falseLogical or obj }
@@ -58,12 +58,12 @@ class RLogicalTest : StringSpec({
 
     "not with logical returns logical" {
         checkAll<Boolean> { a ->
-            RLogical(a).not() shouldBe RLogical(!a)
+            Logical(a).not() shouldBe Logical(!a)
         }
     }
 
     "toString returns user friendly representation" {
-        RLogical(true) shouldConvertToString "yes"
-        RLogical(false) shouldConvertToString "no"
+        Logical(true) shouldConvertToString "yes"
+        Logical(false) shouldConvertToString "no"
     }
 })

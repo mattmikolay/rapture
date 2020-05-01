@@ -6,15 +6,15 @@ import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import com.mattmik.rapira.objects.REmpty
-import com.mattmik.rapira.objects.RFunction
+import com.mattmik.rapira.objects.Empty
+import com.mattmik.rapira.objects.Function
+import com.mattmik.rapira.objects.Logical
+import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RInteger
-import com.mattmik.rapira.objects.RLogical
 import com.mattmik.rapira.objects.RObject
-import com.mattmik.rapira.objects.RProcedure
-import com.mattmik.rapira.objects.RReal
-import com.mattmik.rapira.objects.RSequence
 import com.mattmik.rapira.objects.RapiraCallable
+import com.mattmik.rapira.objects.Real
+import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.parseEscapedText
 
 /**
@@ -64,7 +64,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val (leftExpression, rightExpression) = ctx.comparisonExpression()
         val leftResult = visit(leftExpression)
         val rightResult = visit(rightExpression)
-        return RLogical(
+        return Logical(
             if (ctx.op.type == RapiraLangParser.EQ)
                 leftResult == rightResult
             else {
@@ -129,13 +129,13 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             val arguments = readFunctionArguments(it)
 
             when (baseResult) {
-                is RProcedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
-                is RapiraCallable -> return baseResult.call(environment, arguments) ?: REmpty
+                is Procedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
+                is RapiraCallable -> return baseResult.call(environment, arguments) ?: Empty
                 else -> throw RapiraInvalidOperationError("Cannot invoke object that not a function")
             }
         }
 
-        return REmpty
+        return Empty
     }
 
     override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext): RObject {
@@ -148,7 +148,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) = RInteger(Integer.valueOf(ctx.text))
 
-    override fun visitRealValue(ctx: RapiraLangParser.RealValueContext) = RReal(ctx.text.toDouble())
+    override fun visitRealValue(ctx: RapiraLangParser.RealValueContext) = Real(ctx.text.toDouble())
 
     override fun visitTextValue(ctx: RapiraLangParser.TextValueContext) = parseEscapedText(ctx.text)
 
@@ -157,19 +157,19 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val params = ctx.procedureParams()?.IDENTIFIER()?.map { identifier -> identifier.text }
             ?: emptyList<String>()
         val extern = readExternIdentifiers(ctx.declarations())
-        return RProcedure(ctx.stmts(), params, extern)
+        return Procedure(ctx.stmts(), params, extern)
     }
 
     override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext): RObject {
         val params = ctx.functionParams()?.IDENTIFIER()?.map { identifier -> identifier.text }
             ?: emptyList<String>()
         val extern = readExternIdentifiers(ctx.declarations())
-        return RFunction(ctx.stmts(), params, extern)
+        return Function(ctx.stmts(), params, extern)
     }
 
     override fun visitSequenceValue(ctx: RapiraLangParser.SequenceValueContext): RObject {
         val commaExpression = ctx.commaExpression()
-        return if (commaExpression != null) visit(commaExpression) else RSequence()
+        return if (commaExpression != null) visit(commaExpression) else Sequence()
     }
 
     override fun visitParentheticalExpression(
@@ -178,7 +178,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitCommaExpression(ctx: RapiraLangParser.CommaExpressionContext): RObject {
         val expressionResults = ctx.expression().map { visit(it) }
-        return RSequence(expressionResults)
+        return Sequence(expressionResults)
     }
 
     private fun readFunctionArguments(ctx: RapiraLangParser.FunctionArgumentsContext): List<Argument> =
