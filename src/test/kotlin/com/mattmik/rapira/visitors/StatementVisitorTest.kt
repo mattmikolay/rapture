@@ -1,5 +1,6 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.ConsoleWriter
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
@@ -17,6 +18,8 @@ import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.mockk.clearAllMocks
+import io.mockk.mockkObject
+import io.mockk.verifyOrder
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 
@@ -109,6 +112,63 @@ class StatementVisitorTest : WordSpec({
 
             environment["season"] shouldBe Text("winter")
             environment["sound"] shouldBe Text("meow")
+        }
+
+        // TODO
+        "handle output statements with line break" {
+            mockkObject(ConsoleWriter)
+            evaluateStatements(
+                """
+                    output
+                    output: alpha
+                    output: "The dog chases the", animal
+                """.trimIndent()
+            )
+            verifyOrder {
+                ConsoleWriter.printObjects(
+                    objects = emptyList(),
+                    lineBreak = true
+                )
+                ConsoleWriter.printObjects(
+                    objects = listOf(Text("Ready!")),
+                    lineBreak = true
+                )
+                ConsoleWriter.printObjects(
+                    objects = listOf(
+                        Text("The dog chases the"),
+                        Text("cat")
+                    ),
+                    lineBreak = true
+                )
+            }
+        }
+
+        "handle output statements without line break" {
+            mockkObject(ConsoleWriter)
+            evaluateStatements(
+                """
+                    output nlf
+                    output nlf: alpha
+                    output nlf: "The dog chases the", animal
+                """.trimIndent()
+            )
+            verifyOrder {
+                ConsoleWriter.printObjects(
+                    objects = emptyList(),
+                    lineBreak = false
+                )
+                ConsoleWriter.printObjects(
+                    objects = listOf(Text("Ready!")),
+                    lineBreak = false
+                )
+                ConsoleWriter.printObjects(
+                    objects = listOf(
+                        Text("The dog chases the"),
+                        Text("cat")
+                    ),
+                    lineBreak = false
+                )
+            }
         }
 
         // TODO

@@ -15,19 +15,6 @@ class ObjectUtilsTest : StringSpec({
         parseEscapedText("\"How about some \"\"double quotes\"\"?\"") shouldBe Text("How about some \"double quotes\"?")
     }
 
-    "formatRapiraObject returns correct string representations" {
-        formatRObject(Empty) shouldBe "empty"
-        formatRObject(Procedure()) shouldBe "procedure"
-        formatRObject(Function()) shouldBe "function"
-        formatRObject(Logical(true)) shouldBe "yes"
-        formatRObject(Logical(false)) shouldBe "no"
-        formatRObject(RInteger(123)) shouldBe "123"
-        formatRObject(Real(1.4)) shouldBe "1.4"
-        formatRObject(Text("")) shouldBe ""
-        formatRObject(Text("Hello!")) shouldBe "Hello!"
-        formatRObject(Text("How about some \"double quotes\"?")) shouldBe "How about some \"double quotes\"?"
-    }
-
     "toRInteger converts int" {
         checkAll<Int> { num ->
             num.toRInteger() shouldBe RInteger(num)

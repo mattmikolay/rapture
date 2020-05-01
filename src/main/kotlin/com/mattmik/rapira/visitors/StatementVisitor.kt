@@ -1,5 +1,6 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.ConsoleWriter
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
@@ -14,7 +15,6 @@ import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RapiraCallable
-import com.mattmik.rapira.objects.formatRObject
 
 class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
 
@@ -127,13 +127,11 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitOutputStatement(ctx: RapiraLangParser.OutputStatementContext) {
-        val expressionResults = ctx.expression().map { expression -> expressionVisitor.visit(expression) }
-        val formattedOutput = expressionResults.joinToString(
-            separator = " ",
-            postfix = if (ctx.nlf === null) System.lineSeparator() else "",
-            transform = { obj -> formatRObject(obj) }
+        val expressionResults = ctx.expression().map { expr -> expressionVisitor.visit(expr) }
+        ConsoleWriter.printObjects(
+            objects = expressionResults,
+            lineBreak = ctx.nlf === null
         )
-        print(formattedOutput)
     }
 
     override fun visitInputStatement(ctx: RapiraLangParser.InputStatementContext?) {
