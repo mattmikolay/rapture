@@ -16,6 +16,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 
@@ -30,6 +31,8 @@ class StatementVisitorTest : WordSpec({
     }
 
     beforeTest {
+        // TODO Figure out why removing clearAllMock leads to UT failures
+        clearAllMocks()
         environment = Environment()
         environment["alpha"] = "Ready!".toText()
         environment["month"] = 12.toRInteger()
@@ -77,8 +80,10 @@ class StatementVisitorTest : WordSpec({
 
             evaluateStatements(
                 """
-                    if month = 12 then season := "winter" fi
-                    if animal = "dog" then sound := "bark" fi
+                    if month = 12 then season := "winter"
+                    fi
+                    if animal = "dog" then sound := "bark"
+                    fi
                 """.trimIndent()
             )
 
