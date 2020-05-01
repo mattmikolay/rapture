@@ -65,9 +65,9 @@ class StatementVisitorTest : WordSpec({
         }
 
         "handle assignment statements" {
-            environment["int_value"] shouldBe Empty
-            evaluateStatements("int_value := 3 * alpha")
-            environment["int_value"] shouldBe Text("Ready!Ready!Ready!")
+            environment["str_value"] shouldBe Empty
+            evaluateStatements("str_value := 3 * alpha")
+            environment["str_value"] shouldBe Text("Ready!Ready!Ready!")
 
             // TODO Test index expression assignment
         }
@@ -156,6 +156,37 @@ class StatementVisitorTest : WordSpec({
             )
 
             environment["sound"] shouldBe Text("bark")
+        }
+
+        "handle conditionless case statements 1" {
+            environment["sound"] shouldBe Empty
+
+            evaluateStatements(
+                """
+                    case when animal = "dog": sound := "bark"
+                        when animal = "cat": sound := "meow"
+                        else sound := "moo"
+                    esac
+                """.trimIndent()
+            )
+
+            environment["sound"] shouldBe Text("meow")
+        }
+
+        "handle conditionless case statements 2" {
+            environment["animal"] = Text("hedgehog")
+            environment["sound"] shouldBe Empty
+
+            evaluateStatements(
+                """
+                    case when animal = "dog": sound := "bark"
+                        when animal = "cat": sound := "meow"
+                        else sound := "moo"
+                    esac
+                """.trimIndent()
+            )
+
+            environment["sound"] shouldBe Text("moo")
         }
 
         // TODO
