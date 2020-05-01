@@ -7,6 +7,7 @@ import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.Text
+import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toText
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
@@ -28,6 +29,8 @@ class StatementVisitorTest : WordSpec({
     beforeTest {
         environment = Environment()
         environment["alpha"] = "Ready!".toText()
+        environment["month"] = 12.toRInteger()
+        environment["animal"] = Text("cat")
     }
 
     "visit" should {
@@ -61,6 +64,43 @@ class StatementVisitorTest : WordSpec({
             environment["int_value"] shouldBe Text("Ready!Ready!Ready!")
 
             // TODO Test index expression assignment
+        }
+
+        // TODO Test call statements
+
+        "handle if statements without else clauses" {
+            environment["season"] shouldBe Empty
+            environment["sound"] shouldBe Empty
+
+            evaluateStatements(
+                """
+                    if month = 12 then season := "winter" fi
+                    if animal = "dog" then sound := "bark" fi
+                """.trimIndent()
+            )
+
+            environment["season"] shouldBe Text("winter")
+            environment["sound"] shouldBe Empty
+        }
+
+        "handle if statements with else clauses" {
+            environment["season"] shouldBe Empty
+            environment["sound"] shouldBe Empty
+
+            evaluateStatements(
+                """
+                    if month = 12 then season := "winter"
+                    else season := "summer"
+                    fi
+
+                    if animal = "dog" then sound := "bark"
+                    else sound := "meow"
+                    fi
+                """.trimIndent()
+            )
+
+            environment["season"] shouldBe Text("winter")
+            environment["sound"] shouldBe Text("meow")
         }
     }
 })
