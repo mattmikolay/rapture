@@ -5,6 +5,8 @@ import com.mattmik.rapira.objects.Text
 
 object ConsoleWriter {
 
+    fun println(message: String) = kotlin.io.println(message)
+
     fun printObjects(objects: List<RObject>, lineBreak: Boolean) {
         val formattedOutput = objects.joinToString(
             separator = " ",

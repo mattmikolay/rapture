@@ -10,6 +10,7 @@ import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
@@ -151,8 +152,8 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
     // Expression statements are only valid in the REPL
     override fun visitExpressionStatement(ctx: RapiraLangParser.ExpressionStatementContext) {
-        val expressionResult = expressionVisitor.visit(ctx.expression())
-        println(expressionResult)
+        val expressionResult = expressionVisitor.visit(ctx.expression()) ?: Empty
+        ConsoleWriter.println(expressionResult.toString())
     }
 
     private fun readProcedureArguments(ctx: RapiraLangParser.ProcedureArgumentsContext): List<Argument> {

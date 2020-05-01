@@ -18,6 +18,8 @@ import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -33,10 +35,15 @@ class StatementVisitorTest : WordSpec({
     }
 
     beforeTest {
+        mockkObject(ConsoleWriter)
         environment = Environment()
         environment["alpha"] = "Ready!".toText()
         environment["month"] = 12.toRInteger()
         environment["animal"] = Text("cat")
+    }
+
+    afterTest {
+        unmockkObject(ConsoleWriter)
     }
 
     "visit" should {
@@ -191,7 +198,6 @@ class StatementVisitorTest : WordSpec({
 
         // TODO
         "handle output statements with line break" {
-            mockkObject(ConsoleWriter)
             evaluateStatements(
                 """
                     output
@@ -219,7 +225,6 @@ class StatementVisitorTest : WordSpec({
         }
 
         "handle output statements without line break" {
-            mockkObject(ConsoleWriter)
             evaluateStatements(
                 """
                     output nlf
@@ -247,6 +252,19 @@ class StatementVisitorTest : WordSpec({
         }
 
         // TODO
+
+        "handle expression statements" {
+            val statement = "3 * alpha"
+
+            val lexer = RapiraLangLexer(CharStreams.fromString("$statement\n"))
+            val parser = RapiraLangParser(CommonTokenStream(lexer))
+            val tree = parser.dialogUnit()
+            StatementVisitor(environment).visit(tree)
+
+            verify {
+                ConsoleWriter.println(Text("Ready!Ready!Ready!").toString())
+            }
+        }
 
         "throw exception when exit statement occurs outside loop" {
             shouldThrow<LoopExitException> {
