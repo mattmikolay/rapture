@@ -14,6 +14,9 @@ object ConsoleWriter {
         print(formattedOutput)
     }
 
+    fun printError(errorMessage: String) =
+        System.err.println("Error: $errorMessage")
+
     /**
      * Returns a formatted string representation of an [RObject] for use with
      * the the `output` statement. This differs from [toString], which returns the

@@ -34,11 +34,11 @@ class Interpreter {
         try {
             statementVisitor.visit(parseTree)
         } catch (exception: ProcedureReturnException) {
-            println("Error: cannot invoke return outside of procedure or function")
+            ConsoleWriter.printError("cannot invoke return outside of procedure or function")
         } catch (exception: LoopExitException) {
-            println("Error: cannot invoke exit outside of loop")
+            ConsoleWriter.printError("cannot invoke exit outside of loop")
         } catch (error: RapiraRuntimeError) {
-            println("Error: ${error.message}")
+            ConsoleWriter.printError("${error.message}")
         }
     }
 }
