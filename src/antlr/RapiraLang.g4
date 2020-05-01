@@ -93,7 +93,7 @@ singleWhenClause
     ;
 
 loopStatement
-    : (forClause | repeatClause)? whileClause? 'do' stmts ('od' | ('until' expression))
+    : (forClause | repeatClause)? whileClause? 'do' stmts ('od' | ('until' untilExpr=expression))
     ;
 
 forClause

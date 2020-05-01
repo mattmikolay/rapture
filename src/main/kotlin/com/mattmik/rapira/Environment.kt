@@ -2,7 +2,8 @@ package com.mattmik.rapira
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
-import com.mattmik.rapira.objects.Logical
+import com.mattmik.rapira.objects.LogicalNo
+import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.nativeFunctions
 import com.mattmik.rapira.objects.toReal
@@ -11,8 +12,8 @@ import kotlin.math.PI
 
 private val specialValues = nativeFunctions + mapOf(
     "empty" to Empty,
-    "yes" to Logical(true),
-    "no" to Logical(false),
+    "yes" to LogicalYes,
+    "no" to LogicalNo,
     "lf" to System.lineSeparator().toText(),
     "pi" to PI.toReal()
 )

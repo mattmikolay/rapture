@@ -10,6 +10,7 @@ import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Logical
+import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.formatRObject
 
@@ -79,7 +80,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     override fun visitConditionlessCaseStatement(ctx: RapiraLangParser.ConditionlessCaseStatementContext) {
         for (whenClause in ctx.singleWhenClause()) {
             val whenResult = expressionVisitor.visit(whenClause.expression())
-            if (whenResult == Logical(true)) {
+            if (whenResult == LogicalYes) {
                 visit(whenClause.stmts())
                 return
             }
@@ -91,7 +92,13 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     override fun visitLoopStatement(ctx: RapiraLangParser.LoopStatementContext) {
         // TODO Not fully implemented!
         try {
-            visit(ctx.stmts())
+            while (true) {
+                visit(ctx.stmts())
+
+                if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == LogicalYes) {
+                    return
+                }
+            }
         } catch (exception: LoopExitException) {
             // no-op
         }
