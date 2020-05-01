@@ -3,8 +3,8 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
+import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import com.mattmik.rapira.visitors.ProcedureReturnException
 import com.mattmik.rapira.visitors.StatementVisitor
 
 // TODO: Add support for intern/extern
