@@ -111,6 +111,53 @@ class StatementVisitorTest : WordSpec({
             environment["sound"] shouldBe Text("meow")
         }
 
+        "handle condition case statements 1" {
+            environment["sound"] shouldBe Empty
+
+            evaluateStatements(
+                """
+                    case animal when "dog", "seal": sound := "bark"
+                        when "cat": sound := "meow"
+                        else sound := "moo"
+                    esac
+                """.trimIndent()
+            )
+
+            environment["sound"] shouldBe Text("meow")
+        }
+
+        "handle condition case statements 2" {
+            environment["animal"] = Text("hedgehog")
+            environment["sound"] shouldBe Empty
+
+            evaluateStatements(
+                """
+                    case animal when "dog", "seal": sound := "bark"
+                        when "cat": sound := "meow"
+                        else sound := "moo"
+                    esac
+                """.trimIndent()
+            )
+
+            environment["sound"] shouldBe Text("moo")
+        }
+
+        "handle condition case statements 3" {
+            environment["animal"] = Text("seal")
+            environment["sound"] shouldBe Empty
+
+            evaluateStatements(
+                """
+                    case animal when "dog", "seal": sound := "bark"
+                        when "cat": sound := "meow"
+                        else sound := "moo"
+                    esac
+                """.trimIndent()
+            )
+
+            environment["sound"] shouldBe Text("bark")
+        }
+
         // TODO
         "handle output statements with line break" {
             mockkObject(ConsoleWriter)
