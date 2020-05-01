@@ -9,15 +9,23 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
+import io.mockk.unmockkConstructor
 import io.mockk.verify
 
 class InArgumentTest : WordSpec({
     "evaluate" should {
+        beforeTest {
+            mockkConstructor(ExpressionVisitor::class)
+        }
+
+        afterTest {
+            unmockkConstructor(ExpressionVisitor::class)
+        }
+
         "visit expression" {
             val environment = Environment()
             val mockExpressionContext = mockk<RapiraLangParser.ExpressionContext>()
             val expectedResult = 123.toRInteger()
-            mockkConstructor(ExpressionVisitor::class)
             every { anyConstructed<ExpressionVisitor>().visit(any()) } returns expectedResult
 
             val argument = InArgument(mockExpressionContext)
