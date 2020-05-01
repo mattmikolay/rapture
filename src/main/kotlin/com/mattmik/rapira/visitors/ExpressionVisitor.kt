@@ -30,15 +30,15 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitAndExpression(ctx: RapiraLangParser.AndExpressionContext): RObject {
         val (leftExpression, rightExpression) = ctx.logicalExpression()
-        val leftResult = this.visit(leftExpression)
-        val rightResult = this.visit(rightExpression)
+        val leftResult = visit(leftExpression)
+        val rightResult = visit(rightExpression)
         return leftResult and rightResult
     }
 
     override fun visitOrExpression(ctx: RapiraLangParser.OrExpressionContext): RObject {
         val (leftExpression, rightExpression) = ctx.logicalExpression()
-        val leftResult = this.visit(leftExpression)
-        val rightResult = this.visit(rightExpression)
+        val leftResult = visit(leftExpression)
+        val rightResult = visit(rightExpression)
         return leftResult or rightResult
     }
 
@@ -49,8 +49,8 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext): RObject {
         val (leftExpression, rightExpression) = ctx.comparisonExpression()
-        val leftResult = this.visit(leftExpression)
-        val rightResult = this.visit(rightExpression)
+        val leftResult = visit(leftExpression)
+        val rightResult = visit(rightExpression)
         return when (ctx.op.type) {
             RapiraLangParser.LESS -> leftResult lessThan rightResult
             RapiraLangParser.GREATER -> leftResult greaterThan rightResult
@@ -62,8 +62,8 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitEqualityExpression(ctx: RapiraLangParser.EqualityExpressionContext): RObject {
         val (leftExpression, rightExpression) = ctx.comparisonExpression()
-        val leftResult = this.visit(leftExpression)
-        val rightResult = this.visit(rightExpression)
+        val leftResult = visit(leftExpression)
+        val rightResult = visit(rightExpression)
         return RLogical(
             if (ctx.op.type == RapiraLangParser.EQ)
                 leftResult == rightResult
@@ -75,15 +75,15 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitExponentiationExpression(ctx: RapiraLangParser.ExponentiationExpressionContext): RObject {
         val (leftExpression, rightExpression) = ctx.arithmeticExpression()
-        val leftResult = this.visit(leftExpression)
-        val rightResult = this.visit(rightExpression)
+        val leftResult = visit(leftExpression)
+        val rightResult = visit(rightExpression)
         return leftResult.power(rightResult)
     }
 
     override fun visitMultiplicationExpression(ctx: RapiraLangParser.MultiplicationExpressionContext): RObject {
         val (leftExpression, rightExpression) = ctx.arithmeticExpression()
-        val leftResult = this.visit(leftExpression)
-        val rightResult = this.visit(rightExpression)
+        val leftResult = visit(leftExpression)
+        val rightResult = visit(rightExpression)
         return when (ctx.op.type) {
             RapiraLangParser.MULT -> leftResult * rightResult
             RapiraLangParser.DIVIDE -> leftResult / rightResult
@@ -95,8 +95,8 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitAdditionExpression(ctx: RapiraLangParser.AdditionExpressionContext): RObject {
         val (leftExpression, rightExpression) = ctx.arithmeticExpression()
-        val leftResult = this.visit(leftExpression)
-        val rightResult = this.visit(rightExpression)
+        val leftResult = visit(leftExpression)
+        val rightResult = visit(rightExpression)
         return when (ctx.op.type) {
             RapiraLangParser.PLUS -> leftResult + rightResult
             RapiraLangParser.MINUS -> leftResult - rightResult
@@ -105,7 +105,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitUnaryExpression(ctx: RapiraLangParser.UnaryExpressionContext): RObject {
-        val result = this.visit(ctx.subopExpression())
+        val result = visit(ctx.subopExpression())
         return if (ctx.op?.type == RapiraLangParser.MINUS) result.negate() else result
     }
 
@@ -174,7 +174,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitParentheticalExpression(
         ctx: RapiraLangParser.ParentheticalExpressionContext
-    ): RObject = this.visit(ctx.expression())
+    ): RObject = visit(ctx.expression())
 
     override fun visitCommaExpression(ctx: RapiraLangParser.CommaExpressionContext): RObject {
         val expressionResults = ctx.expression().map { visit(it) }
