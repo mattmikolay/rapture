@@ -59,9 +59,21 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
     }
 
-    override fun visitConditionCaseStatement(ctx: RapiraLangParser.ConditionCaseStatementContext?) {
-        super.visitConditionCaseStatement(ctx)
-        TODO("Not yet implemented")
+    override fun visitConditionCaseStatement(ctx: RapiraLangParser.ConditionCaseStatementContext) {
+        val conditionResult = expressionVisitor.visit(ctx.condition)
+
+        val whenClauses = ctx.multiWhenClause().flatMap { multiWhenClause ->
+            multiWhenClause.expression().map { expr -> Pair(expr, multiWhenClause.stmts()) }
+        }
+        for (whenClause in whenClauses) {
+            val whenResult = expressionVisitor.visit(whenClause.first)
+            if (whenResult == conditionResult) {
+                visit(whenClause.second)
+                return
+            }
+        }
+
+        ctx.elseBody?.let { visit(it) }
     }
 
     override fun visitConditionlessCaseStatement(ctx: RapiraLangParser.ConditionlessCaseStatementContext) {
