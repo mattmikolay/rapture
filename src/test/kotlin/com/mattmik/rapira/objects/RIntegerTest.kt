@@ -1,157 +1,107 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
-class NewRapiraIntegerTest : StringSpec({
-    "addition with integer returns integer" {
-        checkAll<Int, Int> { a, b ->
-            a.toRInteger() + b.toRInteger() shouldBe (a + b).toRInteger()
+class RIntegerTest : WordSpec({
+    "plus" should {
+        "return integer when given integer" {
+            checkAll<Int, Int> { a, b ->
+                RInteger(a) + RInteger(b) shouldBe RInteger(a + b)
+            }
+        }
+
+        "return real when given real" {
+            checkAll<Int, Double> { a, b ->
+                RInteger(a) + Real(b) shouldBe Real(a + b)
+            }
         }
     }
 
-    "addition with real returns real" {
-        checkAll<Int, Double> { a, b ->
-            a.toRInteger() + b.toReal() shouldBe (a + b).toReal()
+    "minus" should {
+        "return integer when given integer" {
+            checkAll<Int, Int> { a, b ->
+                RInteger(a) - RInteger(b) shouldBe RInteger(a - b)
+            }
+        }
+
+        "return real when given real" {
+            checkAll<Int, Double> { a, b ->
+                RInteger(a) - Real(b) shouldBe Real(a - b)
+            }
         }
     }
 
-    "subtraction with integer returns integer" {
-        checkAll<Int, Int> { a, b ->
-            a.toRInteger() - b.toRInteger() shouldBe (a - b).toRInteger()
+    "less than" should {
+        "return logical when given integer" {
+            checkAll<Int, Int> { a, b ->
+                RInteger(a) lessThan RInteger(b) shouldBe Logical(a < b)
+            }
+        }
+
+        "return logical when given real" {
+            checkAll<Int, Double> { a, b ->
+                a.toRInteger() lessThan b.toReal() shouldBe Logical(a < b)
+            }
         }
     }
 
-    "subtraction with real returns real" {
-        checkAll<Int, Double> { a, b ->
-            a.toRInteger() - b.toReal() shouldBe (a - b).toReal()
+    "less than or equal to" should {
+        "return logical when given integer" {
+            checkAll<Int, Int> { a, b ->
+                a.toRInteger() lessThanEqualTo b.toRInteger() shouldBe Logical(a <= b)
+            }
+        }
+
+        "return logical when given real" {
+            checkAll<Int, Double> { a, b ->
+                a.toRInteger() lessThanEqualTo b.toReal() shouldBe Logical(a <= b)
+            }
         }
     }
 
-    "less than with integer returns logical" {
-        checkAll<Int, Int> { a, b ->
-            a.toRInteger() lessThan b.toRInteger() shouldBe Logical(a < b)
+    "greater than" should {
+        "return logical when given integer" {
+            checkAll<Int, Int> { a, b ->
+                a.toRInteger() greaterThan b.toRInteger() shouldBe Logical(a > b)
+            }
+        }
+
+        "return logical when given real" {
+            checkAll<Int, Double> { a, b ->
+                a.toRInteger() greaterThan b.toReal() shouldBe Logical(a > b)
+            }
         }
     }
 
-    "less than with real returns logical" {
-        checkAll<Int, Double> { a, b ->
-            a.toRInteger() lessThan b.toReal() shouldBe Logical(a < b)
+    "greater than or equal to" should {
+        "return logical when given integer" {
+            checkAll<Int, Int> { a, b ->
+                a.toRInteger() greaterThanEqualTo b.toRInteger() shouldBe Logical(a >= b)
+            }
+        }
+
+        "return logical when given real" {
+            checkAll<Int, Double> { a, b ->
+                a.toRInteger() greaterThanEqualTo b.toReal() shouldBe Logical(a >= b)
+            }
         }
     }
 
-    "less than or equal to with integer returns logical" {
-        checkAll<Int, Int> { a, b ->
-            a.toRInteger() lessThanEqualTo b.toRInteger() shouldBe Logical(a <= b)
+    "negate" should {
+        "return integer" {
+            checkAll<Int> { num ->
+                RInteger(num).negate() shouldBe RInteger(-num)
+            }
         }
     }
 
-    "less than or equal to with real returns logical" {
-        checkAll<Int, Double> { a, b ->
-            a.toRInteger() lessThanEqualTo b.toReal() shouldBe Logical(a <= b)
+    "toString" should {
+        "return user friendly representation" {
+            checkAll<Int> { num ->
+                RInteger(num) shouldConvertToString "$num"
+            }
         }
-    }
-
-    "greater than with integer returns logical" {
-        checkAll<Int, Int> { a, b ->
-            a.toRInteger() greaterThan b.toRInteger() shouldBe Logical(a > b)
-        }
-    }
-
-    "greater than with real returns logical" {
-        checkAll<Int, Double> { a, b ->
-            a.toRInteger() greaterThan b.toReal() shouldBe Logical(a > b)
-        }
-    }
-
-    "greater than or equal to with integer returns logical" {
-        checkAll<Int, Int> { a, b ->
-            a.toRInteger() greaterThanEqualTo b.toRInteger() shouldBe Logical(a >= b)
-        }
-    }
-
-    "greater than or equal to with real returns logical" {
-        checkAll<Int, Double> { a, b ->
-            a.toRInteger() greaterThanEqualTo b.toReal() shouldBe Logical(a >= b)
-        }
-    }
-
-    "negate returns integer" {
-        checkAll<Int> {
-            num -> num.toRInteger().negate() shouldBe (-num).toRInteger()
-        }
-    }
-
-    // "modulus with integer returns integer" {
-    //     forAll<Int, Int> { a, b ->
-    //         RapiraInteger(a).modulus(b.toRapiraInteger()) == RapiraInteger(a % b)
-    //     }
-    // }
-
-    "toString returns user friendly representation" {
-        checkAll<Int> { num -> RInteger(num) shouldConvertToString "$num" }
     }
 })
-
-class RIntegerTest {
-
-    @Test
-    fun lessThanWithOtherTypesThrowsException() = listOf(
-        Empty,
-        Procedure(),
-        Function(),
-        Text("hello"),
-        Logical(true),
-        Sequence()
-    ).forEach {
-        assertThrows<RapiraInvalidOperationError> { RInteger(10).lessThan(it) }
-        assertThrows<RapiraInvalidOperationError> { RInteger(0).lessThan(it) }
-        assertThrows<RapiraInvalidOperationError> { RInteger(-10).lessThan(it) }
-    }
-
-    @Test
-    fun greaterThanWithOtherTypesThrowsException() = listOf(
-        Empty,
-        Procedure(),
-        Function(),
-        Text("hello"),
-        Logical(true),
-        Sequence()
-    ).forEach {
-        assertThrows<RapiraInvalidOperationError> { RInteger(10) greaterThan it }
-        assertThrows<RapiraInvalidOperationError> { RInteger(0) greaterThan it }
-        assertThrows<RapiraInvalidOperationError> { RInteger(-10) greaterThan it }
-    }
-
-    @Test
-    fun lessThanEqualToWithOtherTypesThrowsException() = listOf(
-        Empty,
-        Procedure(),
-        Function(),
-        Text("hello"),
-        Logical(true),
-        Sequence()
-    ).forEach {
-        assertThrows<RapiraInvalidOperationError> { RInteger(10) lessThanEqualTo it }
-        assertThrows<RapiraInvalidOperationError> { RInteger(0) lessThanEqualTo it }
-        assertThrows<RapiraInvalidOperationError> { RInteger(-10) lessThanEqualTo it }
-    }
-
-    @Test
-    fun greaterThanEqualToWithOtherTypesThrowsException() = listOf(
-        Empty,
-        Procedure(),
-        Function(),
-        Text("hello"),
-        Logical(true),
-        Sequence()
-    ).forEach {
-        assertThrows<RapiraInvalidOperationError> { RInteger(10) greaterThanEqualTo it }
-        assertThrows<RapiraInvalidOperationError> { RInteger(0) greaterThanEqualTo it }
-        assertThrows<RapiraInvalidOperationError> { RInteger(-10) greaterThanEqualTo it }
-    }
-}
