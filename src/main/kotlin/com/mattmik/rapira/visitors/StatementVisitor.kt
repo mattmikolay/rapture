@@ -12,6 +12,7 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
+import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.formatRObject
 
@@ -91,14 +92,30 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitLoopStatement(ctx: RapiraLangParser.LoopStatementContext) {
+        var repeatCounter: Int? = null
+        val repeatInitialValue = ctx.repeatClause()?.expression()?.let { expressionVisitor.visit(it) } ?: null
+        if (repeatInitialValue != null) {
+            if (repeatInitialValue !is RInteger || repeatInitialValue.value < 0) {
+                throw RapiraInvalidOperationError("Cannot call repeat with non-integer number")
+            }
+            repeatCounter = repeatInitialValue.value
+        }
+
         // TODO Not fully implemented!
         try {
             while (true) {
-                if (ctx.whileClause()?.expression().let { expressionVisitor.visit(it) } == LogicalNo) {
+                if (repeatCounter != null && repeatCounter <= 0) {
+                    return
+                }
+                if (ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } == LogicalNo) {
                     return
                 }
 
                 visit(ctx.stmts())
+
+                if (repeatCounter != null) {
+                    repeatCounter -= 1
+                }
 
                 if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == LogicalYes) {
                     return
