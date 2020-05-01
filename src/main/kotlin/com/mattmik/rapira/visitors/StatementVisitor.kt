@@ -10,6 +10,7 @@ import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Logical
+import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.formatRObject
@@ -93,6 +94,10 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         // TODO Not fully implemented!
         try {
             while (true) {
+                if (ctx.whileClause()?.expression().let { expressionVisitor.visit(it) } == LogicalNo) {
+                    return
+                }
+
                 visit(ctx.stmts())
 
                 if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == LogicalYes) {
