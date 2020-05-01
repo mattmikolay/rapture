@@ -350,7 +350,7 @@ class LengthTest {
                 listOf(
                     RInteger(1),
                     Text("hello"),
-                    RSequence()
+                    Sequence()
                 )
             ),
             RInteger(3)

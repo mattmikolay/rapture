@@ -28,25 +28,31 @@ class ObjectUtilsTest : StringSpec({
         formatRObject(Text("How about some \"double quotes\"?")) shouldBe "How about some \"double quotes\"?"
     }
 
-    "toRapiraInteger converts int" {
+    "toRInteger converts int" {
         checkAll<Int> { num ->
             num.toRInteger() shouldBe RInteger(num)
         }
     }
 
-    "toRapiraReal converts double" {
+    "toReal converts double" {
         checkAll<Double> { num ->
             num.toReal() shouldBe Real(num)
         }
     }
 
-    "toRapiraText converts string" {
+    "toLogical converts boolean" {
+        checkAll<Boolean> { bool ->
+            bool.toLogical() shouldBe Logical(bool)
+        }
+    }
+
+    "toText converts string" {
         checkAll<String> { str ->
             str.toText() shouldBe Text(str)
         }
     }
 
-    "toRapiraSequence converts list" {
+    "toSequence converts list" {
         checkAll(Arb.list(Arb.int())) { list ->
             val rapiraObjectList = list.map { num -> num.toRInteger() }
             rapiraObjectList.toSequence() shouldBe Sequence(rapiraObjectList)

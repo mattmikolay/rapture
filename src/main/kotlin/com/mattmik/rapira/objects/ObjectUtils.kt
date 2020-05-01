@@ -23,6 +23,8 @@ fun Int.toRInteger(): RInteger = RInteger(this)
 
 fun Double.toReal(): Real = Real(this)
 
+fun Boolean.toLogical(): Logical = Logical(this)
+
 fun String.toText(): Text = Text(this)
 
 fun List<RObject>.toSequence(): Sequence = Sequence(this)
