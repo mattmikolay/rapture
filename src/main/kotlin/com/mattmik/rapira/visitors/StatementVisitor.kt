@@ -24,14 +24,14 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext) {
         val procedure = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
-            environment[it.text] = procedure
+            environment[it.text].value = procedure
         }
     }
 
     override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext) {
         val function = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
-            environment[it.text] = function
+            environment[it.text].value = function
         }
     }
 
@@ -39,11 +39,11 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         // TODO Handle index expressions
         val variableName = ctx.IDENTIFIER()
         val evaluatedExpression = expressionVisitor.visit(ctx.expression())
-        environment[variableName.text] = evaluatedExpression
+        environment[variableName.text].value = evaluatedExpression
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
-        val callable = ctx.IDENTIFIER()?.let { environment[it.text] }
+        val callable = ctx.IDENTIFIER()?.let { environment[it.text].value }
             ?: expressionVisitor.visit(ctx.expression())
 
         val arguments = readProcedureArguments(ctx.procedureArguments())

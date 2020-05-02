@@ -3,6 +3,7 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.mockk.every
@@ -18,7 +19,7 @@ class ProcedureTest : WordSpec({
                 "externVariable2",
                 "externVariable3"
             )
-            every { mockEnvironment[any()] } returns Empty
+            every { mockEnvironment[any()] } returns SimpleVariable(Empty)
             val procedure = Procedure(extern = extern)
 
             procedure.call(mockEnvironment, emptyList())

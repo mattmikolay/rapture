@@ -1,8 +1,8 @@
 package com.mattmik.rapira.args
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.objects.RObject
+import com.mattmik.rapira.variables.Variable
 
 interface Argument {
-    fun evaluate(environment: Environment): RObject
+    fun evaluate(environment: Environment): Variable
 }

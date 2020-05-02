@@ -12,6 +12,7 @@ import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toText
+import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
@@ -37,9 +38,9 @@ class StatementVisitorTest : WordSpec({
     beforeTest {
         mockkObject(ConsoleWriter)
         environment = Environment()
-        environment["alpha"] = "Ready!".toText()
-        environment["month"] = 12.toRInteger()
-        environment["animal"] = Text("cat")
+        environment["alpha"] = SimpleVariable("Ready!".toText())
+        environment["month"] = SimpleVariable(12.toRInteger())
+        environment["animal"] = SimpleVariable(Text("cat"))
     }
 
     afterTest {
@@ -48,7 +49,7 @@ class StatementVisitorTest : WordSpec({
 
     "visit" should {
         "handle procedure definitions" {
-            environment["test_procedure"] shouldBe Empty
+            environment["test_procedure"].value shouldBe Empty
             evaluateStatements(
                 """
                     proc test_procedure (param1, =>param2, <=param3)
@@ -56,11 +57,11 @@ class StatementVisitorTest : WordSpec({
                     end
                 """.trimIndent()
             )
-            environment["test_procedure"] should beOfType<Procedure>()
+            environment["test_procedure"].value should beOfType<Procedure>()
         }
 
         "handle function definitions" {
-            environment["test_function"] shouldBe Empty
+            environment["test_function"].value shouldBe Empty
             evaluateStatements(
                 """
                     fun test_function (param1, =>param2)
@@ -68,13 +69,13 @@ class StatementVisitorTest : WordSpec({
                     end
                 """.trimIndent()
             )
-            environment["test_function"] should beOfType<Function>()
+            environment["test_function"].value should beOfType<Function>()
         }
 
         "handle assignment statements" {
-            environment["str_value"] shouldBe Empty
+            environment["str_value"].value shouldBe Empty
             evaluateStatements("str_value := 3 * alpha")
-            environment["str_value"] shouldBe Text("Ready!Ready!Ready!")
+            environment["str_value"].value shouldBe Text("Ready!Ready!Ready!")
 
             // TODO Test index expression assignment
         }
@@ -82,8 +83,8 @@ class StatementVisitorTest : WordSpec({
         // TODO Test call statements
 
         "handle if statements without else clauses" {
-            environment["season"] shouldBe Empty
-            environment["sound"] shouldBe Empty
+            environment["season"].value shouldBe Empty
+            environment["sound"].value shouldBe Empty
 
             evaluateStatements(
                 """
@@ -94,13 +95,13 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["season"] shouldBe Text("winter")
-            environment["sound"] shouldBe Empty
+            environment["season"].value shouldBe Text("winter")
+            environment["sound"].value shouldBe Empty
         }
 
         "handle if statements with else clauses" {
-            environment["season"] shouldBe Empty
-            environment["sound"] shouldBe Empty
+            environment["season"].value shouldBe Empty
+            environment["sound"].value shouldBe Empty
 
             evaluateStatements(
                 """
@@ -114,12 +115,12 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["season"] shouldBe Text("winter")
-            environment["sound"] shouldBe Text("meow")
+            environment["season"].value shouldBe Text("winter")
+            environment["sound"].value shouldBe Text("meow")
         }
 
         "handle condition case statements 1" {
-            environment["sound"] shouldBe Empty
+            environment["sound"].value shouldBe Empty
 
             evaluateStatements(
                 """
@@ -130,12 +131,12 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"] shouldBe Text("meow")
+            environment["sound"].value shouldBe Text("meow")
         }
 
         "handle condition case statements 2" {
-            environment["animal"] = Text("hedgehog")
-            environment["sound"] shouldBe Empty
+            environment["animal"].value = Text("hedgehog")
+            environment["sound"].value shouldBe Empty
 
             evaluateStatements(
                 """
@@ -146,12 +147,12 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"] shouldBe Text("moo")
+            environment["sound"].value shouldBe Text("moo")
         }
 
         "handle condition case statements 3" {
-            environment["animal"] = Text("seal")
-            environment["sound"] shouldBe Empty
+            environment["animal"].value = Text("seal")
+            environment["sound"].value shouldBe Empty
 
             evaluateStatements(
                 """
@@ -162,11 +163,11 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"] shouldBe Text("bark")
+            environment["sound"].value shouldBe Text("bark")
         }
 
         "handle conditionless case statements 1" {
-            environment["sound"] shouldBe Empty
+            environment["sound"].value shouldBe Empty
 
             evaluateStatements(
                 """
@@ -177,12 +178,12 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"] shouldBe Text("meow")
+            environment["sound"].value shouldBe Text("meow")
         }
 
         "handle conditionless case statements 2" {
-            environment["animal"] = Text("hedgehog")
-            environment["sound"] shouldBe Empty
+            environment["animal"].value = Text("hedgehog")
+            environment["sound"].value shouldBe Empty
 
             evaluateStatements(
                 """
@@ -193,7 +194,7 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"] shouldBe Text("moo")
+            environment["sound"].value shouldBe Text("moo")
         }
 
         // TODO

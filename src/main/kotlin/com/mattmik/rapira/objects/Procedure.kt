@@ -7,7 +7,6 @@ import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.visitors.StatementVisitor
 
-// TODO: Add support for intern/extern
 class Procedure(
     private val bodyStatements: RapiraLangParser.StmtsContext? = null,
     private val params: List<String> = emptyList(),
@@ -23,7 +22,7 @@ class Procedure(
             newEnvironment[paramName] = argument.evaluate(environment)
         }
         extern.map { Pair(it, environment[it]) }
-            .forEach { (name, value) -> newEnvironment[name] = value }
+            .forEach { (name, variable) -> newEnvironment[name] = variable }
 
         var returnValue: RObject? = null
 
@@ -32,8 +31,6 @@ class Procedure(
         } catch (exception: ProcedureReturnException) {
             returnValue = exception.returnValue
         }
-
-        // TODO After execution, update previous environment using intern fields of this function
 
         return returnValue
     }

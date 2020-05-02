@@ -6,6 +6,7 @@ import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.objects.toText
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 
@@ -17,19 +18,21 @@ class InOutArgumentTest : WordSpec() {
     init {
         beforeTest {
             environment = Environment()
-            environment[VARIABLE_NAME] = "Hello, world!".toText()
+            environment[VARIABLE_NAME].value = "Hello, world!".toText()
         }
         "evaluate" should {
-            "return value of simple identifier in environment" {
-                val variableValue = "Hello, world!".toText()
+            "return variable in environment" {
+                val expectedVariable = environment[VARIABLE_NAME]
+                val expectedObject = "Hello, world!".toText()
                 val lexer = RapiraLangLexer(CharStreams.fromString(VARIABLE_NAME))
                 val parser = RapiraLangParser(CommonTokenStream(lexer))
                 val tree = parser.variable()
 
                 val argument = InOutArgument(tree)
-                val evaluationResult = argument.evaluate(environment)
+                val actualVariable = argument.evaluate(environment)
 
-                evaluationResult shouldBe variableValue
+                actualVariable shouldBeSameInstanceAs expectedVariable
+                actualVariable.value shouldBe expectedObject
             }
         }
     }

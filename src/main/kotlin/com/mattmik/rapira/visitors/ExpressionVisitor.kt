@@ -144,7 +144,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitIdentifierValue(ctx: RapiraLangParser.IdentifierValueContext) =
-        environment[ctx.IDENTIFIER().text]
+        environment[ctx.IDENTIFIER().text].value
 
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) = RInteger(Integer.valueOf(ctx.text))
 

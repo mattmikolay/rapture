@@ -31,7 +31,7 @@ class InArgumentTest : WordSpec({
             val argument = InArgument(mockExpressionContext)
             val actualResult = argument.evaluate(environment)
 
-            actualResult shouldBe expectedResult
+            actualResult.value shouldBe expectedResult
             verify {
                 anyConstructed<ExpressionVisitor>().visit(mockExpressionContext)
             }

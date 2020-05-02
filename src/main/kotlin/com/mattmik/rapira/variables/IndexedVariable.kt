@@ -7,7 +7,7 @@ import com.mattmik.rapira.objects.toSequence
 class IndexedVariable(
     private val variable: Variable,
     private val index: RObject
-) : Variable by variable {
+) : Variable {
 
     override var value: RObject
         get() = variable.value.elementAt(index)

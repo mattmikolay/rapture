@@ -11,6 +11,7 @@ import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toReal
 import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.objects.toText
+import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
@@ -30,7 +31,7 @@ class ExpressionVisitorTest : WordSpec({
 
     beforeTest {
         environment = Environment()
-        environment["alpha"] = "Ready!".toText()
+        environment["alpha"] = SimpleVariable("Ready!".toText())
     }
 
     "visit" should {
