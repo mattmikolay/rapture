@@ -1,11 +1,19 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
+import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
+import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
+import io.kotest.property.checkAll
+import io.mockk.every
+import io.mockk.mockk
+import kotlin.math.absoluteValue
 
 class NativeFunctionsTest : WordSpec() {
     init {
@@ -46,6 +54,31 @@ class NativeFunctionsTest : WordSpec() {
                     shouldThrow<RapiraIncorrectArgumentCountError> {
                         (nativeFunctions[functionName] as RapiraCallable).call(environment, emptyList())
                     }
+                }
+            }
+        }
+
+        "abs" should {
+            val function = nativeFunctions["abs"] as RapiraCallable
+            val mockArgument = mockk<Argument>()
+
+            "return absolute value for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe RInteger(num.absoluteValue)
+                }
+            }
+
+            "return absolute value for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe Real(num.absoluteValue)
                 }
             }
         }

@@ -4,7 +4,6 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import kotlin.math.absoluteValue
 
 private abstract class NativeFunction(
@@ -25,17 +24,12 @@ private abstract class NativeFunction(
 
 val nativeFunctions = mapOf<String, RObject>(
     "abs" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
-            if (arg !is RInteger && arg !is Real) {
-                throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
-            }
-            return when (arg) {
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
                 is RInteger -> arg.value.absoluteValue.toRInteger()
                 is Real -> arg.value.absoluteValue.toReal()
-                else -> throw RapiraInvalidOperationError("Cannot compute absolute value of given type")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }
-        }
     },
     "sign" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
@@ -75,49 +69,49 @@ val nativeFunctions = mapOf<String, RObject>(
     // TODO
     "is_empty" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
+            val arg = arguments[0].evaluate(environment).value
             return Logical(arg is Empty)
         }
     },
     "is_log" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
+            val arg = arguments[0].evaluate(environment).value
             return Logical(arg is Logical)
         }
     },
     "is_int" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
+            val arg = arguments[0].evaluate(environment).value
             return Logical(arg is RInteger)
         }
     },
     "is_real" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
+            val arg = arguments[0].evaluate(environment).value
             return Logical(arg is Real)
         }
     },
     "is_text" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
+            val arg = arguments[0].evaluate(environment).value
             return Logical(arg is Text)
         }
     },
     "is_seq" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
+            val arg = arguments[0].evaluate(environment).value
             return Logical(arg is Sequence)
         }
     },
     "is_proc" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
+            val arg = arguments[0].evaluate(environment).value
             return Logical(arg is Procedure)
         }
     },
     "is_fun" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments.getOrNull(0)?.evaluate(environment)?.value ?: Empty
+            val arg = arguments[0].evaluate(environment).value
             return Logical(arg is Function || arg is NativeFunction)
         }
     },
