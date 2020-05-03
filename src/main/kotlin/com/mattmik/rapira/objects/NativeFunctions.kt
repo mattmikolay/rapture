@@ -5,6 +5,7 @@ import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
 import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 private abstract class NativeFunction(
     val paramCount: Int
@@ -32,9 +33,12 @@ val nativeFunctions = mapOf<String, RObject>(
             }
     },
     "sign" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> arg.value.sign.toRInteger()
+                is Real -> arg.value.sign.toInt().toRInteger()
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }
     },
     "sqrt" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {

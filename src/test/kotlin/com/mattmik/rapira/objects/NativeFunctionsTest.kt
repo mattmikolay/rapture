@@ -14,6 +14,7 @@ import io.kotest.property.checkAll
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 class NativeFunctionsTest : WordSpec() {
     init {
@@ -79,6 +80,31 @@ class NativeFunctionsTest : WordSpec() {
                     val result = function.call(environment, listOf(mockArgument))
 
                     result shouldBe Real(num.absoluteValue)
+                }
+            }
+        }
+
+        "sign" should {
+            val function = nativeFunctions["sign"] as RapiraCallable
+            val mockArgument = mockk<Argument>()
+
+            "return sign for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe RInteger(num.sign)
+                }
+            }
+
+            "return sign for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe RInteger(num.sign.toInt())
                 }
             }
         }
