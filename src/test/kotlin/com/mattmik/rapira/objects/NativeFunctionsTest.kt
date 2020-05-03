@@ -15,6 +15,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlin.math.absoluteValue
 import kotlin.math.sign
+import kotlin.math.sqrt
 
 class NativeFunctionsTest : WordSpec() {
     init {
@@ -105,6 +106,31 @@ class NativeFunctionsTest : WordSpec() {
                     val result = function.call(environment, listOf(mockArgument))
 
                     result shouldBe RInteger(num.sign.toInt())
+                }
+            }
+        }
+
+        "sqrt" should {
+            val function = nativeFunctions["sqrt"] as RapiraCallable
+            val mockArgument = mockk<Argument>()
+
+            "return square root for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe sqrt(num.toDouble()).toReal()
+                }
+            }
+
+            "return square root for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe sqrt(num).toReal()
                 }
             }
         }
