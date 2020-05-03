@@ -6,8 +6,8 @@ import com.mattmik.rapira.variables.SimpleVariable
 import com.mattmik.rapira.variables.Variable
 import com.mattmik.rapira.visitors.ExpressionVisitor
 
-class InArgument(private val expression: RapiraLangParser.ExpressionContext) : Argument {
+class InArgument(private val expressionContext: RapiraLangParser.ExpressionContext) : Argument {
 
     override fun evaluate(environment: Environment): Variable =
-        SimpleVariable(ExpressionVisitor(environment).visit(expression))
+        SimpleVariable(ExpressionVisitor(environment).visit(expressionContext))
 }

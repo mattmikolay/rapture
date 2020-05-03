@@ -12,7 +12,13 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject("sequenc
     }
 
     override fun times(other: RObject) = when (other) {
-        is RInteger -> Sequence(arrayOfNulls<RObject>(other.value).flatMap { entries })
+        is RInteger ->
+            if (other.value >= 0)
+                Sequence(
+                    List(entries.size * other.value) { index -> entries[index % entries.size] }
+                )
+            else
+                throw RapiraInvalidOperationError("Cannot multiply sequence by negative number")
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
