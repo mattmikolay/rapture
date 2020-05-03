@@ -36,10 +36,9 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitAssignStatement(ctx: RapiraLangParser.AssignStatementContext) {
-        // TODO Handle index expressions
-        val variableName = ctx.IDENTIFIER()
         val evaluatedExpression = expressionVisitor.visit(ctx.expression())
-        environment[variableName.text].value = evaluatedExpression
+        val variable = VariableVisitor(environment).visit(ctx.variable())
+        variable.value = evaluatedExpression
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {

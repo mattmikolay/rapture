@@ -34,7 +34,7 @@ statement
     ;
 
 assignStatement
-    : IDENTIFIER (indexExpression)* ':=' expression
+    : variable ':=' expression
     ;
 
 variable
