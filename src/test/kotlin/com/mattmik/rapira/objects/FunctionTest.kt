@@ -2,6 +2,8 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.InArgument
+import com.mattmik.rapira.args.InOutArgument
+import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
@@ -39,6 +41,17 @@ class FunctionTest : WordSpec({
             )
             val function = Function(null, params)
             shouldThrow<RapiraInvalidOperationError> {
+                function.call(Environment(), arguments)
+            }
+        }
+
+        "throw exception when given in-out arguments" {
+            val params = listOf("param1")
+            val arguments = listOf(
+                InOutArgument(mockk())
+            )
+            val function = Function(null, params)
+            shouldThrow<RapiraIllegalArgumentException> {
                 function.call(Environment(), arguments)
             }
         }
