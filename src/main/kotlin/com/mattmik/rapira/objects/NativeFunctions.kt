@@ -5,8 +5,16 @@ import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
 import kotlin.math.absoluteValue
+import kotlin.math.asin
+import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.math.log10
 import kotlin.math.sign
+import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.math.tan
 
 private abstract class NativeFunction(
     val paramCount: Int
@@ -124,43 +132,67 @@ val nativeFunctions = mapOf<String, RObject>(
         }
     },
     "sin" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> sin(arg.value.toDouble())
+                is Real -> sin(arg.value)
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     },
     "cos" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> cos(arg.value.toDouble())
+                is Real -> cos(arg.value)
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     },
     "tg" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> tan(arg.value.toDouble())
+                is Real -> tan(arg.value)
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     },
     "arcsin" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> asin(arg.value.toDouble())
+                is Real -> asin(arg.value)
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     },
     "arctg" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> atan(arg.value.toDouble())
+                is Real -> atan(arg.value)
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     },
     "exp" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> exp(arg.value.toDouble())
+                is Real -> exp(arg.value)
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     },
     "ln" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> ln(arg.value.toDouble())
+                is Real -> ln(arg.value)
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     },
     "lg" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> log10(arg.value.toDouble())
+                is Real -> log10(arg.value)
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     }
 )

@@ -14,12 +14,21 @@ import io.kotest.property.checkAll
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.math.absoluteValue
+import kotlin.math.asin
+import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.math.log10
 import kotlin.math.sign
+import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.math.tan
 
 class NativeFunctionsTest : WordSpec() {
     init {
         lateinit var environment: Environment
+        val mockArgument = mockk<Argument>()
 
         beforeTest {
             environment = Environment()
@@ -62,7 +71,6 @@ class NativeFunctionsTest : WordSpec() {
 
         "abs" should {
             val function = nativeFunctions["abs"] as RapiraCallable
-            val mockArgument = mockk<Argument>()
 
             "return absolute value for integers" {
                 checkAll<Int> { num ->
@@ -87,7 +95,6 @@ class NativeFunctionsTest : WordSpec() {
 
         "sign" should {
             val function = nativeFunctions["sign"] as RapiraCallable
-            val mockArgument = mockk<Argument>()
 
             "return sign for integers" {
                 checkAll<Int> { num ->
@@ -112,7 +119,6 @@ class NativeFunctionsTest : WordSpec() {
 
         "sqrt" should {
             val function = nativeFunctions["sqrt"] as RapiraCallable
-            val mockArgument = mockk<Argument>()
 
             "return square root for integers" {
                 checkAll<Int> { num ->
@@ -131,6 +137,198 @@ class NativeFunctionsTest : WordSpec() {
                     val result = function.call(environment, listOf(mockArgument))
 
                     result shouldBe sqrt(num).toReal()
+                }
+            }
+        }
+
+        "sin" should {
+            val function = nativeFunctions["sin"] as RapiraCallable
+
+            "return sin for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe sin(num.toDouble()).toReal()
+                }
+            }
+
+            "return sin for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe sin(num).toReal()
+                }
+            }
+        }
+
+        "cos" should {
+            val function = nativeFunctions["cos"] as RapiraCallable
+
+            "return cos for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe cos(num.toDouble()).toReal()
+                }
+            }
+
+            "return cos for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe cos(num).toReal()
+                }
+            }
+        }
+
+        "tg" should {
+            val function = nativeFunctions["tg"] as RapiraCallable
+
+            "return tan for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe tan(num.toDouble()).toReal()
+                }
+            }
+
+            "return tan for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe tan(num).toReal()
+                }
+            }
+        }
+
+        "arcsin" should {
+            val function = nativeFunctions["arcsin"] as RapiraCallable
+
+            "return arcsin for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe asin(num.toDouble()).toReal()
+                }
+            }
+
+            "return arcsin for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe asin(num).toReal()
+                }
+            }
+        }
+
+        "arctg" should {
+            val function = nativeFunctions["arctg"] as RapiraCallable
+
+            "return arctan for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe atan(num.toDouble()).toReal()
+                }
+            }
+
+            "return arctan for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe atan(num).toReal()
+                }
+            }
+        }
+
+        "exp" should {
+            val function = nativeFunctions["exp"] as RapiraCallable
+
+            "return exp for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe exp(num.toDouble()).toReal()
+                }
+            }
+
+            "return exp for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe exp(num).toReal()
+                }
+            }
+        }
+
+        "ln" should {
+            val function = nativeFunctions["ln"] as RapiraCallable
+
+            "return ln for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe ln(num.toDouble()).toReal()
+                }
+            }
+
+            "return ln for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe ln(num).toReal()
+                }
+            }
+        }
+
+        "lg" should {
+            val function = nativeFunctions["lg"] as RapiraCallable
+
+            "return log for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe log10(num.toDouble()).toReal()
+                }
+            }
+
+            "return log for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe log10(num).toReal()
                 }
             }
         }
