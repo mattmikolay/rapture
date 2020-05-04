@@ -1,5 +1,6 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.ConsoleReader
 import com.mattmik.rapira.ConsoleWriter
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
@@ -11,6 +12,7 @@ import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.toRInteger
+import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.objects.toText
 import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
@@ -18,6 +20,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
@@ -37,13 +40,21 @@ class StatementVisitorTest : WordSpec({
 
     beforeTest {
         mockkObject(ConsoleWriter)
+        mockkObject(ConsoleReader)
         environment = Environment()
         environment["alpha"] = SimpleVariable("Ready!".toText())
         environment["month"] = SimpleVariable(12.toRInteger())
         environment["animal"] = SimpleVariable(Text("cat"))
+        environment["weather_types"] = SimpleVariable(
+            listOf(
+                "sunny".toText(),
+                "rainy".toText()
+            ).toSequence()
+        )
     }
 
     afterTest {
+        unmockkObject(ConsoleReader)
         unmockkObject(ConsoleWriter)
     }
 
@@ -250,6 +261,29 @@ class StatementVisitorTest : WordSpec({
                     lineBreak = false
                 )
             }
+        }
+
+        "handle input statements in text mode" {
+            every { ConsoleReader.readText() } returnsMany
+                listOf("Go!", "dog", "snowy").map { it.toText() }
+
+            evaluateStatements(
+                """
+                    input text: alpha
+                    input text: animal, weather_types[2]
+                """.trimIndent()
+            )
+
+            verify(exactly = 3) {
+                ConsoleReader.readText()
+            }
+
+            environment["alpha"].value shouldBe Text("Go!")
+            environment["animal"].value shouldBe Text("dog")
+            environment["weather_types"].value shouldBe listOf(
+                Text("sunny"),
+                Text("snowy")
+            ).toSequence()
         }
 
         // TODO

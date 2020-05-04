@@ -1,5 +1,6 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.ConsoleReader
 import com.mattmik.rapira.ConsoleWriter
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
@@ -134,9 +135,14 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         )
     }
 
-    override fun visitInputStatement(ctx: RapiraLangParser.InputStatementContext?) {
-        super.visitInputStatement(ctx)
-        TODO("Not yet implemented")
+    override fun visitInputStatement(ctx: RapiraLangParser.InputStatementContext) {
+        val variableVisitor = VariableVisitor(environment)
+        val isTextMode = ctx.inputMode.type == RapiraLangParser.MODE_TEXT
+
+        ctx.variable().forEach {
+            val variable = variableVisitor.visit(it)
+            variable.value = if (isTextMode) ConsoleReader.readText() else TODO("Object input not yet implemented")
+        }
     }
 
     override fun visitExitStatement(ctx: RapiraLangParser.ExitStatementContext) =

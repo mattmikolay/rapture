@@ -113,7 +113,7 @@ outputStatement
     ;
 
 inputStatement
-    : 'input' 'text'? ':' IDENTIFIER (',' IDENTIFIER)*
+    : 'input' inputMode=MODE_TEXT? ':' variable (',' variable)*
     ;
 
 exitStatement
@@ -227,6 +227,10 @@ AND : 'and' ;
 OR : 'or' ;
 
 NOT : 'not' ;
+
+MODE_TEXT
+    : 'text'
+    ;
 
 LOOP_EXIT
     : 'exit'
