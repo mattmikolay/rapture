@@ -11,6 +11,18 @@ import io.kotest.property.arbitrary.negativeInts
 import io.kotest.property.checkAll
 
 class SequenceTest : WordSpec({
+    "vararg constructor" should {
+        "set entries list" {
+            val obj1 = Text("Hello, world!")
+            val obj2 = RInteger(123)
+            val obj3 = LogicalYes
+
+            val sequence = Sequence(obj1, obj2, obj3)
+
+            sequence.entries shouldBe listOf(obj1, obj2, obj3)
+        }
+    }
+
     "times" should {
         val sequence = listOf(
             1.toRInteger(),

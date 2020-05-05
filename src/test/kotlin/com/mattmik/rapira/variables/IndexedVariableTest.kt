@@ -3,8 +3,8 @@ package com.mattmik.rapira.variables
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.RInteger
+import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
-import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.objects.toText
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.WordSpec
@@ -13,11 +13,11 @@ import io.kotest.matchers.shouldBe
 class IndexedVariableTest : WordSpec({
     "get" should {
         "return element at specified index" {
-            val sequence = listOf(
+            val sequence = Sequence(
                 Text("alpha"),
                 Text("beta"),
                 Text("gamma")
-            ).toSequence()
+            )
             val simpleVariable = SimpleVariable(sequence)
             val indexedVariable = IndexedVariable(simpleVariable, RInteger(2))
             indexedVariable.value shouldBe Text("beta")
@@ -54,11 +54,11 @@ class IndexedVariableTest : WordSpec({
         }
 
         "base variable is sequence" should {
-            val sequenceObject = listOf(
+            val sequenceObject = Sequence(
                 Text("alpha"),
                 Text("beta"),
                 Text("gamma")
-            ).toSequence()
+            )
             val sequenceVariable = SimpleVariable(sequenceObject)
 
             "update element at specified index" {
@@ -67,11 +67,11 @@ class IndexedVariableTest : WordSpec({
                 indexedVariable.value shouldBe Text("beta")
                 indexedVariable.value = Text("delta")
                 indexedVariable.value shouldBe Text("delta")
-                sequenceVariable.value shouldBe listOf(
+                sequenceVariable.value shouldBe Sequence(
                     Text("alpha"),
                     Text("delta"),
                     Text("gamma")
-                ).toSequence()
+                )
             }
         }
     }

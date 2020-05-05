@@ -6,6 +6,8 @@ import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
 data class Sequence(val entries: List<RObject> = emptyList()) : RObject("sequence") {
+    constructor(vararg entries: RObject) : this(entries.toList())
+
     override fun plus(other: RObject) = when (other) {
         is Sequence -> Sequence(entries + other.entries)
         else -> throw RapiraInvalidOperationError(Operation.Addition, other)
