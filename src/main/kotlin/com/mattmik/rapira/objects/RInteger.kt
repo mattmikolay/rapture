@@ -37,7 +37,6 @@ data class RInteger(val value: Int) : RObject("integer") {
         else -> throw RapiraInvalidOperationError(Operation.Division, other)
     }
 
-    // TODO Look into additional quirks of Rapira's integer division operation
     override fun intDivide(other: RObject) = when (other) {
         is RInteger -> {
             if (other.value <= 0)
@@ -52,7 +51,6 @@ data class RInteger(val value: Int) : RObject("integer") {
         else -> throw RapiraInvalidOperationError(Operation.Modulo, other)
     }
 
-    // TODO Look into additional quirks of Rapira's exponentiation operation
     override fun power(other: RObject) = when (other) {
         is RInteger -> RInteger(value.toDouble().pow(other.value).toInt())
         is Real -> Real(exp(ln(value.toDouble()) * other.value))

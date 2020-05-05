@@ -32,6 +32,18 @@ private abstract class NativeFunction(
     override fun toString() = "native function"
 }
 
+/**
+ * Defines native functions. The following "graphic procedures" are not
+ * implemented:
+ * - dot
+ * - line
+ * - cfer
+ * - color
+ * - region
+ * - rect
+ * - triangle
+ * - circle
+ */
 val nativeFunctions = mapOf<String, RObject>(
     "abs" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>) =
@@ -93,7 +105,6 @@ val nativeFunctions = mapOf<String, RObject>(
             }.toRInteger()
         }
     },
-    // TODO
     "is_empty" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
             val arg = arguments[0].evaluate(environment).value
