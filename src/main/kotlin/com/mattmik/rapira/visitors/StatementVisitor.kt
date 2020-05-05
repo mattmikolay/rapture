@@ -18,6 +18,11 @@ import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RapiraCallable
 
+/**
+ * A visitor that executes statements while walking the tree within a given [Environment].
+ *
+ * @property environment the environment in which to execute statements
+ */
 class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
 
     private val expressionVisitor = ExpressionVisitor(environment)
