@@ -8,7 +8,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 import io.mockk.every
@@ -137,6 +136,59 @@ class NativeFunctionsTest : WordSpec() {
                     val result = function.call(environment, listOf(mockArgument))
 
                     result shouldBe sqrt(num).toReal()
+                }
+            }
+        }
+
+        "index" When {
+            val function = nativeFunctions["index"] as RapiraCallable
+            val mockArgument2 = mockk<Argument>()
+
+            "given a sequence" should {
+                val sequence = listOf(
+                    Text("Hello, world!"),
+                    RInteger(123),
+                    Real(1.23)
+                ).toSequence()
+
+                "return index if element is present" {
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(123))
+                    every { mockArgument2.evaluate(any()) } returns SimpleVariable(sequence)
+
+                    val result = function.call(environment, listOf(mockArgument, mockArgument2))
+
+                    result shouldBe RInteger(2)
+                }
+
+                "return 0 if element is not present" {
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(LogicalYes)
+                    every { mockArgument2.evaluate(any()) } returns SimpleVariable(sequence)
+
+                    val result = function.call(environment, listOf(mockArgument, mockArgument2))
+
+                    result shouldBe RInteger(0)
+                }
+            }
+
+            "given text" should {
+                val text = "Hello, world!".toText()
+
+                "return index if substring is present" {
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Text("lo, wo"))
+                    every { mockArgument2.evaluate(any()) } returns SimpleVariable(text)
+
+                    val result = function.call(environment, listOf(mockArgument, mockArgument2))
+
+                    result shouldBe RInteger(4)
+                }
+
+                "return 0 if substring is not present" {
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Text("okay"))
+                    every { mockArgument2.evaluate(any()) } returns SimpleVariable(text)
+
+                    val result = function.call(environment, listOf(mockArgument, mockArgument2))
+
+                    result shouldBe RInteger(0)
                 }
             }
         }

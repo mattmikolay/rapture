@@ -79,7 +79,18 @@ val nativeFunctions = mapOf<String, RObject>(
     },
     "index" to object : NativeFunction(2) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
+            val arg1 = arguments[0].evaluate(environment).value
+            return when (val arg2 = arguments[1].evaluate(environment).value) {
+                is Sequence -> arg2.entries.indexOf(arg1) + 1
+                is Text -> {
+                    if (arg1 !is Text) {
+                        throw RapiraIllegalArgumentException("Invalid type passed to index function")
+                    }
+
+                    arg2.value.indexOf(arg1.value) + 1
+                }
+                else -> throw RapiraIllegalArgumentException("Expected text or sequence at argument 1")
+            }.toRInteger()
         }
     },
     // TODO
