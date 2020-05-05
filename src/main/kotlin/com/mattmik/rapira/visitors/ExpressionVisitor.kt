@@ -155,16 +155,13 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     override fun visitTextValue(ctx: RapiraLangParser.TextValueContext) = parseEscapedText(ctx.text)
 
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext): RObject {
-        // TODO Add parsing of in-out params
-        val params = ctx.procedureParams()?.IDENTIFIER()?.map { identifier -> Parameter(ParamType.In, identifier.text) }
-            ?: emptyList()
+        val params = readProcedureParams(ctx.procedureParams())
         val extern = readExternIdentifiers(ctx.declarations())
         return Procedure(ctx.stmts(), params, extern)
     }
 
     override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext): RObject {
-        val params = ctx.functionParams()?.IDENTIFIER()?.map { identifier -> Parameter(ParamType.In, identifier.text) }
-            ?: emptyList()
+        val params = readFunctionParams(ctx.functionParams())
         val extern = readExternIdentifiers(ctx.declarations())
         return Function(ctx.stmts(), params, extern)
     }
@@ -182,6 +179,17 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val expressionResults = ctx.expression().map { visit(it) }
         return Sequence(expressionResults)
     }
+
+    private fun readProcedureParams(ctx: RapiraLangParser.ProcedureParamsContext): List<Parameter> =
+        ctx.procedureParam()?.map { paramContext ->
+            paramContext.inParam()?.let { Parameter(ParamType.In, it.IDENTIFIER().text) }
+                ?: paramContext.inOutParam()?.let { Parameter(ParamType.InOut, it.IDENTIFIER().text) }
+                ?: throw RapiraInvalidOperationError("Invalid param type")
+        } ?: emptyList()
+
+    private fun readFunctionParams(ctx: RapiraLangParser.FunctionParamsContext): List<Parameter> =
+        ctx.inParam()?.map { paramContext -> Parameter(ParamType.In, paramContext.IDENTIFIER().text) }
+            ?: emptyList()
 
     private fun readFunctionArguments(ctx: RapiraLangParser.FunctionArgumentsContext): List<Argument> =
         ctx.expression().map { expr -> InArgument(expr) }

@@ -51,7 +51,7 @@ functionDefinition
     ;
 
 functionParams
-    : '=>'? IDENTIFIER (',' '=>'? IDENTIFIER)*
+    : inParam (',' inParam)*
     ;
 
 procedureDefinition
@@ -59,7 +59,20 @@ procedureDefinition
     ;
 
 procedureParams
-    : ('=>' | '<=')? IDENTIFIER (',' ('=>' | '<=')? IDENTIFIER)*
+    : procedureParam (',' procedureParam)*
+    ;
+
+procedureParam
+    : inParam
+    | inOutParam
+    ;
+
+inParam
+    : '=>'? IDENTIFIER
+    ;
+
+inOutParam
+    : '<=' IDENTIFIER
     ;
 
 declarations

@@ -2,6 +2,8 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.InArgument
+import com.mattmik.rapira.args.InOutArgument
+import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
@@ -38,11 +40,22 @@ class ProcedureTest : WordSpec({
         "throw exception when param and argument count differ" {
             val params = makeProcedureParams("param1", "param2", "param3")
             val arguments = listOf(
-                InArgument(mockk()),
-                InArgument(mockk())
+                InOutArgument(mockk()),
+                InOutArgument(mockk())
             )
             val procedure = Procedure(null, params)
             shouldThrow<RapiraInvalidOperationError> {
+                procedure.call(Environment(), arguments)
+            }
+        }
+
+        "throw exception when param and argument type do not match" {
+            val params = makeProcedureParams("param1")
+            val arguments = listOf(
+                InArgument(mockk())
+            )
+            val procedure = Procedure(null, params)
+            shouldThrow<RapiraIllegalArgumentException> {
                 procedure.call(Environment(), arguments)
             }
         }

@@ -3,7 +3,9 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
+import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.control.ProcedureReturnException
+import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.visitors.StatementVisitor
 
@@ -19,6 +21,13 @@ class Procedure(
 
         val newEnvironment = Environment()
         params.zip(arguments).forEach { (param, argument) ->
+            when (argument) {
+                is InArgument -> if (param.type != ParamType.In)
+                    throw RapiraIllegalArgumentException("Unexpected in argument passed to in-out param")
+                else -> if (param.type != ParamType.InOut)
+                    throw RapiraIllegalArgumentException("Unexpected in-out argument passed to in param")
+            }
+
             newEnvironment[param.name] = argument.evaluate(environment)
         }
         extern.map { Pair(it, environment[it]) }
