@@ -9,7 +9,7 @@ import com.mattmik.rapira.visitors.StatementVisitor
 
 class Procedure(
     private val bodyStatements: RapiraLangParser.StmtsContext? = null,
-    private val params: List<String> = emptyList(),
+    private val params: List<Parameter> = emptyList(),
     private val extern: List<String> = emptyList()
 ) : RObject("procedure"), RapiraCallable {
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
@@ -18,8 +18,8 @@ class Procedure(
         }
 
         val newEnvironment = Environment()
-        params.zip(arguments).forEach { (paramName, argument) ->
-            newEnvironment[paramName] = argument.evaluate(environment)
+        params.zip(arguments).forEach { (param, argument) ->
+            newEnvironment[param.name] = argument.evaluate(environment)
         }
         extern.map { Pair(it, environment[it]) }
             .forEach { (name, variable) -> newEnvironment[name] = variable }

@@ -9,6 +9,8 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Logical
+import com.mattmik.rapira.objects.ParamType
+import com.mattmik.rapira.objects.Parameter
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
@@ -154,15 +156,15 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext): RObject {
         // TODO Add parsing of in-out params
-        val params = ctx.procedureParams()?.IDENTIFIER()?.map { identifier -> identifier.text }
-            ?: emptyList<String>()
+        val params = ctx.procedureParams()?.IDENTIFIER()?.map { identifier -> Parameter(ParamType.In, identifier.text) }
+            ?: emptyList()
         val extern = readExternIdentifiers(ctx.declarations())
         return Procedure(ctx.stmts(), params, extern)
     }
 
     override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext): RObject {
-        val params = ctx.functionParams()?.IDENTIFIER()?.map { identifier -> identifier.text }
-            ?: emptyList<String>()
+        val params = ctx.functionParams()?.IDENTIFIER()?.map { identifier -> Parameter(ParamType.In, identifier.text) }
+            ?: emptyList()
         val extern = readExternIdentifiers(ctx.declarations())
         return Function(ctx.stmts(), params, extern)
     }

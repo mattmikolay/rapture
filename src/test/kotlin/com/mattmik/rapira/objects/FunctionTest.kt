@@ -13,6 +13,10 @@ import io.mockk.mockk
 import io.mockk.verifyAll
 
 class FunctionTest : WordSpec({
+
+    fun makeFunctionParams(vararg paramNames: String) =
+        paramNames.map { paramName -> Parameter(ParamType.In, paramName) }
+
     "call" should {
         "read extern objects from old environment" {
             val mockEnvironment = mockk<Environment>()
@@ -34,7 +38,7 @@ class FunctionTest : WordSpec({
         }
 
         "throw exception when param and argument count differ" {
-            val params = listOf("param1", "param2", "param3")
+            val params = makeFunctionParams("param1", "param2", "param3")
             val arguments = listOf(
                 InArgument(mockk()),
                 InArgument(mockk())
@@ -46,7 +50,7 @@ class FunctionTest : WordSpec({
         }
 
         "throw exception when given in-out arguments" {
-            val params = listOf("param1")
+            val params = makeFunctionParams("param1")
             val arguments = listOf(
                 InOutArgument(mockk())
             )

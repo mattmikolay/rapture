@@ -11,6 +11,10 @@ import io.mockk.mockk
 import io.mockk.verifyAll
 
 class ProcedureTest : WordSpec({
+
+    fun makeProcedureParams(vararg paramNames: String) =
+        paramNames.map { paramName -> Parameter(ParamType.InOut, paramName) }
+
     "call" should {
         "read extern objects from old environment" {
             val mockEnvironment = mockk<Environment>()
@@ -32,7 +36,7 @@ class ProcedureTest : WordSpec({
         }
 
         "throw exception when param and argument count differ" {
-            val params = listOf("param1", "param2", "param3")
+            val params = makeProcedureParams("param1", "param2", "param3")
             val arguments = listOf(
                 InArgument(mockk()),
                 InArgument(mockk())

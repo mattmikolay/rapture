@@ -12,7 +12,7 @@ class Function(
 
     constructor(
         bodyStatements: RapiraLangParser.StmtsContext? = null,
-        params: List<String> = emptyList(),
+        params: List<Parameter> = emptyList(),
         extern: List<String> = emptyList()
     ) : this(Procedure(bodyStatements, params, extern))
 
