@@ -5,11 +5,13 @@ import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.RInteger
+import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.objects.toText
 import com.mattmik.rapira.variables.IndexedVariable
 import com.mattmik.rapira.variables.SimpleVariable
+import com.mattmik.rapira.variables.SliceVariable
 import com.mattmik.rapira.variables.Variable
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
@@ -39,11 +41,11 @@ class VariableVisitorTest : WordSpec({
         ).toSequence())
         environment["nested_sequence"] = SimpleVariable(listOf(
             "Oink".toText(),
-            listOf(
+            Sequence(
                 "Bark".toText(),
                 "Meow".toText(),
                 "Quack".toText()
-            ).toSequence(),
+            ),
             "Moo".toText()
         ).toSequence())
         environment["one"] = SimpleVariable(RInteger(1))
@@ -62,22 +64,67 @@ class VariableVisitorTest : WordSpec({
             variable.value shouldBe Empty
         }
 
-        "return simple variable with index expression" {
+        "return simple variable for single slice with no indexes" {
+            val expectedVariable = environment["string_value"]
+            val actualVariable = evaluateVariable("string_value[:]")
+            actualVariable shouldBeSameInstanceAs expectedVariable
+        }
+
+        "return indexed variable for single index expression" {
             val variable = evaluateVariable("seq_value[one + 1]")
             variable should beOfType<IndexedVariable>()
             variable.value shouldBe Text("Bravo")
         }
 
-        "return simple variable with multiple index expressions" {
+        "return indexed variable for multiple index expressions" {
             val variable = evaluateVariable("nested_sequence[one + 1][3]")
             variable should beOfType<IndexedVariable>()
             variable.value shouldBe Text("Quack")
         }
 
-        "return simple variable with comma expression" {
+        "return indexed variable for comma expressions" {
             val variable = evaluateVariable("nested_sequence[one + 1, 3]")
             variable should beOfType<IndexedVariable>()
             variable.value shouldBe Text("Quack")
+        }
+
+        "return slice variable for single slice and two indexes" {
+            val variable = evaluateVariable("seq_value[2:3]")
+            variable should beOfType<SliceVariable>()
+            variable.value shouldBe Sequence(
+                "Bravo".toText(),
+                "Charlie".toText()
+            )
+        }
+
+        "return slice variable for single slice and start index" {
+            val variable = evaluateVariable("seq_value[2:]")
+            variable should beOfType<SliceVariable>()
+            variable.value shouldBe Sequence(
+                "Bravo".toText(),
+                "Charlie".toText()
+            )
+        }
+
+        "return slice variable for single slice and end index" {
+            val variable = evaluateVariable("seq_value[:2]")
+            variable should beOfType<SliceVariable>()
+            variable.value shouldBe Sequence(
+                "Alpha".toText(),
+                "Bravo".toText()
+            )
+        }
+
+        "return slice variable for multiple slices" {
+            val variable = evaluateVariable("nested_sequence[2:3][1:1]")
+            variable should beOfType<SliceVariable>()
+            variable.value shouldBe Sequence(
+                Sequence(
+                    "Bark".toText(),
+                    "Meow".toText(),
+                    "Quack".toText()
+                )
+            )
         }
     }
 })
