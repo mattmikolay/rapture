@@ -269,6 +269,23 @@ class StatementVisitorTest : WordSpec({
             environment["sound"].value shouldBe Text("moo")
         }
 
+        "handle repeat loops" {
+            evaluateStatements(
+                """
+                    repeat 3 do output: "Hello, world!"
+                    od
+                """.trimIndent()
+            )
+            verify(exactly = 3) {
+                ConsoleWriter.printObjects(
+                    objects = listOf(
+                        Text("Hello, world!")
+                    ),
+                    lineBreak = true
+                )
+            }
+        }
+
         // TODO
         "handle output statements with line break" {
             evaluateStatements(
