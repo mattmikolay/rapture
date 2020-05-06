@@ -93,9 +93,12 @@ val nativeFunctions = mapOf<String, RObject>(
         }
     },
     "int_rand" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> (1..arg.value).random()
+                is Real -> (1..arg.value.toInt()).random()
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toRInteger()
     },
     "index" to object : NativeFunction(2) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
