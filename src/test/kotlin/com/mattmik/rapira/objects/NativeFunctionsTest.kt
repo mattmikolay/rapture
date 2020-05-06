@@ -17,6 +17,7 @@ import kotlin.math.asin
 import kotlin.math.atan
 import kotlin.math.cos
 import kotlin.math.exp
+import kotlin.math.floor
 import kotlin.math.ln
 import kotlin.math.log10
 import kotlin.math.round
@@ -137,6 +138,30 @@ class NativeFunctionsTest : WordSpec() {
                     val result = function.call(environment, listOf(mockArgument))
 
                     result shouldBe sqrt(num).toReal()
+                }
+            }
+        }
+
+        "entier" should {
+            val function = nativeFunctions["entier"] as RapiraCallable
+
+            "return same number for integers" {
+                checkAll<Int> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe RInteger(num)
+                }
+            }
+
+            "return rounded integer for real numbers" {
+                checkAll<Double> { num ->
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
+
+                    val result = function.call(environment, listOf(mockArgument))
+
+                    result shouldBe floor(num).toInt().toRInteger()
                 }
             }
         }
