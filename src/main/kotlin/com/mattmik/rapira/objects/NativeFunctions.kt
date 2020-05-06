@@ -17,6 +17,7 @@ import kotlin.math.sign
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
+import kotlin.random.Random
 
 private abstract class NativeFunction(
     val paramCount: Int
@@ -88,9 +89,12 @@ val nativeFunctions = mapOf<String, RObject>(
             }.toRInteger()
     },
     "rand" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> Random.nextDouble() * arg.value
+                is Real -> Random.nextDouble() * arg.value
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toReal()
     },
     "int_rand" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>) =
