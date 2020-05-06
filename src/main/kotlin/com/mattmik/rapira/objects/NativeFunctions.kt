@@ -11,6 +11,7 @@ import kotlin.math.cos
 import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.log10
+import kotlin.math.round
 import kotlin.math.sign
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -75,9 +76,12 @@ val nativeFunctions = mapOf<String, RObject>(
         }
     },
     "round" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            TODO("Not yet implemented")
-        }
+        override fun callInternal(environment: Environment, arguments: List<Argument>) =
+            when (val arg = arguments[0].evaluate(environment).value) {
+                is RInteger -> arg.value
+                is Real -> arg.value.let { if (it.isNaN()) 0 else round(it).toInt() }
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+            }.toRInteger()
     },
     "rand" to object : NativeFunction(1) {
         override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
