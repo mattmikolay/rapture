@@ -10,6 +10,7 @@ import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
+import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.toRInteger
@@ -21,6 +22,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
@@ -62,6 +64,7 @@ class StatementVisitorTest : WordSpec({
     "visit" should {
         "handle procedure definitions" {
             environment["test_procedure"].value shouldBe Empty
+
             evaluateStatements(
                 """
                     proc test_procedure (param1, =>param2, <=param3)
@@ -69,11 +72,16 @@ class StatementVisitorTest : WordSpec({
                     end
                 """.trimIndent()
             )
+
             environment["test_procedure"].value should beOfType<Procedure>()
+            verify {
+                ConsoleWriter wasNot Called
+            }
         }
 
         "handle function definitions" {
             environment["test_function"].value shouldBe Empty
+
             evaluateStatements(
                 """
                     fun test_function (param1, =>param2)
@@ -81,7 +89,11 @@ class StatementVisitorTest : WordSpec({
                     end
                 """.trimIndent()
             )
+
             environment["test_function"].value should beOfType<Function>()
+            verify {
+                ConsoleWriter wasNot Called
+            }
         }
 
         "handle assignment statements" {
@@ -99,7 +111,48 @@ class StatementVisitorTest : WordSpec({
             )
         }
 
-        // TODO Test call statements
+        "handle call statement with procedures" {
+            evaluateStatements(
+                """
+                    proc test_procedure (param1, =>param2, <=param3)
+                        output: "Hello, world!", param1, param2, param3
+                    end
+                    call test_procedure(123, =>alpha, <=month)
+                """.trimIndent()
+            )
+            verify {
+                ConsoleWriter.printObjects(
+                    listOf(
+                        Text("Hello, world!"),
+                        RInteger(123),
+                        Text("Ready!"),
+                        RInteger(12)
+                    ),
+                    lineBreak = true
+                )
+            }
+        }
+
+        "handle call statement with functions" {
+            evaluateStatements(
+                """
+                    fun test_function (param1, =>param2)
+                        output: "Hello, world!", param1, param2
+                    end
+                    call test_function(123, alpha)
+                """.trimIndent()
+            )
+            verify {
+                ConsoleWriter.printObjects(
+                    listOf(
+                        Text("Hello, world!"),
+                        RInteger(123),
+                        Text("Ready!")
+                    ),
+                    lineBreak = true
+                )
+            }
+        }
 
         "handle if statements without else clauses" {
             environment["season"].value shouldBe Empty
