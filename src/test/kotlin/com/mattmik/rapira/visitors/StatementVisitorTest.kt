@@ -269,6 +269,31 @@ class StatementVisitorTest : WordSpec({
             environment["sound"].value shouldBe Text("moo")
         }
 
+        "handle do loops with until" {
+            evaluateStatements(
+                """
+                    num := 1
+                    do output: num
+                        num := num + 1
+                    until num = 4
+                """.trimIndent()
+            )
+            verifyOrder {
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(1)),
+                    lineBreak = true
+                )
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(2)),
+                    lineBreak = true
+                )
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(3)),
+                    lineBreak = true
+                )
+            }
+        }
+
         "handle repeat loops" {
             evaluateStatements(
                 """
