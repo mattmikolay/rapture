@@ -10,6 +10,7 @@ import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
+import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toSequence
@@ -46,10 +47,10 @@ class StatementVisitorTest : WordSpec({
         environment["month"] = SimpleVariable(12.toRInteger())
         environment["animal"] = SimpleVariable(Text("cat"))
         environment["weather_types"] = SimpleVariable(
-            listOf(
+            Sequence(
                 "sunny".toText(),
                 "rainy".toText()
-            ).toSequence()
+            )
         )
     }
 
@@ -85,10 +86,17 @@ class StatementVisitorTest : WordSpec({
 
         "handle assignment statements" {
             environment["str_value"].value shouldBe Empty
-            evaluateStatements("str_value := 3 * alpha")
+            evaluateStatements(
+                """
+                    str_value := 3 * alpha
+                    weather_types[1 + 1] := "snowy"
+                """.trimIndent()
+            )
             environment["str_value"].value shouldBe Text("Ready!Ready!Ready!")
-
-            // TODO Test index expression assignment
+            environment["weather_types"].value shouldBe Sequence(
+                Text("sunny"),
+                Text("snowy")
+            )
         }
 
         // TODO Test call statements
