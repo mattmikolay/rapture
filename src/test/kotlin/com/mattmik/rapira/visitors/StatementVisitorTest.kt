@@ -9,6 +9,7 @@ import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
+import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
@@ -386,6 +387,33 @@ class StatementVisitorTest : WordSpec({
             environment["weather_types"].value shouldBe listOf(
                 Text("sunny"),
                 Text("snowy")
+            ).toSequence()
+        }
+
+        "handle input statements in object mode" {
+            every { ConsoleReader.readObject() } returnsMany
+                listOf(
+                    LogicalYes,
+                    Text("dog"),
+                    RInteger(123)
+                )
+
+            evaluateStatements(
+                """
+                    input: alpha
+                    input: animal, weather_types[2]
+                """.trimIndent()
+            )
+
+            verify(exactly = 3) {
+                ConsoleReader.readObject()
+            }
+
+            environment["alpha"].value shouldBe LogicalYes
+            environment["animal"].value shouldBe Text("dog")
+            environment["weather_types"].value shouldBe listOf(
+                Text("sunny"),
+                RInteger(123)
             ).toSequence()
         }
 

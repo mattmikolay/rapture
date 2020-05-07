@@ -142,11 +142,11 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
     override fun visitInputStatement(ctx: RapiraLangParser.InputStatementContext) {
         val variableVisitor = VariableVisitor(environment)
-        val isTextMode = ctx.inputMode.type == RapiraLangParser.MODE_TEXT
+        val isTextMode = ctx.inputMode?.type == RapiraLangParser.MODE_TEXT
 
         ctx.variable().forEach {
             val variable = variableVisitor.visit(it)
-            variable.value = if (isTextMode) ConsoleReader.readText() else TODO("Object input not yet implemented")
+            variable.value = if (isTextMode) ConsoleReader.readText() else ConsoleReader.readObject()
         }
     }
 
