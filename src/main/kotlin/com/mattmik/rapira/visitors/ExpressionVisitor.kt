@@ -27,16 +27,16 @@ import com.mattmik.rapira.objects.parseEscapedText
 class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVisitor<RObject>() {
 
     override fun visitAndExpression(ctx: RapiraLangParser.AndExpressionContext): RObject {
-        val (leftExpression, rightExpression) = ctx.logicalExpression()
-        val leftResult = visit(leftExpression)
-        val rightResult = visit(rightExpression)
+        val (leftExpr, rightExpr) = ctx.logicalExpression()
+        val leftResult = visit(leftExpr)
+        val rightResult = visit(rightExpr)
         return leftResult and rightResult
     }
 
     override fun visitOrExpression(ctx: RapiraLangParser.OrExpressionContext): RObject {
-        val (leftExpression, rightExpression) = ctx.logicalExpression()
-        val leftResult = visit(leftExpression)
-        val rightResult = visit(rightExpression)
+        val (leftExpr, rightExpr) = ctx.logicalExpression()
+        val leftResult = visit(leftExpr)
+        val rightResult = visit(rightExpr)
         return leftResult or rightResult
     }
 
@@ -46,9 +46,9 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext): RObject {
-        val (leftExpression, rightExpression) = ctx.comparisonExpression()
-        val leftResult = visit(leftExpression)
-        val rightResult = visit(rightExpression)
+        val (leftExpr, rightExpr) = ctx.comparisonExpression()
+        val leftResult = visit(leftExpr)
+        val rightResult = visit(rightExpr)
         return when (ctx.op.type) {
             RapiraLangParser.LESS -> leftResult lessThan rightResult
             RapiraLangParser.GREATER -> leftResult greaterThan rightResult
@@ -59,9 +59,9 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitEqualityExpression(ctx: RapiraLangParser.EqualityExpressionContext): RObject {
-        val (leftExpression, rightExpression) = ctx.comparisonExpression()
-        val leftResult = visit(leftExpression)
-        val rightResult = visit(rightExpression)
+        val (leftExpr, rightExpr) = ctx.comparisonExpression()
+        val leftResult = visit(leftExpr)
+        val rightResult = visit(rightExpr)
         return Logical(
             if (ctx.op.type == RapiraLangParser.EQ)
                 leftResult == rightResult
@@ -72,16 +72,16 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitExponentiationExpression(ctx: RapiraLangParser.ExponentiationExpressionContext): RObject {
-        val (leftExpression, rightExpression) = ctx.arithmeticExpression()
-        val leftResult = visit(leftExpression)
-        val rightResult = visit(rightExpression)
+        val (leftExpr, rightExpr) = ctx.arithmeticExpression()
+        val leftResult = visit(leftExpr)
+        val rightResult = visit(rightExpr)
         return leftResult.power(rightResult)
     }
 
     override fun visitMultiplicationExpression(ctx: RapiraLangParser.MultiplicationExpressionContext): RObject {
-        val (leftExpression, rightExpression) = ctx.arithmeticExpression()
-        val leftResult = visit(leftExpression)
-        val rightResult = visit(rightExpression)
+        val (leftExpr, rightExpr) = ctx.arithmeticExpression()
+        val leftResult = visit(leftExpr)
+        val rightResult = visit(rightExpr)
         return when (ctx.op.type) {
             RapiraLangParser.MULT -> leftResult * rightResult
             RapiraLangParser.DIVIDE -> leftResult / rightResult
@@ -92,9 +92,9 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitAdditionExpression(ctx: RapiraLangParser.AdditionExpressionContext): RObject {
-        val (leftExpression, rightExpression) = ctx.arithmeticExpression()
-        val leftResult = visit(leftExpression)
-        val rightResult = visit(rightExpression)
+        val (leftExpr, rightExpr) = ctx.arithmeticExpression()
+        val leftResult = visit(leftExpr)
+        val rightResult = visit(rightExpr)
         return when (ctx.op.type) {
             RapiraLangParser.PLUS -> leftResult + rightResult
             RapiraLangParser.MINUS -> leftResult - rightResult
