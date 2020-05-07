@@ -41,6 +41,20 @@ class RealTest : WordSpec({
         }
     }
 
+    "compareTo" should {
+        "compare with integers" {
+            checkAll<Double, Int> { a, b ->
+                a.toReal().compareTo(b.toRInteger()) shouldBe a.compareTo(b)
+            }
+        }
+
+        "compare with real numbers" {
+            checkAll<Double, Double> { a, b ->
+                a.toReal().compareTo(b.toReal()) shouldBe a.compareTo(b)
+            }
+        }
+    }
+
     "toString" should {
         "return user friendly representation" {
             checkAll<Double> { num ->

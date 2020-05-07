@@ -38,28 +38,10 @@ data class Real(val value: Double) : RObject("real number") {
         else -> throw RapiraInvalidOperationError(Operation.Exponentiation, other)
     }
 
-    override fun lessThan(other: RObject) = when (other) {
-        is RInteger -> Logical(value < other.value)
-        is Real -> Logical(value < other.value)
-        else -> throw RapiraInvalidOperationError(Operation.LessThan, other)
-    }
-
-    override fun greaterThan(other: RObject) = when (other) {
-        is RInteger -> Logical(value > other.value)
-        is Real -> Logical(value > other.value)
-        else -> throw RapiraInvalidOperationError(Operation.GreaterThan, other)
-    }
-
-    override fun lessThanEqualTo(other: RObject) = when (other) {
-        is RInteger -> Logical(value <= other.value)
-        is Real -> Logical(value <= other.value)
-        else -> throw RapiraInvalidOperationError(Operation.LessThanEqualTo, other)
-    }
-
-    override fun greaterThanEqualTo(other: RObject) = when (other) {
-        is RInteger -> Logical(value >= other.value)
-        is Real -> Logical(value >= other.value)
-        else -> throw RapiraInvalidOperationError(Operation.GreaterThanEqualTo, other)
+    override fun compareTo(other: RObject) = when (other) {
+        is RInteger -> value.compareTo(other.value)
+        is Real -> value.compareTo(other.value)
+        else -> throw RapiraInvalidOperationError("Cannot compare")
     }
 
     override fun toString() = "$value"

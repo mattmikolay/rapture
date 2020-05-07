@@ -3,7 +3,7 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.errors.Operation
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
-abstract class RObject(val typeDescription: String) {
+abstract class RObject(val typeDescription: String) : Comparable<RObject> {
 
     open operator fun plus(other: RObject): RObject = throw RapiraInvalidOperationError(Operation.Addition, this)
 
@@ -28,18 +28,6 @@ abstract class RObject(val typeDescription: String) {
     open fun length(): RObject =
         throw RapiraInvalidOperationError(Operation.Length, this)
 
-    open infix fun lessThan(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.LessThan, this)
-
-    open infix fun greaterThan(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.GreaterThan, this)
-
-    open infix fun lessThanEqualTo(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.LessThanEqualTo, this)
-
-    open infix fun greaterThanEqualTo(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.GreaterThanEqualTo, this)
-
     open infix fun and(other: RObject): RObject =
         throw RapiraInvalidOperationError(Operation.And, this)
 
@@ -54,4 +42,7 @@ abstract class RObject(val typeDescription: String) {
 
     open fun slice(start: RObject?, end: RObject?): RObject =
         throw RapiraInvalidOperationError(Operation.Slice, this)
+
+    override fun compareTo(other: RObject): Int =
+        throw RapiraInvalidOperationError("Cannot compare objects")
 }

@@ -33,66 +33,24 @@ class RIntegerTest : WordSpec({
         }
     }
 
-    "less than" should {
-        "return logical when given integer" {
-            checkAll<Int, Int> { a, b ->
-                RInteger(a) lessThan RInteger(b) shouldBe Logical(a < b)
-            }
-        }
-
-        "return logical when given real" {
-            checkAll<Int, Double> { a, b ->
-                a.toRInteger() lessThan b.toReal() shouldBe Logical(a < b)
-            }
-        }
-    }
-
-    "less than or equal to" should {
-        "return logical when given integer" {
-            checkAll<Int, Int> { a, b ->
-                a.toRInteger() lessThanEqualTo b.toRInteger() shouldBe Logical(a <= b)
-            }
-        }
-
-        "return logical when given real" {
-            checkAll<Int, Double> { a, b ->
-                a.toRInteger() lessThanEqualTo b.toReal() shouldBe Logical(a <= b)
-            }
-        }
-    }
-
-    "greater than" should {
-        "return logical when given integer" {
-            checkAll<Int, Int> { a, b ->
-                a.toRInteger() greaterThan b.toRInteger() shouldBe Logical(a > b)
-            }
-        }
-
-        "return logical when given real" {
-            checkAll<Int, Double> { a, b ->
-                a.toRInteger() greaterThan b.toReal() shouldBe Logical(a > b)
-            }
-        }
-    }
-
-    "greater than or equal to" should {
-        "return logical when given integer" {
-            checkAll<Int, Int> { a, b ->
-                a.toRInteger() greaterThanEqualTo b.toRInteger() shouldBe Logical(a >= b)
-            }
-        }
-
-        "return logical when given real" {
-            checkAll<Int, Double> { a, b ->
-                a.toRInteger() greaterThanEqualTo b.toReal() shouldBe Logical(a >= b)
-            }
-        }
-    }
-
     "negate" should {
         "return integer" {
             checkAll<Int> { num ->
                 RInteger(num).negate() shouldBe RInteger(-num)
+            }
+        }
+    }
+
+    "compareTo" should {
+        "compare with integers" {
+            checkAll<Int, Int> { a, b ->
+                a.toRInteger().compareTo(b.toRInteger()) shouldBe a.compareTo(b)
+            }
+        }
+
+        "compare with real numbers" {
+            checkAll<Int, Double> { a, b ->
+                a.toRInteger().compareTo(b.toReal()) shouldBe a.compareTo(b)
             }
         }
     }

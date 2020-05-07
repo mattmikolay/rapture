@@ -19,10 +19,6 @@ class RObjectTest : StringSpec({
             row { obj: RObject -> obj.intDivide(otherObject) },
             row { obj: RObject -> obj % otherObject },
             row { obj: RObject -> obj.power(otherObject) },
-            row { obj: RObject -> obj lessThan otherObject },
-            row { obj: RObject -> obj greaterThan otherObject },
-            row { obj: RObject -> obj lessThanEqualTo otherObject },
-            row { obj: RObject -> obj greaterThanEqualTo otherObject },
             row { obj: RObject -> obj and otherObject },
             row { obj: RObject -> obj or otherObject },
             row { obj: RObject -> obj.elementAt(otherObject) }
@@ -49,5 +45,10 @@ class RObjectTest : StringSpec({
         ) { operation ->
             shouldThrow<RapiraInvalidOperationError> { operation(testObject) }
         }
+    }
+
+    "compareTo throws exception" {
+        val otherObject = Empty
+        shouldThrow<RapiraInvalidOperationError> { testObject.compareTo(otherObject) }
     }
 })
