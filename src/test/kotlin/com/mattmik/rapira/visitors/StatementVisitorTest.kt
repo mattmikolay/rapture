@@ -28,6 +28,7 @@ import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
+import io.mockk.verifyAll
 import io.mockk.verifyOrder
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -418,6 +419,45 @@ class StatementVisitorTest : WordSpec({
         }
 
         // TODO
+
+        "handle return statements within procedures" {
+            evaluateStatements(
+                """
+                    proc test_procedure ()
+                        output: "Hello, world!"
+                        return
+                        output: "Uh oh."
+                    end
+                    call test_procedure()
+                """.trimIndent()
+            )
+            verifyAll {
+                ConsoleWriter.printObjects(
+                    listOf(Text("Hello, world!")),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+            }
+        }
+
+        "handle return statements within functions" {
+            evaluateStatements(
+                """
+                    fun test_function ()
+                        return "Hello, world!"
+                        output: "Uh oh."
+                    end
+                    output: test_function()
+                """.trimIndent()
+            )
+            verifyAll {
+                ConsoleWriter.printObjects(
+                    listOf(Text("Hello, world!")),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+            }
+        }
 
         "handle expression statements" {
             val statement = "3 * alpha"
