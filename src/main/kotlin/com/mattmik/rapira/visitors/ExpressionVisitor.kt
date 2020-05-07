@@ -26,10 +26,6 @@ import com.mattmik.rapira.objects.parseEscapedText
  */
 class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVisitor<RObject>() {
 
-    override fun visitExpression(ctx: RapiraLangParser.ExpressionContext): RObject {
-        return visit(ctx.logicalExpression())
-    }
-
     override fun visitAndExpression(ctx: RapiraLangParser.AndExpressionContext): RObject {
         val (leftExpression, rightExpression) = ctx.logicalExpression()
         val leftResult = visit(leftExpression)
