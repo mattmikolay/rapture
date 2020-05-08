@@ -547,7 +547,25 @@ class StatementVisitorTest : WordSpec({
             ).toSequence()
         }
 
-        // TODO
+        "handle exit statements within loops" {
+            evaluateStatements(
+                """
+                    do output: "Hello, world!"
+                        exit
+                        output: "Uh oh."
+                    od
+                """.trimIndent()
+            )
+            verifyAll {
+                ConsoleWriter.printObjects(
+                    objects = listOf(
+                        Text("Hello, world!")
+                    ),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+            }
+        }
 
         "handle return statements within procedures" {
             evaluateStatements(
