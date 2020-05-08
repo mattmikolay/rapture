@@ -17,6 +17,7 @@ import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RapiraCallable
+import com.mattmik.rapira.objects.Real
 
 /**
  * A visitor that executes statements while walking the tree within a given [Environment].
@@ -114,36 +115,38 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             environment[forIdentifier!!].value = fromExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
         }
 
-        // TODO This is a mess! Clean it up.
-        try {
-            while (true) {
-                if (repeatCounter != null && repeatCounter <= 0) {
-                    return
-                }
-                if (ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } == LogicalNo) {
-                    return
-                }
-                if (forIdentifier != null && ctx.forClause()?.toExpr != null && environment[forIdentifier!!].value > ctx.forClause().toExpr.let { expressionVisitor.visit(it) }) {
-                    return
-                }
+        val toValue = ctx.forClause()?.toExpr?.let { expressionVisitor.visit(it) }
+        if (toValue != null && toValue !is RInteger && toValue !is Real) {
+            throw RapiraInvalidOperationError("To value in for loop must be number")
+        }
 
+        while (
+            (repeatCounter == null || repeatCounter > 0) &&
+            ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo &&
+            (forIdentifier == null || toValue == null || environment[forIdentifier!!].value <= toValue)
+        ) {
+
+            try {
                 visit(ctx.stmts())
-
-                // Update forIdentifier using "step" expression
-                if (forIdentifier != null) {
-                    environment[forIdentifier!!].value = environment[forIdentifier!!].value + (ctx.forClause()?.stepExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1))
-                }
-
-                if (repeatCounter != null) {
-                    repeatCounter -= 1
-                }
-
-                if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == LogicalYes) {
-                    return
-                }
+            } catch (exception: LoopExitException) {
+                break
             }
-        } catch (exception: LoopExitException) {
-            // no-op
+
+            // Update forIdentifier using "step" expression
+            if (forIdentifier != null) {
+                environment[forIdentifier!!].value =
+                    environment[forIdentifier!!].value + (ctx.forClause()?.stepExpr?.let {
+                        expressionVisitor.visit(it)
+                    } ?: RInteger(1))
+            }
+
+            if (repeatCounter != null) {
+                repeatCounter--
+            }
+
+            if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == LogicalYes) {
+                break
+            }
         }
     }
 
