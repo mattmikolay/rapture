@@ -30,6 +30,7 @@ import io.mockk.unmockkObject
 import io.mockk.verify
 import io.mockk.verifyAll
 import io.mockk.verifyOrder
+import io.mockk.verifySequence
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 
@@ -280,19 +281,73 @@ class StatementVisitorTest : WordSpec({
                     until num = 4
                 """.trimIndent()
             )
-            verifyOrder {
+            verifySequence {
                 ConsoleWriter.printObjects(
                     objects = listOf(RInteger(1)),
                     lineBreak = true
                 )
+                ConsoleWriter.formatObject(any())
                 ConsoleWriter.printObjects(
                     objects = listOf(RInteger(2)),
                     lineBreak = true
                 )
+                ConsoleWriter.formatObject(any())
                 ConsoleWriter.printObjects(
                     objects = listOf(RInteger(3)),
                     lineBreak = true
                 )
+                ConsoleWriter.formatObject(any())
+            }
+        }
+
+        "handle while loops" {
+            evaluateStatements(
+                """
+                    num := 1
+                    while num < 4 do output: num
+                        num := num + 1
+                    od
+                """.trimIndent()
+            )
+            verifySequence {
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(1)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(2)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(3)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+            }
+        }
+
+        "handle while loops with until" {
+            evaluateStatements(
+                """
+                    num := 1
+                    while num < 10 do output: num
+                        num := num + 2
+                    until num /% 5 = 0
+                """.trimIndent()
+            )
+            verifySequence {
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(1)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(3)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
             }
         }
 
@@ -310,6 +365,29 @@ class StatementVisitorTest : WordSpec({
                     ),
                     lineBreak = true
                 )
+            }
+        }
+
+        "handle repeat loop with while and until" {
+            evaluateStatements(
+                """
+                    num := 1
+                    repeat 2 while num < 10 do output: num
+                        num := num + 2
+                    until num /% 7 = 0
+                """.trimIndent()
+            )
+            verifySequence {
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(1)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(3)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
             }
         }
 
