@@ -391,6 +391,32 @@ class StatementVisitorTest : WordSpec({
             }
         }
 
+        "handle for loops" {
+            evaluateStatements(
+                """
+                    for i from 3 to 13 step 4 do output: i
+                    od
+                """.trimIndent()
+            )
+            verifySequence {
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(3)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(7)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(11)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+            }
+        }
+
         // TODO
         "handle output statements with line break" {
             evaluateStatements(

@@ -110,7 +110,7 @@ loopStatement
     ;
 
 forClause
-    : 'for' IDENTIFIER ('from' expression)? ('to' expression)? ('step' expression)?
+    : 'for' IDENTIFIER ('from' fromExpr=expression)? ('to' toExpr=expression)? ('step' stepExpr=expression)?
     ;
 
 repeatClause

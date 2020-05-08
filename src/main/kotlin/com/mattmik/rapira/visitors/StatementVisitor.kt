@@ -107,7 +107,14 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             repeatCounter = repeatInitialValue.value
         }
 
-        // TODO Not fully implemented!
+        var forIdentifier: String? = null
+        ctx.forClause()?.run {
+            forIdentifier = IDENTIFIER().text
+            // Set initial value using "from" expression
+            environment[forIdentifier!!].value = fromExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
+        }
+
+        // TODO This is a mess! Clean it up.
         try {
             while (true) {
                 if (repeatCounter != null && repeatCounter <= 0) {
@@ -116,8 +123,16 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
                 if (ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } == LogicalNo) {
                     return
                 }
+                if (forIdentifier != null && ctx.forClause()?.toExpr != null && environment[forIdentifier!!].value > ctx.forClause().toExpr.let { expressionVisitor.visit(it) }) {
+                    return
+                }
 
                 visit(ctx.stmts())
+
+                // Update forIdentifier using "step" expression
+                if (forIdentifier != null) {
+                    environment[forIdentifier!!].value = environment[forIdentifier!!].value + (ctx.forClause()?.stepExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1))
+                }
 
                 if (repeatCounter != null) {
                     repeatCounter -= 1
