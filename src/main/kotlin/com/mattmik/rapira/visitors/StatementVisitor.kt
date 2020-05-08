@@ -108,11 +108,10 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             repeatCounter = repeatInitialValue.value
         }
 
-        var forIdentifier: String? = null
-        ctx.forClause()?.run {
-            forIdentifier = IDENTIFIER().text
+        val forIdentifier = ctx.forClause()?.IDENTIFIER()?.text
+        if (forIdentifier != null) {
             // Set initial value using "from" expression
-            environment[forIdentifier!!].value = fromExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
+            environment[forIdentifier].value = ctx.forClause().fromExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
         }
 
         val toValue = ctx.forClause()?.toExpr?.let { expressionVisitor.visit(it) }
@@ -123,7 +122,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         while (
             (repeatCounter == null || repeatCounter > 0) &&
             ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo &&
-            (forIdentifier == null || toValue == null || environment[forIdentifier!!].value <= toValue)
+            (forIdentifier == null || toValue == null || environment[forIdentifier].value <= toValue)
         ) {
 
             try {
@@ -134,8 +133,8 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
             // Update forIdentifier using "step" expression
             if (forIdentifier != null) {
-                environment[forIdentifier!!].value =
-                    environment[forIdentifier!!].value + (ctx.forClause()?.stepExpr?.let {
+                environment[forIdentifier].value =
+                    environment[forIdentifier].value + (ctx.forClause()?.stepExpr?.let {
                         expressionVisitor.visit(it)
                     } ?: RInteger(1))
             }
