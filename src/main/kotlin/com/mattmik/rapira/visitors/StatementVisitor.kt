@@ -99,13 +99,12 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitLoopStatement(ctx: RapiraLangParser.LoopStatementContext) {
-        var repeatCounter: Int? = null
-        val repeatInitialValue = ctx.repeatClause()?.expression()?.let { expressionVisitor.visit(it) }
-        if (repeatInitialValue != null) {
-            if (repeatInitialValue !is RInteger || repeatInitialValue.value < 0) {
+        var repeatCounter = ctx.repeatClause()?.expression()?.let {
+            val repeatExprResult = expressionVisitor.visit(it)
+            if (repeatExprResult !is RInteger || repeatExprResult.value < 0) {
                 throw RapiraInvalidOperationError("Cannot call repeat with non-integer number")
             }
-            repeatCounter = repeatInitialValue.value
+            repeatExprResult.value
         }
 
         val forIdentifier = ctx.forClause()?.IDENTIFIER()?.text
