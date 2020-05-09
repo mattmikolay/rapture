@@ -269,7 +269,7 @@ UNSIGNED_REAL
     ;
 
 IDENTIFIER
-    : [a-z][a-z0-9_]*
+    : [a-zA-Z][a-zA-Z0-9_]*
     ;
 
 STMT_END

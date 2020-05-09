@@ -32,12 +32,15 @@ class ExpressionVisitorTest : WordSpec({
     beforeTest {
         environment = Environment()
         environment["alpha"] = SimpleVariable("Ready!".toText())
+        environment["Bravo"] = SimpleVariable("Set!".toText())
     }
 
     "visit" should {
         "evaluate variables" {
-            val resultObject = evaluateExpression("alpha")
-            resultObject shouldBe "Ready!".toText()
+            val resultObject1 = evaluateExpression("alpha")
+            val resultObject2 = evaluateExpression("Bravo")
+            resultObject1 shouldBe "Ready!".toText()
+            resultObject2 shouldBe "Set!".toText()
         }
 
         "evaluate text" {
