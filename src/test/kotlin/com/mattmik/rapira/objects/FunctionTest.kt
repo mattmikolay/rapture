@@ -43,7 +43,7 @@ class FunctionTest : WordSpec({
                 InArgument(mockk()),
                 InArgument(mockk())
             )
-            val function = Function(null, params)
+            val function = Function(null, null, params)
             shouldThrow<RapiraInvalidOperationError> {
                 function.call(Environment(), arguments)
             }
@@ -54,7 +54,7 @@ class FunctionTest : WordSpec({
             val arguments = listOf(
                 InOutArgument(mockk())
             )
-            val function = Function(null, params)
+            val function = Function(null, null, params)
             shouldThrow<RapiraIllegalArgumentException> {
                 function.call(Environment(), arguments)
             }

@@ -43,7 +43,7 @@ class ProcedureTest : WordSpec({
                 InOutArgument(mockk()),
                 InOutArgument(mockk())
             )
-            val procedure = Procedure(null, params)
+            val procedure = Procedure(null, null, params)
             shouldThrow<RapiraInvalidOperationError> {
                 procedure.call(Environment(), arguments)
             }
@@ -54,7 +54,7 @@ class ProcedureTest : WordSpec({
             val arguments = listOf(
                 InArgument(mockk())
             )
-            val procedure = Procedure(null, params)
+            val procedure = Procedure(null, null, params)
             shouldThrow<RapiraIllegalArgumentException> {
                 procedure.call(Environment(), arguments)
             }

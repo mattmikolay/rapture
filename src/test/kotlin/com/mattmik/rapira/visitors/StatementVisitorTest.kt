@@ -157,6 +157,28 @@ class StatementVisitorTest : WordSpec({
             }
         }
 
+        "handle recursive calls" {
+            evaluateStatements(
+                """
+                    fun sayHello(n)
+                        output: "Hello, world!"
+                        if n > 1 then
+                            sayHello(n - 1)
+                        fi
+                    end
+                    call sayHello(3)
+                """.trimIndent()
+            )
+            verify(exactly = 3) {
+                ConsoleWriter.printObjects(
+                    listOf(
+                        Text("Hello, world!")
+                    ),
+                    lineBreak = true
+                )
+            }
+        }
+
         "handle if statements without else clauses" {
             environment["season"].value shouldBe Empty
             environment["sound"].value shouldBe Empty

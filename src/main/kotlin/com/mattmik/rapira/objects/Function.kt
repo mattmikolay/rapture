@@ -11,10 +11,11 @@ class Function(
 ) : RObject("function"), RapiraCallable by procedure {
 
     constructor(
+        functionName: String? = null,
         bodyStatements: RapiraLangParser.StmtsContext? = null,
         params: List<Parameter> = emptyList(),
         extern: List<String> = emptyList()
-    ) : this(Procedure(bodyStatements, params, extern))
+    ) : this(Procedure(functionName, bodyStatements, params, extern))
 
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         if (arguments.any { it is InOutArgument }) {

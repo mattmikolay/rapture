@@ -151,15 +151,17 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     override fun visitTextValue(ctx: RapiraLangParser.TextValueContext) = parseEscapedText(ctx.text)
 
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext): RObject {
+        val procedureName = ctx.IDENTIFIER()?.text
         val params = readProcedureParams(ctx.procedureParams())
         val extern = readExternIdentifiers(ctx.declarations())
-        return Procedure(ctx.stmts(), params, extern)
+        return Procedure(procedureName, ctx.stmts(), params, extern)
     }
 
     override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext): RObject {
+        val functionName = ctx.IDENTIFIER()?.text
         val params = readFunctionParams(ctx.functionParams())
         val extern = readExternIdentifiers(ctx.declarations())
-        return Function(ctx.stmts(), params, extern)
+        return Function(functionName, ctx.stmts(), params, extern)
     }
 
     override fun visitSequenceValue(ctx: RapiraLangParser.SequenceValueContext): RObject {

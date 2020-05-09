@@ -7,9 +7,11 @@ import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.variables.ReadOnlyVariable
 import com.mattmik.rapira.visitors.StatementVisitor
 
 class Procedure(
+    private val procedureName: String? = null,
     private val bodyStatements: RapiraLangParser.StmtsContext? = null,
     private val params: List<Parameter> = emptyList(),
     private val extern: List<String> = emptyList()
@@ -20,6 +22,12 @@ class Procedure(
         }
 
         val newEnvironment = Environment()
+
+        // Allows for recursive calls
+        if (procedureName != null) {
+            newEnvironment[procedureName] = ReadOnlyVariable(this)
+        }
+
         params.zip(arguments).forEach { (param, argument) ->
             when (argument) {
                 is InArgument -> if (param.type != ParamType.In)
@@ -30,6 +38,7 @@ class Procedure(
 
             newEnvironment[param.name] = argument.evaluate(environment)
         }
+
         extern.map { Pair(it, environment[it]) }
             .forEach { (name, variable) -> newEnvironment[name] = variable }
 

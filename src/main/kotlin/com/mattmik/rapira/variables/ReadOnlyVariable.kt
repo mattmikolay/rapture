@@ -7,6 +7,6 @@ class ReadOnlyVariable(private val innerValue: RObject) : Variable {
     override var value: RObject
         get() = innerValue
         set(_) {
-            throw RapiraInvalidOperationError("Cannot overwrite reserved word")
+            throw RapiraInvalidOperationError("Value is not assignable")
         }
 }
