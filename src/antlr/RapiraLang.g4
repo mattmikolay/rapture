@@ -9,7 +9,13 @@ dialogUnit
     ;
 
 fileInput
-    : ((statement STMT_END) | (routineDefinition STMT_END) | STMT_END)* EOF
+    : fileStatement (STMT_END fileStatement)* STMT_END? EOF
+    | STMT_END? EOF
+    ;
+
+fileStatement
+    : statement
+    | routineDefinition
     ;
 
 routineDefinition
@@ -18,7 +24,7 @@ routineDefinition
     ;
 
 stmts
-    : (statement STMT_END)*
+    : (statement? STMT_END)*
     ;
 
 statement
@@ -266,13 +272,12 @@ IDENTIFIER
     : [a-z][a-z0-9_]*
     ;
 
-TEXT
-    : '"' (~[\r\n"] | '""')* '"'
+STMT_END
+    : (';' | NEWLINE)+
     ;
 
-STMT_END
-    : ';'
-    | NEWLINE+
+TEXT
+    : '"' (~[\r\n"] | '""')* '"'
     ;
 
 SKIPPED

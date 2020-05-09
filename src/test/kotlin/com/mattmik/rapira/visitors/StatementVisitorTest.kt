@@ -38,7 +38,7 @@ class StatementVisitorTest : WordSpec({
     lateinit var environment: Environment
 
     fun evaluateStatements(input: String) {
-        val lexer = RapiraLangLexer(CharStreams.fromString("$input\n"))
+        val lexer = RapiraLangLexer(CharStreams.fromString(input))
         val parser = RapiraLangParser(CommonTokenStream(lexer))
         val tree = parser.fileInput()
         StatementVisitor(environment).visit(tree)
@@ -163,9 +163,11 @@ class StatementVisitorTest : WordSpec({
 
             evaluateStatements(
                 """
-                    if month = 12 then season := "winter"
+                    if month = 12 then
+                        season := "winter"
                     fi
-                    if animal = "dog" then sound := "bark"
+                    if animal = "dog" then
+                        sound := "bark"
                     fi
                 """.trimIndent()
             )
@@ -180,12 +182,16 @@ class StatementVisitorTest : WordSpec({
 
             evaluateStatements(
                 """
-                    if month = 12 then season := "winter"
-                    else season := "summer"
+                    if month = 12 then
+                        season := "winter"
+                    else
+                        season := "summer"
                     fi
 
-                    if animal = "dog" then sound := "bark"
-                    else sound := "meow"
+                    if animal = "dog" then
+                        sound := "bark"
+                    else
+                        sound := "meow"
                     fi
                 """.trimIndent()
             )
@@ -276,7 +282,8 @@ class StatementVisitorTest : WordSpec({
             evaluateStatements(
                 """
                     num := 1
-                    do output: num
+                    do
+                        output: num
                         num := num + 1
                     until num = 4
                 """.trimIndent()
@@ -304,7 +311,8 @@ class StatementVisitorTest : WordSpec({
             evaluateStatements(
                 """
                     num := 1
-                    while num < 4 do output: num
+                    while num < 4 do
+                        output: num
                         num := num + 1
                     od
                 """.trimIndent()
@@ -332,7 +340,8 @@ class StatementVisitorTest : WordSpec({
             evaluateStatements(
                 """
                     num := 1
-                    while num < 10 do output: num
+                    while num < 10 do
+                        output: num
                         num := num + 2
                     until num /% 5 = 0
                 """.trimIndent()
@@ -354,7 +363,8 @@ class StatementVisitorTest : WordSpec({
         "handle repeat loops" {
             evaluateStatements(
                 """
-                    repeat 3 do output: "Hello, world!"
+                    repeat 3 do
+                        output: "Hello, world!"
                     od
                 """.trimIndent()
             )
@@ -372,7 +382,8 @@ class StatementVisitorTest : WordSpec({
             evaluateStatements(
                 """
                     num := 1
-                    repeat 2 while num < 10 do output: num
+                    repeat 2 while num < 10 do
+                        output: num
                         num := num + 2
                     until num /% 7 = 0
                 """.trimIndent()
@@ -394,7 +405,8 @@ class StatementVisitorTest : WordSpec({
         "handle for loops with from, to, and step" {
             evaluateStatements(
                 """
-                    for i from 3 to 13 step 4 do output: i
+                    for i from 3 to 13 step 4 do
+                        output: i
                     od
                 """.trimIndent()
             )
@@ -420,7 +432,8 @@ class StatementVisitorTest : WordSpec({
         "handle for loops with from and to" {
             evaluateStatements(
                 """
-                    for i from 3 to 5 do output: i
+                    for i from 3 to 5 do
+                        output: i
                     od
                 """.trimIndent()
             )
@@ -550,7 +563,8 @@ class StatementVisitorTest : WordSpec({
         "handle exit statements within loops" {
             evaluateStatements(
                 """
-                    do output: "Hello, world!"
+                    do
+                        output: "Hello, world!"
                         exit
                         output: "Uh oh."
                     od
