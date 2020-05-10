@@ -64,14 +64,14 @@ class NativeFunctionsTest : WordSpec() {
                     row("lg", 1)
                 ) { functionName, expectedArgumentCount ->
                     shouldThrow<RapiraIncorrectArgumentCountError> {
-                        (nativeFunctions[functionName] as RapiraCallable).call(environment, emptyList())
+                        (nativeFunctions[functionName] as RCallable).call(environment, emptyList())
                     }
                 }
             }
         }
 
         "abs" should {
-            val function = nativeFunctions["abs"] as RapiraCallable
+            val function = nativeFunctions["abs"] as RCallable
 
             "return absolute value for integers" {
                 checkAll<Int> { num ->
@@ -95,7 +95,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "sign" should {
-            val function = nativeFunctions["sign"] as RapiraCallable
+            val function = nativeFunctions["sign"] as RCallable
 
             "return sign for integers" {
                 checkAll<Int> { num ->
@@ -119,7 +119,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "sqrt" should {
-            val function = nativeFunctions["sqrt"] as RapiraCallable
+            val function = nativeFunctions["sqrt"] as RCallable
 
             "return square root for integers" {
                 checkAll<Int> { num ->
@@ -143,7 +143,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "entier" should {
-            val function = nativeFunctions["entier"] as RapiraCallable
+            val function = nativeFunctions["entier"] as RCallable
 
             "return same number for integers" {
                 checkAll<Int> { num ->
@@ -167,7 +167,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "round" should {
-            val function = nativeFunctions["round"] as RapiraCallable
+            val function = nativeFunctions["round"] as RCallable
 
             "return same number for integers" {
                 checkAll<Int> { num ->
@@ -194,7 +194,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "index" When {
-            val function = nativeFunctions["index"] as RapiraCallable
+            val function = nativeFunctions["index"] as RCallable
             val mockArgument2 = mockk<Argument>()
 
             "given a sequence" should {
@@ -247,7 +247,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "sin" should {
-            val function = nativeFunctions["sin"] as RapiraCallable
+            val function = nativeFunctions["sin"] as RCallable
 
             "return sin for integers" {
                 checkAll<Int> { num ->
@@ -271,7 +271,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "cos" should {
-            val function = nativeFunctions["cos"] as RapiraCallable
+            val function = nativeFunctions["cos"] as RCallable
 
             "return cos for integers" {
                 checkAll<Int> { num ->
@@ -295,7 +295,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "tg" should {
-            val function = nativeFunctions["tg"] as RapiraCallable
+            val function = nativeFunctions["tg"] as RCallable
 
             "return tan for integers" {
                 checkAll<Int> { num ->
@@ -319,7 +319,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "arcsin" should {
-            val function = nativeFunctions["arcsin"] as RapiraCallable
+            val function = nativeFunctions["arcsin"] as RCallable
 
             "return arcsin for integers" {
                 checkAll<Int> { num ->
@@ -343,7 +343,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "arctg" should {
-            val function = nativeFunctions["arctg"] as RapiraCallable
+            val function = nativeFunctions["arctg"] as RCallable
 
             "return arctan for integers" {
                 checkAll<Int> { num ->
@@ -367,7 +367,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "exp" should {
-            val function = nativeFunctions["exp"] as RapiraCallable
+            val function = nativeFunctions["exp"] as RCallable
 
             "return exp for integers" {
                 checkAll<Int> { num ->
@@ -391,7 +391,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "ln" should {
-            val function = nativeFunctions["ln"] as RapiraCallable
+            val function = nativeFunctions["ln"] as RCallable
 
             "return ln for integers" {
                 checkAll<Int> { num ->
@@ -415,7 +415,7 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "lg" should {
-            val function = nativeFunctions["lg"] as RapiraCallable
+            val function = nativeFunctions["lg"] as RCallable
 
             "return log for integers" {
                 checkAll<Int> { num ->

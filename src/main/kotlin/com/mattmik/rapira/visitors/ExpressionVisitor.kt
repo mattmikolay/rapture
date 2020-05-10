@@ -12,9 +12,9 @@ import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.ParamType
 import com.mattmik.rapira.objects.Parameter
 import com.mattmik.rapira.objects.Procedure
+import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
-import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.parseEscapedText
@@ -128,7 +128,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
             when (baseResult) {
                 is Procedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
-                is RapiraCallable -> return baseResult.call(environment, arguments) ?: Empty
+                is RCallable -> return baseResult.call(environment, arguments) ?: Empty
                 else -> throw RapiraInvalidOperationError("Cannot invoke object that not a function")
             }
         }

@@ -15,8 +15,8 @@ import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
+import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.objects.RInteger
-import com.mattmik.rapira.objects.RapiraCallable
 import com.mattmik.rapira.objects.Real
 
 /**
@@ -55,7 +55,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val arguments = readProcedureArguments(ctx.procedureArguments())
 
         when (callable) {
-            is RapiraCallable -> callable.call(environment, arguments)
+            is RCallable -> callable.call(environment, arguments)
             else -> throw RapiraInvalidOperationError("Cannot invoke object that is neither a procedure nor function")
         }
     }

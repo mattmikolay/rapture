@@ -8,7 +8,7 @@ import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 
 class Function(
     private val procedure: Procedure
-) : RObject("function"), RapiraCallable by procedure {
+) : RObject("function"), RCallable by procedure {
 
     constructor(
         functionName: String? = null,

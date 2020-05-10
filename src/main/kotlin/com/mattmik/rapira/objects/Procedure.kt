@@ -15,7 +15,7 @@ class Procedure(
     private val bodyStatements: RapiraLangParser.StmtsContext? = null,
     private val params: List<Parameter> = emptyList(),
     private val extern: List<String> = emptyList()
-) : RObject("procedure"), RapiraCallable {
+) : RObject("procedure"), RCallable {
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         if (params.size != arguments.size) {
             throw RapiraInvalidOperationError("Number of params does not match number of arguments")

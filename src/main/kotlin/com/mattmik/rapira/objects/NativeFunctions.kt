@@ -21,7 +21,7 @@ import kotlin.random.Random
 
 private abstract class NativeFunction(
     val paramCount: Int
-) : RObject("native function"), RapiraCallable {
+) : RObject("native function"), RCallable {
 
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         if (arguments.size != paramCount) {
