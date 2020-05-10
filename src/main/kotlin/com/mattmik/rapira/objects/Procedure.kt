@@ -25,6 +25,7 @@ class Procedure(
 
         // Allows for recursive calls
         if (procedureName != null) {
+            // TODO This doesn't work for functions
             newEnvironment[procedureName] = ReadOnlyVariable(this)
         }
 

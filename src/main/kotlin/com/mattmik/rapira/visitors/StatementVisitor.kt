@@ -118,10 +118,12 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             throw RapiraInvalidOperationError("To value in for loop must be number")
         }
 
+        val stepValue = ctx.forClause()?.stepExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
+
         while (
             (repeatCounter == null || repeatCounter > 0) &&
             ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo &&
-            (forIdentifier == null || toValue == null || environment[forIdentifier].value <= toValue)
+            (forIdentifier == null || toValue == null || (toValue - environment[forIdentifier].value) * stepValue >= RInteger(0))
         ) {
 
             try {
@@ -132,10 +134,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
             // Update forIdentifier using "step" expression
             if (forIdentifier != null) {
-                environment[forIdentifier].value =
-                    environment[forIdentifier].value + (ctx.forClause()?.stepExpr?.let {
-                        expressionVisitor.visit(it)
-                    } ?: RInteger(1))
+                environment[forIdentifier].value = environment[forIdentifier].value + stepValue
             }
 
             if (repeatCounter != null) {

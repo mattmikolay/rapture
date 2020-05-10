@@ -424,7 +424,7 @@ class StatementVisitorTest : WordSpec({
             }
         }
 
-        "handle for loops with from, to, and step" {
+        "handle for loops with from, to, and positive step" {
             evaluateStatements(
                 """
                     for i from 3 to 13 step 4 do
@@ -445,6 +445,33 @@ class StatementVisitorTest : WordSpec({
                 ConsoleWriter.formatObject(any())
                 ConsoleWriter.printObjects(
                     objects = listOf(RInteger(11)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+            }
+        }
+
+        "handle for loops with from, to, and negative step" {
+            evaluateStatements(
+                """
+                    for i from 13 to 3 step -4 do
+                        output: i
+                    od
+                """.trimIndent()
+            )
+            verifySequence {
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(13)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(9)),
+                    lineBreak = true
+                )
+                ConsoleWriter.formatObject(any())
+                ConsoleWriter.printObjects(
+                    objects = listOf(RInteger(5)),
                     lineBreak = true
                 )
                 ConsoleWriter.formatObject(any())
