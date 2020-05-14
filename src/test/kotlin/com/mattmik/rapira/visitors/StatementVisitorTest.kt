@@ -5,8 +5,9 @@ import com.mattmik.rapira.ConsoleWriter
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
-import com.mattmik.rapira.control.ProcedureReturnException
+import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.LogicalYes
@@ -689,8 +690,21 @@ class StatementVisitorTest : WordSpec({
         }
 
         "throw exception when return statement occurs outside procedure" {
-            shouldThrow<ProcedureReturnException> {
+            shouldThrow<CallableReturnException> {
                 evaluateStatements("return")
+            }
+        }
+
+        "throw exception when return with value occurs in procedure" {
+            shouldThrow<RapiraInvalidOperationError> {
+                evaluateStatements(
+                    """
+                        proc test_procedure ()
+                            return 123
+                        end
+                        call test_procedure()
+                    """.trimIndent()
+                )
             }
         }
     }

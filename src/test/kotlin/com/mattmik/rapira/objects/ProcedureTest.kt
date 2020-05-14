@@ -5,12 +5,9 @@ import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verifyAll
 
 class ProcedureTest : WordSpec({
 
@@ -18,25 +15,6 @@ class ProcedureTest : WordSpec({
         paramNames.map { paramName -> Parameter(ParamType.InOut, paramName) }
 
     "call" should {
-        "read extern objects from old environment" {
-            val mockEnvironment = mockk<Environment>()
-            val extern = listOf(
-                "externVariable1",
-                "externVariable2",
-                "externVariable3"
-            )
-            every { mockEnvironment[any()] } returns SimpleVariable(Empty)
-            val procedure = Procedure(extern = extern)
-
-            procedure.call(mockEnvironment, emptyList())
-
-            verifyAll {
-                mockEnvironment["externVariable1"]
-                mockEnvironment["externVariable2"]
-                mockEnvironment["externVariable3"]
-            }
-        }
-
         "throw exception when param and argument count differ" {
             val params = makeProcedureParams("param1", "param2", "param3")
             val arguments = listOf(

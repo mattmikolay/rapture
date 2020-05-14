@@ -8,8 +8,8 @@ import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
+import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
-import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
@@ -172,7 +172,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val returnValue = ctx.expression()?.let {
             expressionVisitor.visit(it)
         }
-        throw ProcedureReturnException(returnValue)
+        throw CallableReturnException(returnValue)
     }
 
     // Expression statements are only valid in the REPL

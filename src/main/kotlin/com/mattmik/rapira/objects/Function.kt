@@ -7,23 +7,22 @@ import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.variables.ReadOnlyVariable
 
-class Function(
-    private val functionName: String?,
-    private val procedure: Procedure
-) : RObject("function"), RCallable by procedure {
+class Function private constructor(
+    private val name: String?,
+    private val callable: RCallable
+) : RObject("function"), RCallable by callable {
 
     constructor(
-        functionName: String? = null,
-        bodyStatements: RapiraLangParser.StmtsContext? = null,
+        name: String? = null,
+        statements: RapiraLangParser.StmtsContext? = null,
         params: List<Parameter> = emptyList(),
         extern: List<String> = emptyList()
     ) : this(
-        functionName,
-        Procedure(
-            null,
-            bodyStatements,
+        name,
+        BaseCallable(
+            statements,
             params,
-            if (functionName != null) (extern + functionName) else extern
+            if (name != null) (extern + name) else extern
         )
     )
 
@@ -33,11 +32,11 @@ class Function(
         }
 
         val newEnvironment = Environment(environment)
-        functionName?.let {
+        name?.let {
             newEnvironment[it] = ReadOnlyVariable(this)
         }
 
-        return procedure.call(newEnvironment, arguments)
+        return callable.call(newEnvironment, arguments)
     }
 
     override fun toString() = "function"

@@ -2,8 +2,8 @@ package com.mattmik.rapira
 
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
-import com.mattmik.rapira.control.ProcedureReturnException
 import com.mattmik.rapira.errors.RapiraRuntimeError
 import com.mattmik.rapira.visitors.StatementVisitor
 import java.io.InputStream
@@ -33,7 +33,7 @@ class Interpreter {
     private fun interpretTree(parseTree: ParseTree) {
         try {
             statementVisitor.visit(parseTree)
-        } catch (exception: ProcedureReturnException) {
+        } catch (exception: CallableReturnException) {
             ConsoleWriter.printError("cannot invoke return outside of procedure or function")
         } catch (exception: LoopExitException) {
             ConsoleWriter.printError("cannot invoke exit outside of loop")
