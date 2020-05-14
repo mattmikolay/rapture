@@ -20,8 +20,12 @@ private val specialValues = nativeFunctions + mapOf(
     "pi" to PI.toReal()
 )
 
-class Environment {
-    private val bindings = mutableMapOf<String, Variable>()
+class Environment private constructor(
+    private val bindings: MutableMap<String, Variable>
+) {
+    constructor() : this(mutableMapOf())
+
+    constructor(environment: Environment) : this(environment.bindings.toMutableMap())
 
     operator fun set(name: String, variable: Variable) {
         if (specialValues.containsKey(name)) {

@@ -18,7 +18,7 @@ class FunctionTest : WordSpec({
         paramNames.map { paramName -> Parameter(ParamType.In, paramName) }
 
     "call" should {
-        "read extern objects from old environment" {
+        "!read extern objects from old environment" {
             val mockEnvironment = mockk<Environment>()
             val extern = listOf(
                 "externVariable1",

@@ -23,10 +23,8 @@ class Procedure(
 
         val newEnvironment = Environment()
 
-        // Allows for recursive calls
-        if (procedureName != null) {
-            // TODO This doesn't work for functions
-            newEnvironment[procedureName] = ReadOnlyVariable(this)
+        procedureName?.let {
+            newEnvironment[it] = ReadOnlyVariable(this)
         }
 
         params.zip(arguments).forEach { (param, argument) ->
