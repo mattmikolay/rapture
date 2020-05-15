@@ -23,12 +23,13 @@ private abstract class NativeFunction(
     val paramCount: Int
 ) : RObject("native function"), RCallable {
 
-    override fun call(environment: Environment, arguments: List<Argument>): RObject? {
-        if (arguments.size != paramCount) {
-            throw RapiraIncorrectArgumentCountError(paramCount, arguments.size)
-        }
-        return callInternal(environment, arguments)
-    }
+    override fun call(environment: Environment, arguments: List<Argument>) =
+        if (arguments.size == paramCount)
+            callInternal(environment, arguments)
+        else throw RapiraIncorrectArgumentCountError(
+            expectedArgCount = paramCount,
+            actualArgCount = arguments.size
+        )
 
     abstract fun callInternal(environment: Environment, arguments: List<Argument>): RObject?
 

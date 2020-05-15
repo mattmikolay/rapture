@@ -6,7 +6,7 @@ import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
 import com.mattmik.rapira.visitors.StatementVisitor
 
 class BaseCallable(
@@ -17,7 +17,10 @@ class BaseCallable(
 
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         if (params.size != arguments.size) {
-            throw RapiraInvalidOperationError("Number of params does not match number of arguments")
+            throw RapiraIncorrectArgumentCountError(
+                expectedArgCount = params.size,
+                actualArgCount = arguments.size
+            )
         }
 
         val newEnvironment = makeNewEnvironment(environment, arguments)

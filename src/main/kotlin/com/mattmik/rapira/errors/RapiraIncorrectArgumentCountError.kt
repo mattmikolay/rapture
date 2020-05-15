@@ -1,10 +1,10 @@
 package com.mattmik.rapira.errors
 
 class RapiraIncorrectArgumentCountError(
-    expectedArgumentCount: Int,
-    actualArgumentCount: Int
+    expectedArgCount: Int,
+    actualArgCount: Int
 ) : RapiraRuntimeError(
     """
-    Incorrect number of arguments passed to callable. Expected $expectedArgumentCount arguments, but received $actualArgumentCount.
-    """.trimMargin()
+    Incorrect number of arguments passed to callable. Expected $expectedArgCount argument(s), but received $actualArgCount.
+    """.trimIndent()
 )
