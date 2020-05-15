@@ -179,8 +179,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     private fun readProcedureParams(ctx: RapiraLangParser.ProcedureParamsContext?): List<Parameter> =
         ctx?.procedureParam()?.map { paramContext ->
             paramContext.inParam()?.let { Parameter(ParamType.In, it.IDENTIFIER().text) }
-                ?: paramContext.inOutParam()?.let { Parameter(ParamType.InOut, it.IDENTIFIER().text) }
-                ?: throw RapiraInvalidOperationError("Invalid param type")
+                ?: Parameter(ParamType.InOut, paramContext.inOutParam().IDENTIFIER().text)
         } ?: emptyList()
 
     private fun readFunctionParams(ctx: RapiraLangParser.FunctionParamsContext?): List<Parameter> =
