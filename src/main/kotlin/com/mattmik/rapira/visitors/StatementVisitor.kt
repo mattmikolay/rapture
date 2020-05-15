@@ -10,6 +10,7 @@ import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
+import com.mattmik.rapira.errors.RapiraIllegalInvocationError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
@@ -52,10 +53,8 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
         val arguments = readProcedureArguments(ctx.procedureArguments())
 
-        when (callable) {
-            is RCallable -> callable.call(environment, arguments)
-            else -> throw RapiraInvalidOperationError("Cannot invoke object that is neither a procedure nor function")
-        }
+        (callable as? RCallable)?.call(environment, arguments)
+            ?: throw RapiraIllegalInvocationError(token = ctx.CALL()?.symbol ?: ctx.IDENTIFIER().symbol)
     }
 
     override fun visitIfStatement(ctx: RapiraLangParser.IfStatementContext) {

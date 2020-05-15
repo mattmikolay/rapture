@@ -48,7 +48,7 @@ variable
     ;
 
 callStatement
-    : 'call' expression procedureArguments
+    : CALL expression procedureArguments
     | IDENTIFIER procedureArguments
     ;
 
@@ -246,6 +246,10 @@ AND : 'and' ;
 OR : 'or' ;
 
 NOT : 'not' ;
+
+CALL
+    : 'call'
+    ;
 
 MODE_TEXT
     : 'text'

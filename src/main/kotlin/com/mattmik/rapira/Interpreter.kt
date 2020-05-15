@@ -61,11 +61,10 @@ object Interpreter {
                 charPositionInLine = exception.token.charPositionInLine
             )
         } catch (error: RapiraRuntimeError) {
-            // TODO Display correct line and character of error
             ConsoleWriter.printError(
                 "${error.message}",
-                line = 0,
-                charPositionInLine = 0
+                line = error.token?.line ?: 0,
+                charPositionInLine = error.token?.charPositionInLine ?: 0
             )
         }
     }
