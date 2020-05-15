@@ -22,11 +22,9 @@ object Interpreter {
         val parser = makeParser(lexer)
 
         val tree = parser.dialogUnit()
-        tree.exception?.let {
-            exitProcess(1)
+        if (tree.exception == null) {
+            interpret(tree)
         }
-
-        interpret(tree)
     }
 
     fun interpretInputStream(inputStream: InputStream) {
