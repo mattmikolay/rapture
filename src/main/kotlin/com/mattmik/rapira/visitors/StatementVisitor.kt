@@ -5,7 +5,6 @@ import com.mattmik.rapira.ConsoleWriter
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.control.CallableReturnException
@@ -107,7 +106,8 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val forIdentifier = ctx.forClause()?.IDENTIFIER()?.text
         if (forIdentifier != null) {
             // Set initial value using "from" expression
-            environment[forIdentifier].value = ctx.forClause().fromExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
+            environment[forIdentifier].value =
+                ctx.forClause().fromExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
         }
 
         val toValue = ctx.forClause()?.toExpr?.let { expressionVisitor.visit(it) }
@@ -120,7 +120,9 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         while (
             (repeatCounter == null || repeatCounter > 0) &&
             ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo &&
-            (forIdentifier == null || toValue == null || (toValue - environment[forIdentifier].value) * stepValue >= RInteger(0))
+            (forIdentifier == null || toValue == null || (toValue - environment[forIdentifier].value) * stepValue >= RInteger(
+                0
+            ))
         ) {
 
             try {
@@ -178,11 +180,9 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         ConsoleWriter.println(expressionResult.toString())
     }
 
-    private fun readProcedureArguments(ctx: RapiraLangParser.ProcedureArgumentsContext): List<Argument> {
-        return ctx.procedureArgument().map {
-            it.expression()?.let { expr -> InArgument(expr) }
-                ?: it.variable()?.let { variable -> InOutArgument(variable) }
-                ?: throw RapiraInvalidOperationError("Invalid argument type")
+    private fun readProcedureArguments(ctx: RapiraLangParser.ProcedureArgumentsContext) =
+        ctx.procedureArgument().map { arg ->
+            arg.expression()?.let { expr -> InArgument(expr) }
+                ?: InOutArgument(arg.variable())
         }
-    }
 }
