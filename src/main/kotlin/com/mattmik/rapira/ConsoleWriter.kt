@@ -16,8 +16,11 @@ object ConsoleWriter {
         print(formattedOutput)
     }
 
-    fun printError(errorMessage: String) =
-        System.err.println("Error: $errorMessage")
+    fun printError(message: String, line: Int? = null, charPositionInLine: Int? = null) =
+        if (line != null && charPositionInLine != null)
+            System.err.println("Error @ line $line:$charPositionInLine\n\t$message")
+        else
+            System.err.println("Error\n\t$message")
 
     /**
      * Returns a formatted string representation of an [RObject] for use with

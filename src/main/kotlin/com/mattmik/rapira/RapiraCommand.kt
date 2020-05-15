@@ -21,8 +21,6 @@ class RapiraCommand : CliktCommand(
     }
 
     override fun run() {
-        val interpreter = Interpreter()
-
         if (inputFile == null) {
             printREPLHeader()
 
@@ -33,12 +31,12 @@ class RapiraCommand : CliktCommand(
                 if (line == null || line == "quit")
                     return
 
-                interpreter.interpretStatement(line)
+                Interpreter.interpretStatement(line)
             }
         }
 
         inputFile?.inputStream()?.use {
-            interpreter.interpretInputStream(it)
+            Interpreter.interpretInputStream(it)
         }
     }
 }
