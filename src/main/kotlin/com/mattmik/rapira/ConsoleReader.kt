@@ -27,14 +27,18 @@ object ConsoleReader {
             try {
                 obj = parseObject(input)
             } catch (e: Exception) {
-                ConsoleWriter.printError("""
-                    invalid object input. Please enter a valid object notation. For example:
-                        - Integers: 1, 10, 1000, -1, -10, -1000
-                        - Reals: 1.23, 1e10, -1.23, -1e10
-                        - Text: "Hello, world!"
-                        - Logical: yes, no
-                        - empty
-                """.trimIndent())
+                ConsoleWriter.printError(
+                    """
+                        invalid object input. Please enter a valid object notation. For example:
+                            - Integers: 1, 10, 1000, -1, -10, -1000
+                            - Reals: 1.23, 1e10, -1.23, -1e10
+                            - Text: "Hello, world!"
+                            - Logical: yes, no
+                            - empty
+                    """.trimIndent(),
+                    line = 1,
+                    charPositionInLine = 0
+                )
             }
         } while (obj == null)
 

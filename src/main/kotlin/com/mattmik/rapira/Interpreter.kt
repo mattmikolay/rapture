@@ -49,11 +49,24 @@ object Interpreter {
         try {
             statementVisitor.visit(parseTree)
         } catch (exception: CallableReturnException) {
-            ConsoleWriter.printError("cannot invoke return outside of procedure or function")
+            ConsoleWriter.printError(
+                "Cannot invoke return statement outside of procedure or function",
+                line = exception.token.line,
+                charPositionInLine = exception.token.charPositionInLine
+            )
         } catch (exception: LoopExitException) {
-            ConsoleWriter.printError("cannot invoke exit outside of loop")
+            ConsoleWriter.printError(
+                "Cannot invoke exit statement outside of loop",
+                line = exception.token.line,
+                charPositionInLine = exception.token.charPositionInLine
+            )
         } catch (error: RapiraRuntimeError) {
-            ConsoleWriter.printError("${error.message}")
+            // TODO Display correct line and character of error
+            ConsoleWriter.printError(
+                "${error.message}",
+                line = 0,
+                charPositionInLine = 0
+            )
         }
     }
 }

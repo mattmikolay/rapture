@@ -164,13 +164,13 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitExitStatement(ctx: RapiraLangParser.ExitStatementContext) =
-        throw LoopExitException()
+        throw LoopExitException(token = ctx.LOOP_EXIT().symbol)
 
     override fun visitReturnStatement(ctx: RapiraLangParser.ReturnStatementContext) {
         val returnValue = ctx.expression()?.let {
             expressionVisitor.visit(it)
         }
-        throw CallableReturnException(returnValue)
+        throw CallableReturnException(returnValue, token = ctx.RETURN().symbol)
     }
 
     // Expression statements are only valid in the REPL
