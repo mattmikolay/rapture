@@ -47,13 +47,15 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
-        val callable = ctx.IDENTIFIER()?.let { environment[it.text].value }
+        val obj = ctx.IDENTIFIER()?.let { environment[it.text].value }
             ?: expressionVisitor.visit(ctx.expression())
+
+        val callable = obj as? RCallable
+            ?: throw RapiraIllegalInvocationError(token = ctx.CALL()?.symbol ?: ctx.IDENTIFIER().symbol)
 
         val arguments = readProcedureArguments(ctx.procedureArguments())
 
-        (callable as? RCallable)?.call(environment, arguments)
-            ?: throw RapiraIllegalInvocationError(token = ctx.CALL()?.symbol ?: ctx.IDENTIFIER().symbol)
+        callable.call(environment, arguments)
     }
 
     override fun visitIfStatement(ctx: RapiraLangParser.IfStatementContext) {
