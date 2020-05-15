@@ -20,9 +20,7 @@ import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.parseEscapedText
 
 /**
- * A visitor that evaluates expressions while walking the tree within a given [Environment].
- *
- * @property environment the environment in which to evaluate expressions
+ * A visitor that evaluates expressions while walking the tree within a given [environment].
  */
 class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVisitor<RObject>() {
 

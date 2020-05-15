@@ -23,11 +23,9 @@ object ConsoleWriter {
             System.err.println("Error\n\t$message")
 
     /**
-     * Returns a formatted string representation of an [RObject] for use with
-     * the the `output` statement. This differs from [toString], which returns the
-     * system's representation of the object as a string.
-     *
-     * @param obj the object to format
+     * Returns a formatted string representation of a Rapira object [obj] for
+     * use with the the `output` statement. This differs from [toString], which
+     * returns the system's representation of the object as a string.
      */
     fun formatObject(obj: RObject) = when (obj) {
         is Text -> obj.value

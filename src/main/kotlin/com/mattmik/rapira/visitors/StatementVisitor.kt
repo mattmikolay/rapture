@@ -20,9 +20,7 @@ import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Real
 
 /**
- * A visitor that executes statements while walking the tree within a given [Environment].
- *
- * @property environment the environment in which to execute statements
+ * A visitor that executes statements while walking the tree within a given [environment].
  */
 class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
 
