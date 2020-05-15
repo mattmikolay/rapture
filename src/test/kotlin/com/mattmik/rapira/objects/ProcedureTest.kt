@@ -4,7 +4,7 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.mockk.mockk
@@ -22,7 +22,7 @@ class ProcedureTest : WordSpec({
                 InOutArgument(mockk())
             )
             val procedure = Procedure(null, null, params)
-            shouldThrow<RapiraInvalidOperationError> {
+            shouldThrow<RapiraIncorrectArgumentCountError> {
                 procedure.call(Environment(), arguments)
             }
         }
