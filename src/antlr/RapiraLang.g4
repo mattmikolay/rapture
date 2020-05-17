@@ -148,19 +148,11 @@ expressionStatement
     ;
 
 expression
-    : logicalExpression
-    ;
-
-logicalExpression
-    : logicalExpression AND logicalExpression #andExpression
-    | logicalExpression OR logicalExpression #orExpression
-    | NOT comparisonExpression #notExpression
-    | comparisonExpression #baseLogicalExpression
-    ;
-
-comparisonExpression
-    : comparisonExpression op=(LESS | GREATER | LESSEQ | GREATEREQ) comparisonExpression #relationalExpression
-    | comparisonExpression op=(EQ | NEQ) comparisonExpression #equalityExpression
+    : expression op=(LESS | GREATER | LESSEQ | GREATEREQ) expression #relationalExpression
+    | expression op=(EQ | NEQ) expression #equalityExpression
+    | NOT expression #notExpression
+    | expression AND expression #andExpression
+    | expression OR expression #orExpression
     | arithmeticExpression #baseComparisonExpression
     ;
 

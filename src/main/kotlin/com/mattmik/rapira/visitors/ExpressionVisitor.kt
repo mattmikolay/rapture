@@ -25,26 +25,26 @@ import com.mattmik.rapira.objects.parseEscapedText
 class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVisitor<RObject>() {
 
     override fun visitAndExpression(ctx: RapiraLangParser.AndExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.logicalExpression()
+        val (leftExpr, rightExpr) = ctx.expression()
         val leftResult = visit(leftExpr)
         val rightResult = visit(rightExpr)
         return leftResult and rightResult
     }
 
     override fun visitOrExpression(ctx: RapiraLangParser.OrExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.logicalExpression()
+        val (leftExpr, rightExpr) = ctx.expression()
         val leftResult = visit(leftExpr)
         val rightResult = visit(rightExpr)
         return leftResult or rightResult
     }
 
     override fun visitNotExpression(ctx: RapiraLangParser.NotExpressionContext): RObject {
-        val result = visit(ctx.comparisonExpression())
+        val result = visit(ctx.expression())
         return result.not()
     }
 
     override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.comparisonExpression()
+        val (leftExpr, rightExpr) = ctx.expression()
         val leftResult = visit(leftExpr)
         val rightResult = visit(rightExpr)
         return when (ctx.op.type) {
@@ -57,7 +57,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitEqualityExpression(ctx: RapiraLangParser.EqualityExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.comparisonExpression()
+        val (leftExpr, rightExpr) = ctx.expression()
         val leftResult = visit(leftExpr)
         val rightResult = visit(rightExpr)
         return Logical(
