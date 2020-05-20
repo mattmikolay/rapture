@@ -19,7 +19,8 @@ data class RInteger(val value: Int) : RObject("integer") {
         else -> throw RapiraInvalidOperationError(Operation.Subtraction, other)
     }
 
-    override fun negate(): RObject = RInteger(-value)
+    override fun negate() =
+        RInteger(-value).toSuccess()
 
     override fun times(other: RObject) = when (other) {
         is RInteger -> RInteger(value * other.value)

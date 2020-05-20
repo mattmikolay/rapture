@@ -34,9 +34,9 @@ class RealTest : WordSpec({
     }
 
     "negate" should {
-        "return real" {
+        "succeed with real" {
             checkAll<Double> { num ->
-                Real(num).negate() shouldBe Real(-num)
+                Real(num).negate() shouldSucceedWith Real(-num)
             }
         }
     }

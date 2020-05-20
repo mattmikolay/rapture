@@ -34,9 +34,9 @@ class RIntegerTest : WordSpec({
     }
 
     "negate" should {
-        "return integer" {
+        "succeed with integer" {
             checkAll<Int> { num ->
-                RInteger(num).negate() shouldBe RInteger(-num)
+                RInteger(num).negate() shouldSucceedWith RInteger(-num)
             }
         }
     }

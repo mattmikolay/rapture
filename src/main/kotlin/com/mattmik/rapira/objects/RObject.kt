@@ -10,7 +10,8 @@ abstract class RObject(val typeDescription: String) : Comparable<RObject> {
     open operator fun minus(other: RObject): RObject =
         throw RapiraInvalidOperationError(Operation.Subtraction, this)
 
-    open fun negate(): RObject = throw RapiraInvalidOperationError(Operation.Negation, this)
+    open fun negate(): OperationResult =
+        OperationResult.Error("Illegal negation operation")
 
     open operator fun times(other: RObject): RObject =
         throw RapiraInvalidOperationError(Operation.Multiplication, this)

@@ -6,12 +6,10 @@ import org.antlr.v4.runtime.Token
 enum class Operation(val description: String) {
     Addition("addition"),
     Subtraction("subtraction"),
-    Negation("negation"),
     Multiplication("multiplication"),
     Division("division"),
     IntDivision("integer division"),
     Modulo("modulo"),
-    Exponentiation("exponentiation"),
     Length("length operation"),
     ElementAt("element at operation"),
     Slice("slice")

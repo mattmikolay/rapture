@@ -18,7 +18,8 @@ data class Real(val value: Double) : RObject("real number") {
         else -> throw RapiraInvalidOperationError(Operation.Subtraction, other)
     }
 
-    override fun negate(): RObject = Real(-value)
+    override fun negate() =
+        Real(-value).toSuccess()
 
     override fun times(other: RObject) = when (other) {
         is RInteger -> Real(value * other.value)

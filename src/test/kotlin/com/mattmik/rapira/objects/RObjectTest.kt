@@ -26,7 +26,6 @@ class RObjectTest : StringSpec({
 
     "unary operations throw exception" {
         forAll(
-            row { obj: RObject -> obj.negate() },
             row { obj: RObject -> obj.length() }
         ) { operation ->
             shouldThrow<RapiraInvalidOperationError> { operation(testObject) }

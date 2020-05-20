@@ -110,7 +110,13 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitUnaryExpression(ctx: RapiraLangParser.UnaryExpressionContext): RObject {
         val result = visit(ctx.subopExpression())
-        return if (ctx.op?.type == RapiraLangParser.MINUS) result.negate() else result
+        if (ctx.op?.type != RapiraLangParser.MINUS)
+            return result
+
+        return when (val operationResult = result.negate()) {
+            is OperationResult.Success -> operationResult.obj
+            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.op)
+        }
     }
 
     override fun visitSubopModifiedExpression(ctx: RapiraLangParser.SubopModifiedExpressionContext): RObject {
