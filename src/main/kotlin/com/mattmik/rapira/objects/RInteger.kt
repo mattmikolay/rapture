@@ -52,9 +52,9 @@ data class RInteger(val value: Int) : RObject("integer") {
     }
 
     override fun power(other: RObject) = when (other) {
-        is RInteger -> RInteger(value.toDouble().pow(other.value).toInt())
-        is Real -> Real(exp(ln(value.toDouble()) * other.value))
-        else -> throw RapiraInvalidOperationError(Operation.Exponentiation, other)
+        is RInteger -> RInteger(value.toDouble().pow(other.value).toInt()).toSuccess()
+        is Real -> Real(exp(ln(value.toDouble()) * other.value)).toSuccess()
+        else -> super.power(other)
     }
 
     override fun compareTo(other: RObject) = when (other) {

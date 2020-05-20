@@ -77,10 +77,11 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitExponentiationExpression(ctx: RapiraLangParser.ExponentiationExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.arithmeticExpression()
-        val leftResult = visit(leftExpr)
-        val rightResult = visit(rightExpr)
-        return leftResult.power(rightResult)
+        val (leftExpr, rightExpr) = ctx.arithmeticExpression().map { visit(it) }
+        return when (val operationResult = leftExpr.power(rightExpr)) {
+            is OperationResult.Success -> operationResult.obj
+            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.POWER().symbol)
+        }
     }
 
     override fun visitMultiplicationExpression(ctx: RapiraLangParser.MultiplicationExpressionContext): RObject {

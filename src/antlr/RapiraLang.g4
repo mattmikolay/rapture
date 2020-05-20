@@ -157,7 +157,7 @@ expression
     ;
 
 arithmeticExpression
-    : arithmeticExpression '**' arithmeticExpression #exponentiationExpression
+    : arithmeticExpression POWER arithmeticExpression #exponentiationExpression
     | arithmeticExpression op=(MULT | DIVIDE | INTDIVIDE | MOD) arithmeticExpression #multiplicationExpression
     | arithmeticExpression op=(PLUS | MINUS) arithmeticExpression #additionExpression
     | op=(PLUS | MINUS) subopExpression #unaryExpression
@@ -224,6 +224,8 @@ NEQ : '/=' ;
 PLUS : '+' ;
 
 MINUS : '-' ;
+
+POWER : '**' ;
 
 MULT : '*' ;
 

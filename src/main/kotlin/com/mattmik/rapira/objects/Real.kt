@@ -33,9 +33,9 @@ data class Real(val value: Double) : RObject("real number") {
     }
 
     override fun power(other: RObject) = when (other) {
-        is RInteger -> Real(exp(ln(value) * other.value))
-        is Real -> Real(exp(ln(value) * other.value))
-        else -> throw RapiraInvalidOperationError(Operation.Exponentiation, other)
+        is RInteger -> Real(exp(ln(value) * other.value)).toSuccess()
+        is Real -> Real(exp(ln(value) * other.value)).toSuccess()
+        else -> super.power(other)
     }
 
     override fun compareTo(other: RObject) = when (other) {
