@@ -1,21 +1,19 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.Operation
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
-
 data class Logical(val value: Boolean) : RObject("logical") {
 
     override fun and(other: RObject) = when (other) {
-        is Logical -> Logical(value && other.value)
-        else -> throw RapiraInvalidOperationError(Operation.And, other)
+        is Logical -> Logical(value && other.value).toSuccess()
+        else -> super.and(other)
     }
 
     override fun or(other: RObject) = when (other) {
-        is Logical -> Logical(value || other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Or, other)
+        is Logical -> Logical(value || other.value).toSuccess()
+        else -> super.or(other)
     }
 
-    override fun not() = Logical(!value)
+    override fun not() =
+        Logical(!value).toSuccess()
 
     override fun toString() = if (value) "yes" else "no"
 }

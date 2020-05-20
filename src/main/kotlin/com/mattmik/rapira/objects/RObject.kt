@@ -28,14 +28,14 @@ abstract class RObject(val typeDescription: String) : Comparable<RObject> {
     open fun length(): RObject =
         throw RapiraInvalidOperationError(Operation.Length, this)
 
-    open infix fun and(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.And, this)
+    open infix fun and(other: RObject): OperationResult =
+        OperationResult.Error("Illegal and operation")
 
-    open infix fun or(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.Or, this)
+    open infix fun or(other: RObject): OperationResult =
+        OperationResult.Error("Illegal or operation")
 
-    open fun not(): RObject =
-        throw RapiraInvalidOperationError(Operation.Not, this)
+    open fun not(): OperationResult =
+        OperationResult.Error("Illegal not operation")
 
     open fun elementAt(other: RObject): RObject =
         throw RapiraInvalidOperationError(Operation.ElementAt, this)

@@ -1,6 +1,7 @@
 package com.mattmik.rapira.errors
 
 import com.mattmik.rapira.objects.RObject
+import org.antlr.v4.runtime.Token
 
 enum class Operation(val description: String) {
     Addition("addition"),
@@ -12,14 +13,11 @@ enum class Operation(val description: String) {
     Modulo("modulo"),
     Exponentiation("exponentiation"),
     Length("length operation"),
-    And("logical and operation"),
-    Or("logical or operation"),
-    Not("logical not operation"),
     ElementAt("element at operation"),
     Slice("slice")
 }
 
-class RapiraInvalidOperationError(cause: String) : RapiraRuntimeError(cause) {
+class RapiraInvalidOperationError(cause: String, token: Token? = null) : RapiraRuntimeError(cause, token) {
     constructor(
         operation: Operation,
         rootCauseObject: RObject

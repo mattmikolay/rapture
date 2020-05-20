@@ -10,6 +10,7 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Logical
+import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.ParamType
 import com.mattmik.rapira.objects.Parameter
 import com.mattmik.rapira.objects.Procedure
@@ -26,22 +27,27 @@ import com.mattmik.rapira.objects.parseEscapedText
 class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVisitor<RObject>() {
 
     override fun visitAndExpression(ctx: RapiraLangParser.AndExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.expression()
-        val leftResult = visit(leftExpr)
-        val rightResult = visit(rightExpr)
-        return leftResult and rightResult
+        val (leftExpr, rightExpr) = ctx.expression().map { visit(it) }
+        return when (val operationResult = leftExpr and rightExpr) {
+            is OperationResult.Success -> operationResult.obj
+            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.AND().symbol)
+        }
     }
 
     override fun visitOrExpression(ctx: RapiraLangParser.OrExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.expression()
-        val leftResult = visit(leftExpr)
-        val rightResult = visit(rightExpr)
-        return leftResult or rightResult
+        val (leftExpr, rightExpr) = ctx.expression().map { visit(it) }
+        return when (val operationResult = leftExpr or rightExpr) {
+            is OperationResult.Success -> operationResult.obj
+            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.OR().symbol)
+        }
     }
 
     override fun visitNotExpression(ctx: RapiraLangParser.NotExpressionContext): RObject {
         val result = visit(ctx.expression())
-        return result.not()
+        return when (val operationResult = result.not()) {
+            is OperationResult.Success -> operationResult.obj
+            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.NOT().symbol)
+        }
     }
 
     override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext): RObject {

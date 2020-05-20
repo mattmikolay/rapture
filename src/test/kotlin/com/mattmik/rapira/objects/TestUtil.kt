@@ -23,6 +23,17 @@ fun convertToString(expected: String) = object : Matcher<RObject> {
 
 infix fun RObject.shouldConvertToString(expected: String) = this should convertToString(expected)
 
+fun succeedWith(expected: RObject) = object : Matcher<OperationResult> {
+    override fun test(value: OperationResult) =
+        MatcherResult(
+            value is OperationResult.Success && value.obj == expected,
+            "OperationResult $value should be successful with value $expected",
+            "OperationResult $value should not be successful with value $expected"
+        )
+}
+
+infix fun OperationResult.shouldSucceedWith(expected: RObject) = this should succeedWith(expected)
+
 val rapiraEmptyArb = Arb.create { Empty }
 val rapiraFunctionArb = Arb.create { Function() }
 val rapiraIntegerArb = Arb.int().map { num -> num.toRInteger() }

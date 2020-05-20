@@ -16,3 +16,5 @@ fun Boolean.toLogical(): Logical = Logical(this)
 fun String.toText(): Text = Text(this)
 
 fun List<RObject>.toSequence(): Sequence = Sequence(this)
+
+fun RObject.toSuccess(): OperationResult.Success = OperationResult.Success(this)

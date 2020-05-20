@@ -1,22 +1,21 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
-import io.kotest.matchers.shouldBe
+import io.kotest.matchers.beOfType
+import io.kotest.matchers.should
 import io.kotest.property.checkAll
 
 class LogicalTest : WordSpec({
     "and" should {
-        "return logical when given logical" {
+        "succeed with logical when given logical" {
             checkAll<Boolean, Boolean> { a, b ->
-                Logical(a) and Logical(b) shouldBe Logical(a && b)
+                Logical(a) and Logical(b) shouldSucceedWith Logical(a && b)
             }
         }
 
-        "throw exception when given other types" {
+        "error when given other types" {
             forAll(
                 row(Empty),
                 row(Procedure()),
@@ -26,22 +25,20 @@ class LogicalTest : WordSpec({
                 row(Text("hello")),
                 row(Sequence())
             ) { obj ->
-                shouldThrow<RapiraInvalidOperationError> { Logical(true) and obj }
-                shouldThrow<RapiraInvalidOperationError> { Logical(false) and obj }
+                LogicalYes and obj should beOfType<OperationResult.Error>()
+                LogicalNo and obj should beOfType<OperationResult.Error>()
             }
         }
     }
 
     "or" should {
-        "return logical when given logical" {
+        "succeed with logical when given logical" {
             checkAll<Boolean, Boolean> { a, b ->
-                Logical(a) or Logical(b) shouldBe Logical(a || b)
+                Logical(a) or Logical(b) shouldSucceedWith Logical(a || b)
             }
         }
 
-        "throw exception when given other types" {
-            val trueLogical = Logical(true)
-            val falseLogical = Logical(false)
+        "error when given other types" {
             forAll(
                 row(Empty),
                 row(Procedure()),
@@ -51,24 +48,24 @@ class LogicalTest : WordSpec({
                 row(Text("hello")),
                 row(Sequence())
             ) { obj ->
-                shouldThrow<RapiraInvalidOperationError> { trueLogical or obj }
-                shouldThrow<RapiraInvalidOperationError> { falseLogical or obj }
+                LogicalYes or obj should beOfType<OperationResult.Error>()
+                LogicalNo or obj should beOfType<OperationResult.Error>()
             }
         }
     }
 
     "not" should {
-        "return logical" {
+        "succeed with logical" {
             checkAll<Boolean> { a ->
-                Logical(a).not() shouldBe Logical(!a)
+                Logical(a).not() shouldSucceedWith Logical(!a)
             }
         }
     }
 
     "toString" should {
         "return user friendly representation" {
-            Logical(true) shouldConvertToString "yes"
-            Logical(false) shouldConvertToString "no"
+            LogicalYes shouldConvertToString "yes"
+            LogicalNo shouldConvertToString "no"
         }
     }
 })
