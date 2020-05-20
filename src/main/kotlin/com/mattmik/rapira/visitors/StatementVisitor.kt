@@ -51,7 +51,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             ?: expressionVisitor.visit(ctx.expression())
 
         val callable = obj as? RCallable
-            ?: throw RapiraIllegalInvocationError(token = ctx.CALL()?.symbol ?: ctx.IDENTIFIER().symbol)
+            ?: throw RapiraIllegalInvocationError(token = ctx.CALL()?.symbol ?: ctx.procedureArguments().LPAREN().symbol)
 
         val arguments = readProcedureArguments(ctx.procedureArguments())
 

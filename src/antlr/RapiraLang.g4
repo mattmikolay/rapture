@@ -53,7 +53,7 @@ callStatement
     ;
 
 functionDefinition
-    : 'fun' IDENTIFIER? '(' functionParams? ')' STMT_END declarations? stmts 'end'
+    : 'fun' IDENTIFIER? LPAREN functionParams? RPAREN STMT_END declarations? stmts 'end'
     ;
 
 functionParams
@@ -61,7 +61,7 @@ functionParams
     ;
 
 procedureDefinition
-    : 'proc' IDENTIFIER? '(' procedureParams? ')' STMT_END declarations? stmts 'end'
+    : 'proc' IDENTIFIER? LPAREN procedureParams? RPAREN STMT_END declarations? stmts 'end'
     ;
 
 procedureParams
@@ -178,7 +178,7 @@ baseExpression
     | procedureDefinition #procedureValue
     | functionDefinition #functionValue
     | LARROW (commaExpression)? RARROW #sequenceValue
-    | '(' expression ')' #parentheticalExpression
+    | LPAREN expression RPAREN #parentheticalExpression
     ;
 
 commaExpression
@@ -191,7 +191,7 @@ indexExpression
     ;
 
 procedureArguments
-    : '(' procedureArgument? (',' procedureArgument)* ')'
+    : LPAREN procedureArgument? (',' procedureArgument)* RPAREN
     ;
 
 procedureArgument
@@ -200,7 +200,7 @@ procedureArgument
     ;
 
 functionArguments
-    : '(' ( '=>'? expression )? (',' '=>'? expression)* ')'
+    : LPAREN ( '=>'? expression )? (',' '=>'? expression)* RPAREN
     ;
 
 // Lexer rules
@@ -238,6 +238,10 @@ AND : 'and' ;
 OR : 'or' ;
 
 NOT : 'not' ;
+
+LPAREN : '(' ;
+
+RPAREN : ')' ;
 
 CALL
     : 'call'

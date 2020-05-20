@@ -5,6 +5,7 @@ import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
+import com.mattmik.rapira.errors.RapiraIllegalInvocationError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
@@ -124,10 +125,10 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         ctx.functionArguments()?.let {
             val arguments = readFunctionArguments(it)
 
-            when (baseResult) {
+            return when (baseResult) {
                 is Procedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
-                is RCallable -> return baseResult.call(environment, arguments) ?: Empty
-                else -> throw RapiraInvalidOperationError("Cannot invoke object that not a function")
+                is RCallable -> baseResult.call(environment, arguments) ?: Empty
+                else -> throw RapiraIllegalInvocationError(it.LPAREN().symbol)
             }
         }
 
