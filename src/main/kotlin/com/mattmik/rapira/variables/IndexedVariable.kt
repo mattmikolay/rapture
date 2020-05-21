@@ -1,6 +1,7 @@
 package com.mattmik.rapira.variables
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Text
@@ -12,7 +13,10 @@ class IndexedVariable(
 ) : Variable {
 
     override var value: RObject
-        get() = variable.value.elementAt(index)
+        get() = when (val result = variable.value.elementAt(index)) {
+            is OperationResult.Success -> result.obj
+            is OperationResult.Error -> throw RapiraInvalidOperationError(result.reason)
+        }
         set(value) {
             when (variable.value) {
                 is Text -> {

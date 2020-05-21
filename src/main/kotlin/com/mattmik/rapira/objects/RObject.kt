@@ -40,8 +40,8 @@ abstract class RObject(val typeDescription: String) : Comparable<RObject> {
     open fun not(): OperationResult =
         OperationResult.Error("Illegal not operation")
 
-    open fun elementAt(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.ElementAt, this)
+    open fun elementAt(other: RObject): OperationResult =
+        OperationResult.Error("Illegal indexing operation")
 
     open fun slice(start: RObject?, end: RObject?): RObject =
         throw RapiraInvalidOperationError(Operation.Slice, this)

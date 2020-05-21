@@ -2,7 +2,6 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.Operation
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
-import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
 data class Text(val value: String) : RObject("text") {
@@ -29,11 +28,12 @@ data class Text(val value: String) : RObject("text") {
         is RInteger -> {
             val index = other.value
             if (index < 1 || index > value.length) {
-                throw RapiraIndexOutOfBoundsError(index)
+                OperationResult.Error("Index $index is out of bounds")
+            } else {
+                value[index - 1].toString().toText().toSuccess()
             }
-            value[index - 1].toString().toText()
         }
-        else -> throw RapiraInvalidOperationError(Operation.ElementAt, other)
+        else -> super.elementAt(other)
     }
 
     override fun slice(start: RObject?, end: RObject?): RObject {

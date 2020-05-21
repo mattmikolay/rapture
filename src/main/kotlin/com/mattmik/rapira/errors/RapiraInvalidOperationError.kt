@@ -7,11 +7,6 @@ enum class Operation(val description: String) {
     Addition("addition"),
     Subtraction("subtraction"),
     Multiplication("multiplication"),
-    Division("division"),
-    IntDivision("integer division"),
-    Modulo("modulo"),
-    Length("length operation"),
-    ElementAt("element at operation"),
     Slice("slice")
 }
 

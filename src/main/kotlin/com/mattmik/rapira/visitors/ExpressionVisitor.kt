@@ -130,7 +130,10 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             val evaluatedCommaExpressions = it.commaExpression()?.expression()?.map { expr -> visit(expr) }
             if (evaluatedCommaExpressions != null) {
                 return evaluatedCommaExpressions.fold(baseResult) { result, index ->
-                    result.elementAt(index)
+                    when (val operationResult = result.elementAt(index)) {
+                        is OperationResult.Success -> operationResult.obj
+                        is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason)
+                    }
                 }
             }
 

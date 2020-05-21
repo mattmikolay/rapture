@@ -1,7 +1,5 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
@@ -69,25 +67,23 @@ class SequenceTest : WordSpec({
     }
 
     "element at" should {
-        "return object when given integer" {
-            val sequence = listOf(
-                1.toRInteger(),
-                "Hello, world!".toText(),
-                2.toRInteger(),
-                "This is a test.".toText()
-            ).toSequence()
+        val sequence = listOf(
+            1.toRInteger(),
+            "Hello, world!".toText(),
+            2.toRInteger(),
+            "This is a test.".toText()
+        ).toSequence()
 
-            sequence.elementAt(1.toRInteger()) shouldBe 1.toRInteger()
-            sequence.elementAt(2.toRInteger()) shouldBe "Hello, world!".toText()
-            sequence.elementAt(3.toRInteger()) shouldBe 2.toRInteger()
-            sequence.elementAt(4.toRInteger()) shouldBe "This is a test.".toText()
+        "succeed with object when given valid integer" {
+            sequence.elementAt(1.toRInteger()) shouldSucceedWith 1.toRInteger()
+            sequence.elementAt(2.toRInteger()) shouldSucceedWith "Hello, world!".toText()
+            sequence.elementAt(3.toRInteger()) shouldSucceedWith 2.toRInteger()
+            sequence.elementAt(4.toRInteger()) shouldSucceedWith "This is a test.".toText()
+        }
 
-            shouldThrow<RapiraIndexOutOfBoundsError> {
-                sequence.elementAt(0.toRInteger())
-            }
-            shouldThrow<RapiraIndexOutOfBoundsError> {
-                sequence.elementAt(5.toRInteger())
-            }
+        "error when given out of bounds integer" {
+            sequence.elementAt(0.toRInteger()) should beOfType<OperationResult.Error>()
+            sequence.elementAt(5.toRInteger()) should beOfType<OperationResult.Error>()
         }
     }
 

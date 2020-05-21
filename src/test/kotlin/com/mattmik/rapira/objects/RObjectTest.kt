@@ -13,8 +13,7 @@ class RObjectTest : StringSpec({
         val otherObject = Empty
         forAll(
             row { obj: RObject -> obj + otherObject },
-            row { obj: RObject -> obj - otherObject },
-            row { obj: RObject -> obj.elementAt(otherObject) }
+            row { obj: RObject -> obj - otherObject }
         ) { operation ->
             shouldThrow<RapiraInvalidOperationError> { operation(testObject) }
         }

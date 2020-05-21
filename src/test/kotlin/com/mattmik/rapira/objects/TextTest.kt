@@ -1,7 +1,5 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
@@ -50,14 +48,15 @@ class TextTest : WordSpec({
     }
 
     "element at" should {
-        "return text when given integer" {
-            "case".toText().elementAt(RInteger(2)) shouldBe "a".toText()
-            shouldThrow<RapiraIndexOutOfBoundsError> {
-                "case".toText().elementAt(RInteger(0))
-            }
-            shouldThrow<RapiraIndexOutOfBoundsError> {
-                "case".toText().elementAt(RInteger(5))
-            }
+        val text = "case".toText()
+
+        "succeed with text when given valid integer" {
+            text.elementAt(RInteger(2)) shouldSucceedWith "a".toText()
+        }
+
+        "error when given out of bounds integer" {
+            text.elementAt(RInteger(0)) should beOfType<OperationResult.Error>()
+            text.elementAt(RInteger(5)) should beOfType<OperationResult.Error>()
         }
     }
 
