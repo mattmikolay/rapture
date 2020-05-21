@@ -8,6 +8,7 @@ import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.control.CallableReturnException
+import com.mattmik.rapira.control.ForLoopController
 import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.errors.RapiraIllegalInvocationError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
@@ -17,7 +18,6 @@ import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.objects.RInteger
-import com.mattmik.rapira.objects.Real
 
 /**
  * A visitor that executes statements while walking the tree within a given [environment].
@@ -105,26 +105,19 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             repeatExprResult.value
         }
 
-        val forIdentifier = ctx.forClause()?.IDENTIFIER()?.text
-        if (forIdentifier != null) {
-            // Set initial value using "from" expression
-            environment[forIdentifier].value =
-                ctx.forClause().fromExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
+        val forController = ctx.forClause()?.let {
+            ForLoopController(
+                variable = environment[it.IDENTIFIER().text],
+                fromValue = it.fromExpr?.let { expr -> expressionVisitor.visit(expr) },
+                toValue = it.toExpr?.let { expr -> expressionVisitor.visit(expr) },
+                stepValue = it.stepExpr?.let { expr -> expressionVisitor.visit(expr) }
+            )
         }
-
-        val toValue = ctx.forClause()?.toExpr?.let { expressionVisitor.visit(it) }
-        if (toValue != null && toValue !is RInteger && toValue !is Real) {
-            throw RapiraInvalidOperationError("To value in for loop must be number")
-        }
-
-        val stepValue = ctx.forClause()?.stepExpr?.let { expressionVisitor.visit(it) } ?: RInteger(1)
 
         while (
             (repeatCounter == null || repeatCounter > 0) &&
             ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo &&
-            (forIdentifier == null || toValue == null || (toValue - environment[forIdentifier].value) * stepValue >= RInteger(
-                0
-            ))
+            (forController == null || forController.isLoopActive())
         ) {
 
             try {
@@ -133,10 +126,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
                 break
             }
 
-            // Update forIdentifier using "step" expression
-            if (forIdentifier != null) {
-                environment[forIdentifier].value = environment[forIdentifier].value + stepValue
-            }
+            forController?.update()
 
             if (repeatCounter != null) {
                 repeatCounter--
