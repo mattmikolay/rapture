@@ -18,18 +18,21 @@ class IndexedVariable(
             is OperationResult.Error -> throw RapiraInvalidOperationError(result.reason)
         }
         set(value) {
+            val leftSliceEnd = (index.minus(RInteger(1)) as? OperationResult.Success)?.obj
+                ?: throw RapiraInvalidOperationError("Invalid index")
+
             when (variable.value) {
                 is Text -> {
                     if (value !is Text || value.value.length != 1) {
                         throw RapiraInvalidOperationError("Must pass text of length 1 to index assignment")
                     }
 
-                    variable.value = variable.value.slice(start = null, end = index.minus(RInteger(1))) +
+                    variable.value = variable.value.slice(start = null, end = leftSliceEnd) +
                         value +
                         variable.value.slice(start = index.plus(RInteger(1)), end = null)
                 }
                 else -> {
-                    variable.value = variable.value.slice(start = null, end = index.minus(RInteger(1))) +
+                    variable.value = variable.value.slice(start = null, end = leftSliceEnd) +
                         listOf(value).toSequence() +
                         variable.value.slice(start = index.plus(RInteger(1)), end = null)
                 }

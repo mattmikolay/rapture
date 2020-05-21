@@ -12,8 +12,7 @@ class RObjectTest : StringSpec({
     "binary operations throw exception" {
         val otherObject = Empty
         forAll(
-            row { obj: RObject -> obj + otherObject },
-            row { obj: RObject -> obj - otherObject }
+            row { obj: RObject -> obj + otherObject }
         ) { operation ->
             shouldThrow<RapiraInvalidOperationError> { operation(testObject) }
         }

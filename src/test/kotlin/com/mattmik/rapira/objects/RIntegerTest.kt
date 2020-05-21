@@ -20,15 +20,15 @@ class RIntegerTest : WordSpec({
     }
 
     "minus" should {
-        "return integer when given integer" {
+        "succeed with integer when given integer" {
             checkAll<Int, Int> { a, b ->
-                RInteger(a) - RInteger(b) shouldBe RInteger(a - b)
+                RInteger(a) - RInteger(b) shouldSucceedWith RInteger(a - b)
             }
         }
 
-        "return real when given real" {
+        "succeed with real when given real" {
             checkAll<Int, Double> { a, b ->
-                RInteger(a) - Real(b) shouldBe Real(a - b)
+                RInteger(a) - Real(b) shouldSucceedWith Real(a - b)
             }
         }
     }

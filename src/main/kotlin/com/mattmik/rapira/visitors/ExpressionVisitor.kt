@@ -102,13 +102,17 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     }
 
     override fun visitAdditionExpression(ctx: RapiraLangParser.AdditionExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.arithmeticExpression()
-        val leftResult = visit(leftExpr)
-        val rightResult = visit(rightExpr)
-        return when (ctx.op.type) {
-            RapiraLangParser.PLUS -> leftResult + rightResult
-            RapiraLangParser.MINUS -> leftResult - rightResult
-            else -> super.visitAdditionExpression(ctx)
+        val (leftExpr, rightExpr) = ctx.arithmeticExpression().map { visit(it) }
+
+        val operationResult = when (ctx.op.type) {
+            RapiraLangParser.PLUS -> OperationResult.Success(leftExpr + rightExpr)
+            RapiraLangParser.MINUS -> leftExpr - rightExpr
+            else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
+        }
+
+        return when (operationResult) {
+            is OperationResult.Success -> operationResult.obj
+            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.op)
         }
     }
 

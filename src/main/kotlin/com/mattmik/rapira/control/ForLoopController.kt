@@ -27,7 +27,10 @@ class ForLoopController(
             return true
         }
 
-        val forValue = (toValue - variable.value) * (stepValue ?: RInteger(1))
+        val toDifference = ((toValue - variable.value) as? OperationResult.Success)?.obj
+            ?: throw RapiraInvalidOperationError("Failed to compute for loop status")
+
+        val forValue = toDifference * (stepValue ?: RInteger(1))
         forValue as? OperationResult.Success
             ?: throw RapiraInvalidOperationError("Failed to compute for loop status")
 
