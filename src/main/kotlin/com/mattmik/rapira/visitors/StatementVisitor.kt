@@ -10,14 +10,13 @@ import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.ForLoopController
 import com.mattmik.rapira.control.LoopExitException
+import com.mattmik.rapira.control.RepeatLoopController
 import com.mattmik.rapira.errors.RapiraIllegalInvocationError
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RCallable
-import com.mattmik.rapira.objects.RInteger
 
 /**
  * A visitor that executes statements while walking the tree within a given [environment].
@@ -97,12 +96,9 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitLoopStatement(ctx: RapiraLangParser.LoopStatementContext) {
-        var repeatCounter = ctx.repeatClause()?.expression()?.let {
+        val repeatController = ctx.repeatClause()?.expression()?.let {
             val repeatExprResult = expressionVisitor.visit(it)
-            if (repeatExprResult !is RInteger || repeatExprResult.value < 0) {
-                throw RapiraInvalidOperationError("Cannot call repeat with non-integer number")
-            }
-            repeatExprResult.value
+            RepeatLoopController(repeatExprResult)
         }
 
         val forController = ctx.forClause()?.let {
@@ -115,7 +111,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
 
         while (
-            (repeatCounter == null || repeatCounter > 0) &&
+            (repeatController == null || repeatController.isLoopActive) &&
             ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo &&
             (forController == null || forController.isLoopActive())
         ) {
@@ -127,10 +123,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             }
 
             forController?.update()
-
-            if (repeatCounter != null) {
-                repeatCounter--
-            }
+            repeatController?.update()
 
             if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == LogicalYes) {
                 break
