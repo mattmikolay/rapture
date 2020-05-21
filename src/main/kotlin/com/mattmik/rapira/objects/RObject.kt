@@ -13,15 +13,17 @@ abstract class RObject(val typeDescription: String) : Comparable<RObject> {
     open fun negate(): OperationResult =
         OperationResult.Error("Illegal negation operation")
 
-    open operator fun times(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.Multiplication, this)
+    open operator fun times(other: RObject): OperationResult =
+        OperationResult.Error("Illegal multiplication operation")
 
-    open operator fun div(other: RObject): RObject = throw RapiraInvalidOperationError(Operation.Division, this)
+    open operator fun div(other: RObject): OperationResult =
+        OperationResult.Error("Illegal division operation")
 
-    open fun intDivide(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.IntDivision, this)
+    open fun intDivide(other: RObject): OperationResult =
+        OperationResult.Error("Illegal integer division operation")
 
-    open operator fun rem(other: RObject): RObject = throw RapiraInvalidOperationError(Operation.Modulo, this)
+    open operator fun rem(other: RObject): OperationResult =
+        OperationResult.Error("Illegal modulo operation")
 
     open fun power(other: RObject): OperationResult =
         OperationResult.Error("Illegal exponent operation")

@@ -14,10 +14,6 @@ class RObjectTest : StringSpec({
         forAll(
             row { obj: RObject -> obj + otherObject },
             row { obj: RObject -> obj - otherObject },
-            row { obj: RObject -> obj * otherObject },
-            row { obj: RObject -> obj / otherObject },
-            row { obj: RObject -> obj.intDivide(otherObject) },
-            row { obj: RObject -> obj % otherObject },
             row { obj: RObject -> obj.elementAt(otherObject) }
         ) { operation ->
             shouldThrow<RapiraInvalidOperationError> { operation(testObject) }

@@ -1,9 +1,10 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.beOfType
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.list
@@ -31,12 +32,12 @@ class SequenceTest : WordSpec({
             "This is a test.".toText()
         ).toSequence()
 
-        "return empty sequence when given 0" {
-            sequence * RInteger(0) shouldBe Sequence(emptyList())
+        "succeed with empty sequence when given 0" {
+            sequence * RInteger(0) shouldSucceedWith Sequence(emptyList())
         }
 
-        "return sequence when given positive integer" {
-            sequence * RInteger(3) shouldBe listOf(
+        "succeed with sequence when given positive integer" {
+            sequence * RInteger(3) shouldSucceedWith listOf(
                 1.toRInteger(),
                 "Hello, world!".toText(),
                 2.toRInteger(),
@@ -52,11 +53,9 @@ class SequenceTest : WordSpec({
             ).toSequence()
         }
 
-        "throw exception when given negative integer" {
+        "error when given negative integer" {
             checkAll(Arb.negativeInts()) { num ->
-                shouldThrow<RapiraInvalidOperationError> {
-                    sequence * RInteger(num)
-                }
+                sequence * RInteger(num) should beOfType<OperationResult.Error>()
             }
         }
     }

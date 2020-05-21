@@ -22,15 +22,15 @@ data class Real(val value: Double) : RObject("real number") {
         Real(-value).toSuccess()
 
     override fun times(other: RObject) = when (other) {
-        is RInteger -> Real(value * other.value)
-        is Real -> Real(value * other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
+        is RInteger -> Real(value * other.value).toSuccess()
+        is Real -> Real(value * other.value).toSuccess()
+        else -> super.times(other)
     }
 
     override fun div(other: RObject) = when (other) {
-        is RInteger -> Real(value / other.value)
-        is Real -> Real(value / other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Division, other)
+        is RInteger -> Real(value / other.value).toSuccess()
+        is Real -> Real(value / other.value).toSuccess()
+        else -> super.div(other)
     }
 
     override fun power(other: RObject) = when (other) {

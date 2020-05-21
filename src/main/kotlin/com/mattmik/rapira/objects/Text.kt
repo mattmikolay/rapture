@@ -13,12 +13,13 @@ data class Text(val value: String) : RObject("text") {
     }
 
     override fun times(other: RObject) = when (other) {
-        is RInteger ->
+        is RInteger -> {
             if (other.value >= 0)
-                value.repeat(other.value).toText()
+                value.repeat(other.value).toText().toSuccess()
             else
-                throw RapiraInvalidOperationError("Cannot multiply text by negative number")
-        else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
+                OperationResult.Error("Cannot multiply text by negative number")
+        }
+        else -> super.times(other)
     }
 
     override fun length() =

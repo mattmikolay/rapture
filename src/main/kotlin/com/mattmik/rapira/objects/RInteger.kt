@@ -23,33 +23,34 @@ data class RInteger(val value: Int) : RObject("integer") {
         RInteger(-value).toSuccess()
 
     override fun times(other: RObject) = when (other) {
-        is RInteger -> RInteger(value * other.value)
-        is Real -> Real(value * other.value)
-        is Text -> Text(other.value.repeat(value))
-        is Sequence -> Sequence(arrayOfNulls<RObject>(value).flatMap { other.entries })
+        is RInteger -> RInteger(value * other.value).toSuccess()
+        is Real -> Real(value * other.value).toSuccess()
+        is Text -> Text(other.value.repeat(value)).toSuccess()
+        is Sequence -> Sequence(arrayOfNulls<RObject>(value).flatMap { other.entries }).toSuccess()
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
     override fun div(other: RObject) = when (other) {
         is RInteger -> if (value % other.value == 0)
-            RInteger(value / other.value)
-        else Real(value.toDouble() / other.value)
-        is Real -> Real(value / other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Division, other)
+            RInteger(value / other.value).toSuccess()
+        else Real(value.toDouble() / other.value).toSuccess()
+        is Real -> Real(value / other.value).toSuccess()
+        else -> super.div(other)
     }
 
     override fun intDivide(other: RObject) = when (other) {
         is RInteger -> {
             if (other.value <= 0)
-                throw RapiraInvalidOperationError("cannot perform ${Operation.IntDivision} with values less than or equal to 0")
-            else RInteger(value / other.value)
+                OperationResult.Error("Cannot perform integer division with negative value")
+            else
+                RInteger(value / other.value).toSuccess()
         }
-        else -> throw RapiraInvalidOperationError(Operation.IntDivision, other)
+        else -> super.intDivide(other)
     }
 
     override fun rem(other: RObject) = when (other) {
-        is RInteger -> RInteger(value % other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Modulo, other)
+        is RInteger -> RInteger(value % other.value).toSuccess()
+        else -> super.rem(other)
     }
 
     override fun power(other: RObject) = when (other) {

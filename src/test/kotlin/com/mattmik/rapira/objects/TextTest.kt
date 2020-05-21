@@ -1,9 +1,10 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraIndexOutOfBoundsError
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.beOfType
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.negativeInts
@@ -21,23 +22,21 @@ class TextTest : WordSpec({
     }
 
     "times" should {
-        "return empty string when given 0" {
+        "succeed with empty string when given 0" {
             checkAll<String> { str ->
-                Text(str) * RInteger(0) shouldBe Text("")
+                Text(str) * RInteger(0) shouldSucceedWith Text("")
             }
         }
 
-        "return text when given positive integer" {
+        "succeed with text when given positive integer" {
             checkAll(Arb.string(), Arb.positiveInts(max = 500)) { str, num ->
-                Text(str) * RInteger(num) shouldBe str.repeat(num).toText()
+                Text(str) * RInteger(num) shouldSucceedWith str.repeat(num).toText()
             }
         }
 
-        "throw exception when given negative integer" {
+        "error when given negative integer" {
             checkAll(Arb.string(), Arb.negativeInts()) { str, num ->
-                shouldThrow<RapiraInvalidOperationError> {
-                    str.toText() * num.toRInteger()
-                }
+                str.toText() * num.toRInteger() should beOfType<OperationResult.Error>()
             }
         }
     }
