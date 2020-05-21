@@ -26,8 +26,8 @@ abstract class RObject(val typeDescription: String) : Comparable<RObject> {
     open fun power(other: RObject): OperationResult =
         OperationResult.Error("Illegal exponent operation")
 
-    open fun length(): RObject =
-        throw RapiraInvalidOperationError(Operation.Length, this)
+    open fun length(): OperationResult =
+        OperationResult.Error("Illegal length operation")
 
     open infix fun and(other: RObject): OperationResult =
         OperationResult.Error("Illegal and operation")

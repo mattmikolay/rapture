@@ -21,7 +21,8 @@ data class Text(val value: String) : RObject("text") {
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
-    override fun length() = RInteger(value.length)
+    override fun length() =
+        RInteger(value.length).toSuccess()
 
     override fun elementAt(other: RObject) = when (other) {
         is RInteger -> {
@@ -36,12 +37,13 @@ data class Text(val value: String) : RObject("text") {
 
     override fun slice(start: RObject?, end: RObject?): RObject {
         val startIndex = start ?: 1.toRInteger()
-        val endIndex = end ?: length()
+        val endIndex = end ?: value.length.toRInteger()
         if (startIndex !is RInteger || endIndex !is RInteger) {
             throw RapiraIllegalArgumentException("Cannot invoke slice with non-integer arguments")
         }
         return value.substring(startIndex.value - 1, endIndex.value).toText()
     }
 
-    override fun toString() = "\"${value.replace("\"\"", "\"")}\""
+    override fun toString() =
+        "\"${value.replace("\"\"", "\"")}\""
 }

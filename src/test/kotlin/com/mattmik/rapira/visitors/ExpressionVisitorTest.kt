@@ -94,7 +94,7 @@ class ExpressionVisitorTest : WordSpec({
 
         "evaluate length" {
             val resultObject = evaluateExpression("#\"Hello\"")
-            resultObject shouldBe "Hello".toText().length()
+            resultObject shouldBe "Hello".length.toRInteger()
         }
 
         "evaluate index expressions with commas" {

@@ -43,9 +43,9 @@ class TextTest : WordSpec({
     }
 
     "length" should {
-        "return integer" {
+        "succeed with integer" {
             checkAll<String> { str ->
-                Text(str).length() shouldBe RInteger(str.length)
+                Text(str).length() shouldSucceedWith RInteger(str.length)
             }
         }
     }

@@ -3,6 +3,8 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.variables.IndexedVariable
 import com.mattmik.rapira.variables.SliceVariable
@@ -26,11 +28,11 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
             val leftIndex = indexExprContext.leftIndex?.let { expressionVisitor.visit(it) }
             val rightIndex = indexExprContext.rightIndex?.let { expressionVisitor.visit(it) }
             if (leftIndex != null || rightIndex != null) {
-                variable = SliceVariable(
-                    variable,
-                    startIndex = leftIndex ?: RInteger(1),
-                    endIndex = rightIndex ?: variable.value.length()
-                )
+                val startIndex = leftIndex ?: RInteger(1)
+                val endIndex = rightIndex ?: (variable.value.length() as? OperationResult.Success)?.obj
+                    ?: throw RapiraInvalidOperationError("Cannot access index of object")
+
+                variable = SliceVariable(variable, startIndex, endIndex)
             }
         }
 

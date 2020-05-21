@@ -150,7 +150,10 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext): RObject {
         val result = visit(ctx.subopExpression())
-        return result.length()
+        return when (val operationResult = result.length()) {
+            is OperationResult.Success -> operationResult.obj
+            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason)
+        }
     }
 
     override fun visitIdentifierValue(ctx: RapiraLangParser.IdentifierValueContext) =

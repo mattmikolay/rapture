@@ -62,9 +62,9 @@ class SequenceTest : WordSpec({
     }
 
     "length" should {
-        "return integer" {
+        "succeed with integer" {
             checkAll(Arb.list(rapiraObjectArb)) { objectList ->
-                objectList.toSequence().length() shouldBe objectList.size.toRInteger()
+                objectList.toSequence().length() shouldSucceedWith objectList.size.toRInteger()
             }
         }
     }

@@ -16,7 +16,7 @@ class IndexedVariable(
         set(value) {
             when (variable.value) {
                 is Text -> {
-                    if (value !is Text || value.length() != RInteger(1)) {
+                    if (value !is Text || value.value.length != 1) {
                         throw RapiraInvalidOperationError("Must pass text of length 1 to index assignment")
                     }
 

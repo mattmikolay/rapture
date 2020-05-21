@@ -24,14 +24,6 @@ class RObjectTest : StringSpec({
         }
     }
 
-    "unary operations throw exception" {
-        forAll(
-            row { obj: RObject -> obj.length() }
-        ) { operation ->
-            shouldThrow<RapiraInvalidOperationError> { operation(testObject) }
-        }
-    }
-
     "ternary operations throw exception" {
         val otherObject1 = Empty
         val otherObject2 = Empty

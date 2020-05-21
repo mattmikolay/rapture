@@ -24,7 +24,8 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject("sequenc
         else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
     }
 
-    override fun length() = RInteger(entries.size)
+    override fun length() =
+        RInteger(entries.size).toSuccess()
 
     override fun elementAt(other: RObject) = when (other) {
         is RInteger -> {
@@ -39,7 +40,7 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject("sequenc
 
     override fun slice(start: RObject?, end: RObject?): RObject {
         val startIndex = start ?: 1.toRInteger()
-        val endIndex = end ?: length()
+        val endIndex = end ?: entries.size.toRInteger()
         if (startIndex !is RInteger || endIndex !is RInteger) {
             throw RapiraIllegalArgumentException("Cannot invoke slice with non-integer arguments")
         }
