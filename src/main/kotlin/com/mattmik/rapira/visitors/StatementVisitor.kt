@@ -13,10 +13,10 @@ import com.mattmik.rapira.control.LoopController
 import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.control.MasterLoopController
 import com.mattmik.rapira.control.RepeatLoopController
+import com.mattmik.rapira.control.WhileLoopController
 import com.mattmik.rapira.errors.RapiraIllegalInvocationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
-import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RCallable
 
@@ -116,13 +116,18 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             )
         }
 
+        ctx.whileClause()?.let {
+            allControllers.add(
+                WhileLoopController(
+                    condition = it.expression(),
+                    expressionVisitor = expressionVisitor
+                )
+            )
+        }
+
         val loopController = MasterLoopController(allControllers)
 
-        while (
-            loopController.isLoopActive() &&
-            ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo
-        ) {
-
+        while (loopController.isLoopActive()) {
             try {
                 visit(ctx.stmts())
             } catch (exception: LoopExitException) {
