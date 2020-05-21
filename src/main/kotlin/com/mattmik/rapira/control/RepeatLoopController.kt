@@ -6,9 +6,7 @@ import com.mattmik.rapira.objects.RObject
 
 class RepeatLoopController(
     private var counter: Int
-) {
-    val isLoopActive: Boolean
-        get() = counter > 0
+) : LoopController {
 
     constructor(
         counterObj: RObject
@@ -22,7 +20,10 @@ class RepeatLoopController(
         }
     }
 
-    fun update() {
+    override fun isLoopActive() =
+        counter > 0
+
+    override fun update() {
         counter--
     }
 }

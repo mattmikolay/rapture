@@ -9,7 +9,9 @@ import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.ForLoopController
+import com.mattmik.rapira.control.LoopController
 import com.mattmik.rapira.control.LoopExitException
+import com.mattmik.rapira.control.MasterLoopController
 import com.mattmik.rapira.control.RepeatLoopController
 import com.mattmik.rapira.errors.RapiraIllegalInvocationError
 import com.mattmik.rapira.objects.Empty
@@ -96,24 +98,29 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     override fun visitLoopStatement(ctx: RapiraLangParser.LoopStatementContext) {
-        val repeatController = ctx.repeatClause()?.expression()?.let {
+        val allControllers = mutableListOf<LoopController>()
+
+        ctx.repeatClause()?.expression()?.let {
             val repeatExprResult = expressionVisitor.visit(it)
-            RepeatLoopController(repeatExprResult)
+            allControllers.add(RepeatLoopController(repeatExprResult))
         }
 
-        val forController = ctx.forClause()?.let {
-            ForLoopController(
-                variable = environment[it.IDENTIFIER().text],
-                fromValue = it.fromExpr?.let { expr -> expressionVisitor.visit(expr) },
-                toValue = it.toExpr?.let { expr -> expressionVisitor.visit(expr) },
-                stepValue = it.stepExpr?.let { expr -> expressionVisitor.visit(expr) }
+        ctx.forClause()?.let {
+            allControllers.add(
+                ForLoopController(
+                    variable = environment[it.IDENTIFIER().text],
+                    fromValue = it.fromExpr?.let { expr -> expressionVisitor.visit(expr) },
+                    toValue = it.toExpr?.let { expr -> expressionVisitor.visit(expr) },
+                    stepValue = it.stepExpr?.let { expr -> expressionVisitor.visit(expr) }
+                )
             )
         }
 
+        val loopController = MasterLoopController(allControllers)
+
         while (
-            (repeatController == null || repeatController.isLoopActive) &&
-            ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo &&
-            (forController == null || forController.isLoopActive())
+            loopController.isLoopActive() &&
+            ctx.whileClause()?.expression()?.let { expressionVisitor.visit(it) } != LogicalNo
         ) {
 
             try {
@@ -122,8 +129,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
                 break
             }
 
-            forController?.update()
-            repeatController?.update()
+            loopController.update()
 
             if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == LogicalYes) {
                 break

@@ -12,7 +12,7 @@ class ForLoopController(
     fromValue: RObject? = null,
     private val toValue: RObject? = null,
     private val stepValue: RObject? = null
-) {
+) : LoopController {
     init {
         // Set initial value using "from" expression
         variable.value = fromValue ?: RInteger(1)
@@ -22,7 +22,7 @@ class ForLoopController(
         }
     }
 
-    fun isLoopActive(): Boolean {
+    override fun isLoopActive(): Boolean {
         if (toValue == null) {
             return true
         }
@@ -34,7 +34,7 @@ class ForLoopController(
         return forValue.obj >= RInteger(0)
     }
 
-    fun update() {
+    override fun update() {
         variable.value = variable.value + (stepValue ?: RInteger(1))
     }
 }
