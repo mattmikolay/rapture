@@ -61,12 +61,12 @@ class TextTest : WordSpec({
     }
 
     "slice" should {
-        "return text when given integer" {
+        "succeed with text when given integer" {
             val text = Text("Hello, world!")
-            text.slice(null, null) shouldBe text
-            text.slice(8.toRInteger(), null) shouldBe "world!".toText()
-            text.slice(4.toRInteger(), 9.toRInteger()) shouldBe "lo, wo".toText()
-            text.slice(null, 5.toRInteger()) shouldBe "Hello".toText()
+            text.slice(null, null) shouldSucceedWith text
+            text.slice(8.toRInteger(), null) shouldSucceedWith "world!".toText()
+            text.slice(4.toRInteger(), 9.toRInteger()) shouldSucceedWith "lo, wo".toText()
+            text.slice(null, 5.toRInteger()) shouldSucceedWith "Hello".toText()
         }
     }
 

@@ -88,7 +88,7 @@ class SequenceTest : WordSpec({
     }
 
     "slice" should {
-        "return object when given integer" {
+        "succeed with object when given integer" {
             val sequence = listOf(
                 1.toRInteger(),
                 2.toRInteger(),
@@ -96,17 +96,17 @@ class SequenceTest : WordSpec({
                 4.toRInteger()
             ).toSequence()
 
-            sequence.slice(null, null) shouldBe sequence
-            sequence.slice(2.toRInteger(), null) shouldBe listOf(
+            sequence.slice(null, null) shouldSucceedWith sequence
+            sequence.slice(2.toRInteger(), null) shouldSucceedWith listOf(
                 2.toRInteger(),
                 3.toRInteger(),
                 4.toRInteger()
             ).toSequence()
-            sequence.slice(2.toRInteger(), 3.toRInteger()) shouldBe listOf(
+            sequence.slice(2.toRInteger(), 3.toRInteger()) shouldSucceedWith listOf(
                 2.toRInteger(),
                 3.toRInteger()
             ).toSequence()
-            sequence.slice(null, 3.toRInteger()) shouldBe listOf(
+            sequence.slice(null, 3.toRInteger()) shouldSucceedWith listOf(
                 1.toRInteger(),
                 2.toRInteger(),
                 3.toRInteger()

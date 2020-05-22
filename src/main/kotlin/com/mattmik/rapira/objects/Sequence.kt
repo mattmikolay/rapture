@@ -1,7 +1,6 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.Operation
-import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
 data class Sequence(val entries: List<RObject> = emptyList()) : RObject("sequence") {
@@ -39,13 +38,13 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject("sequenc
         else -> super.elementAt(other)
     }
 
-    override fun slice(start: RObject?, end: RObject?): RObject {
+    override fun slice(start: RObject?, end: RObject?): OperationResult {
         val startIndex = start ?: 1.toRInteger()
         val endIndex = end ?: entries.size.toRInteger()
         if (startIndex !is RInteger || endIndex !is RInteger) {
-            throw RapiraIllegalArgumentException("Cannot invoke slice with non-integer arguments")
+            return OperationResult.Error("Cannot invoke slice with non-integer arguments")
         }
-        return entries.subList(startIndex.value - 1, endIndex.value).toSequence()
+        return entries.subList(startIndex.value - 1, endIndex.value).toSequence().toSuccess()
     }
 
     override fun toString() = if (entries.isEmpty()) "<* *>" else entries.joinToString(prefix = "<* ", postfix = " *>")

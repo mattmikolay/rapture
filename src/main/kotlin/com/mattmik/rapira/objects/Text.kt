@@ -1,7 +1,6 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.Operation
-import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
 data class Text(val value: String) : RObject("text") {
@@ -36,13 +35,13 @@ data class Text(val value: String) : RObject("text") {
         else -> super.elementAt(other)
     }
 
-    override fun slice(start: RObject?, end: RObject?): RObject {
+    override fun slice(start: RObject?, end: RObject?): OperationResult {
         val startIndex = start ?: 1.toRInteger()
         val endIndex = end ?: value.length.toRInteger()
         if (startIndex !is RInteger || endIndex !is RInteger) {
-            throw RapiraIllegalArgumentException("Cannot invoke slice with non-integer arguments")
+            return OperationResult.Error("Cannot invoke slice with non-integer arguments")
         }
-        return value.substring(startIndex.value - 1, endIndex.value).toText()
+        return value.substring(startIndex.value - 1, endIndex.value).toText().toSuccess()
     }
 
     override fun toString() =

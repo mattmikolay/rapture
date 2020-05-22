@@ -18,16 +18,6 @@ class RObjectTest : StringSpec({
         }
     }
 
-    "ternary operations throw exception" {
-        val otherObject1 = Empty
-        val otherObject2 = Empty
-        forAll(
-            row { obj: RObject -> obj.slice(otherObject1, otherObject2) }
-        ) { operation ->
-            shouldThrow<RapiraInvalidOperationError> { operation(testObject) }
-        }
-    }
-
     "compareTo throws exception" {
         val otherObject = Empty
         shouldThrow<RapiraInvalidOperationError> { testObject.compareTo(otherObject) }

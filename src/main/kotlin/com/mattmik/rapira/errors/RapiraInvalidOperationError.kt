@@ -5,9 +5,7 @@ import org.antlr.v4.runtime.Token
 
 enum class Operation(val description: String) {
     Addition("addition"),
-    Subtraction("subtraction"),
     Multiplication("multiplication"),
-    Slice("slice")
 }
 
 class RapiraInvalidOperationError(cause: String, token: Token? = null) : RapiraRuntimeError(cause, token) {

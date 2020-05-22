@@ -43,8 +43,8 @@ abstract class RObject(val typeDescription: String) : Comparable<RObject> {
     open fun elementAt(other: RObject): OperationResult =
         OperationResult.Error("Illegal indexing operation")
 
-    open fun slice(start: RObject?, end: RObject?): RObject =
-        throw RapiraInvalidOperationError(Operation.Slice, this)
+    open fun slice(start: RObject?, end: RObject?): OperationResult =
+        OperationResult.Error("Illegal slice operation")
 
     override fun compareTo(other: RObject): Int =
         throw RapiraInvalidOperationError("Cannot compare objects")

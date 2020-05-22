@@ -5,6 +5,7 @@ import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Text
+import com.mattmik.rapira.objects.getOrThrow
 import com.mattmik.rapira.objects.toSequence
 
 class IndexedVariable(
@@ -18,24 +19,19 @@ class IndexedVariable(
             is OperationResult.Error -> throw RapiraInvalidOperationError(result.reason)
         }
         set(value) {
-            val leftSliceEnd = (index.minus(RInteger(1)) as? OperationResult.Success)?.obj
-                ?: throw RapiraInvalidOperationError("Invalid index")
+            val leftSliceEnd = (index - RInteger(1))
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
 
-            when (variable.value) {
-                is Text -> {
-                    if (value !is Text || value.value.length != 1) {
-                        throw RapiraInvalidOperationError("Must pass text of length 1 to index assignment")
-                    }
-
-                    variable.value = variable.value.slice(start = null, end = leftSliceEnd) +
-                        value +
-                        variable.value.slice(start = index.plus(RInteger(1)), end = null)
-                }
-                else -> {
-                    variable.value = variable.value.slice(start = null, end = leftSliceEnd) +
-                        listOf(value).toSequence() +
-                        variable.value.slice(start = index.plus(RInteger(1)), end = null)
-                }
+            if (variable.value is Text && (value !is Text || value.value.length != 1)) {
+                throw RapiraInvalidOperationError("Must pass text of length 1 to index assignment")
             }
+
+            val leftSlice = variable.value.slice(start = null, end = leftSliceEnd)
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            val rightSlice = variable.value.slice(start = index.plus(RInteger(1)), end = null)
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            val middleSlice = if (variable.value is Text) value else listOf(value).toSequence()
+
+            variable.value = leftSlice + middleSlice + rightSlice
         }
 }
