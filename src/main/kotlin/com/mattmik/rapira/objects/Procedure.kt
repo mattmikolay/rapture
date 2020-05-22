@@ -9,7 +9,7 @@ import com.mattmik.rapira.variables.ReadOnlyVariable
 class Procedure private constructor(
     private val name: String?,
     private val callable: RCallable
-) : RObject("procedure"), RCallable by callable {
+) : RObject, RCallable by callable {
 
     constructor(
         name: String? = null,

@@ -6,7 +6,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
 
-private val testObject = object : RObject("test") {}
+private val testObject = object : RObject {}
 
 class RObjectTest : StringSpec({
     "binary operations throw exception" {

@@ -21,7 +21,7 @@ import kotlin.random.Random
 
 private abstract class NativeFunction(
     val paramCount: Int
-) : RObject("native function"), RCallable {
+) : RObject, RCallable {
 
     override fun call(environment: Environment, arguments: List<Argument>) =
         if (arguments.size == paramCount)

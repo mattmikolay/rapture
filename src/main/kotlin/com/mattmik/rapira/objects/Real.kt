@@ -5,11 +5,11 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import kotlin.math.exp
 import kotlin.math.ln
 
-data class Real(val value: Double) : RObject("real number") {
+data class Real(val value: Double) : RObject {
     override fun plus(other: RObject) = when (other) {
         is RInteger -> Real(value + other.value)
         is Real -> Real(value + other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Addition, other)
+        else -> throw RapiraInvalidOperationError(Operation.Addition)
     }
 
     override fun minus(other: RObject) = when (other) {

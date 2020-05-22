@@ -6,11 +6,11 @@ import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.pow
 
-data class RInteger(val value: Int) : RObject("integer") {
+data class RInteger(val value: Int) : RObject {
     override fun plus(other: RObject) = when (other) {
         is RInteger -> RInteger(value + other.value)
         is Real -> Real(value + other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Addition, other)
+        else -> throw RapiraInvalidOperationError(Operation.Addition)
     }
 
     override fun minus(other: RObject) = when (other) {
@@ -27,7 +27,7 @@ data class RInteger(val value: Int) : RObject("integer") {
         is Real -> Real(value * other.value).toSuccess()
         is Text -> Text(other.value.repeat(value)).toSuccess()
         is Sequence -> Sequence(arrayOfNulls<RObject>(value).flatMap { other.entries }).toSuccess()
-        else -> throw RapiraInvalidOperationError(Operation.Multiplication, other)
+        else -> super.times(other)
     }
 
     override fun div(other: RObject) = when (other) {

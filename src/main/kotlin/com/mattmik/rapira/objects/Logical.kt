@@ -1,6 +1,6 @@
 package com.mattmik.rapira.objects
 
-data class Logical(val value: Boolean) : RObject("logical") {
+data class Logical(val value: Boolean) : RObject {
 
     override fun and(other: RObject) = when (other) {
         is Logical -> Logical(value && other.value).toSuccess()
@@ -15,7 +15,8 @@ data class Logical(val value: Boolean) : RObject("logical") {
     override fun not() =
         Logical(!value).toSuccess()
 
-    override fun toString() = if (value) "yes" else "no"
+    override fun toString() =
+        if (value) "yes" else "no"
 }
 
 val LogicalYes = Logical(true)

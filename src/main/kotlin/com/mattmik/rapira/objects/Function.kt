@@ -10,7 +10,7 @@ import com.mattmik.rapira.variables.ReadOnlyVariable
 class Function private constructor(
     private val name: String?,
     private val callable: RCallable
-) : RObject("function"), RCallable by callable {
+) : RObject, RCallable by callable {
 
     constructor(
         name: String? = null,
