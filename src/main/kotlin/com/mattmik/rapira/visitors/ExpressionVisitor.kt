@@ -85,7 +85,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         ctx.arithmeticExpression()
             .map { visit(it) }
             .let { (leftExpr, rightExpr) -> when (ctx.op.type) {
-                RapiraLangParser.PLUS -> OperationResult.Success(leftExpr + rightExpr)
+                RapiraLangParser.PLUS -> leftExpr + rightExpr
                 RapiraLangParser.MINUS -> leftExpr - rightExpr
                 else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
             } }

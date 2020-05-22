@@ -17,6 +17,12 @@ fun OperationResult.mapError(transform: (String) -> String): OperationResult =
         is OperationResult.Error -> OperationResult.Error(transform(this.reason))
     }
 
+fun OperationResult.andThen(transform: (RObject) -> OperationResult): OperationResult =
+    when (this) {
+        is OperationResult.Success -> transform(this.obj)
+        is OperationResult.Error -> this
+    }
+
 fun OperationResult.getOrThrow(buildException: (String) -> Exception) =
     when (this) {
         is OperationResult.Success -> this.obj

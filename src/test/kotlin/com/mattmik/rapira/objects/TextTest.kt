@@ -3,7 +3,6 @@ package com.mattmik.rapira.objects
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.negativeInts
 import io.kotest.property.arbitrary.positiveInts
@@ -12,9 +11,9 @@ import io.kotest.property.checkAll
 
 class TextTest : WordSpec({
     "plus" should {
-        "return text when given text" {
+        "succeed with text when given text" {
             checkAll<String, String> { a, b ->
-                Text(a) + Text(b) shouldBe Text(a + b)
+                Text(a) + Text(b) shouldSucceedWith Text(a + b)
             }
         }
     }

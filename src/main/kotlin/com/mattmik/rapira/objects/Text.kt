@@ -1,13 +1,10 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.Operation
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
-
 data class Text(val value: String) : RObject {
 
     override fun plus(other: RObject) = when (other) {
-        is Text -> Text(value + other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Addition)
+        is Text -> Text(value + other.value).toSuccess()
+        else -> super.plus(other)
     }
 
     override fun times(other: RObject) = when (other) {

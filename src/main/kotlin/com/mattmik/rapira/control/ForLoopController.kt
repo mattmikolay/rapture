@@ -5,6 +5,7 @@ import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
+import com.mattmik.rapira.objects.getOrThrow
 import com.mattmik.rapira.variables.Variable
 
 class ForLoopController(
@@ -38,6 +39,8 @@ class ForLoopController(
     }
 
     override fun update() {
-        variable.value = variable.value + (stepValue ?: RInteger(1))
+        val result = (variable.value + (stepValue ?: RInteger(1)))
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+        variable.value = result
     }
 }

@@ -6,15 +6,15 @@ import io.kotest.property.checkAll
 
 class RealTest : WordSpec({
     "plus" should {
-        "return real when given integer" {
+        "succeed with real when given integer" {
             checkAll<Double, Int> { a, b ->
-                Real(a) + RInteger(b) shouldBe Real(a + b)
+                Real(a) + RInteger(b) shouldSucceedWith Real(a + b)
             }
         }
 
-        "return real when given real" {
+        "succeed with real when given real" {
             checkAll<Double, Double> { a, b ->
-                Real(a) + Real(b) shouldBe Real(a + b)
+                Real(a) + Real(b) shouldSucceedWith Real(a + b)
             }
         }
     }

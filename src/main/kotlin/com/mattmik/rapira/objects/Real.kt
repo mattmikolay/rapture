@@ -1,15 +1,14 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.Operation
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import kotlin.math.exp
 import kotlin.math.ln
 
 data class Real(val value: Double) : RObject {
     override fun plus(other: RObject) = when (other) {
-        is RInteger -> Real(value + other.value)
-        is Real -> Real(value + other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Addition)
+        is RInteger -> Real(value + other.value).toSuccess()
+        is Real -> Real(value + other.value).toSuccess()
+        else -> super.plus(other)
     }
 
     override fun minus(other: RObject) = when (other) {

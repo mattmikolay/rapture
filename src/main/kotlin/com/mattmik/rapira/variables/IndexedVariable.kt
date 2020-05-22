@@ -5,6 +5,7 @@ import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Text
+import com.mattmik.rapira.objects.andThen
 import com.mattmik.rapira.objects.getOrThrow
 import com.mattmik.rapira.objects.toSequence
 
@@ -21,6 +22,8 @@ class IndexedVariable(
         set(value) {
             val leftSliceEnd = (index - RInteger(1))
                 .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            val rightSliceStart = (index + RInteger(1))
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
 
             if (variable.value is Text && (value !is Text || value.value.length != 1)) {
                 throw RapiraInvalidOperationError("Must pass text of length 1 to index assignment")
@@ -28,10 +31,14 @@ class IndexedVariable(
 
             val leftSlice = variable.value.slice(start = null, end = leftSliceEnd)
                 .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
-            val rightSlice = variable.value.slice(start = index.plus(RInteger(1)), end = null)
+            val rightSlice = variable.value.slice(start = rightSliceStart, end = null)
                 .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
             val middleSlice = if (variable.value is Text) value else listOf(value).toSequence()
 
-            variable.value = leftSlice + middleSlice + rightSlice
+            val result = (leftSlice + middleSlice)
+                .andThen { it + rightSlice }
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+
+            variable.value = result
         }
 }

@@ -1,14 +1,11 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.Operation
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
-
 data class Sequence(val entries: List<RObject> = emptyList()) : RObject {
     constructor(vararg entries: RObject) : this(entries.toList())
 
     override fun plus(other: RObject) = when (other) {
-        is Sequence -> Sequence(entries + other.entries)
-        else -> throw RapiraInvalidOperationError(Operation.Addition)
+        is Sequence -> Sequence(entries + other.entries).toSuccess()
+        else -> super.plus(other)
     }
 
     override fun times(other: RObject) = when (other) {

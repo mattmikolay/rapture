@@ -1,6 +1,5 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.Operation
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import kotlin.math.exp
 import kotlin.math.ln
@@ -8,9 +7,9 @@ import kotlin.math.pow
 
 data class RInteger(val value: Int) : RObject {
     override fun plus(other: RObject) = when (other) {
-        is RInteger -> RInteger(value + other.value)
-        is Real -> Real(value + other.value)
-        else -> throw RapiraInvalidOperationError(Operation.Addition)
+        is RInteger -> RInteger(value + other.value).toSuccess()
+        is Real -> Real(value + other.value).toSuccess()
+        else -> super.plus(other)
     }
 
     override fun minus(other: RObject) = when (other) {

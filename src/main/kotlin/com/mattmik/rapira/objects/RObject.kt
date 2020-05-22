@@ -1,12 +1,11 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.Operation
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 
 interface RObject : Comparable<RObject> {
 
-    operator fun plus(other: RObject): RObject =
-        throw RapiraInvalidOperationError(Operation.Addition)
+    operator fun plus(other: RObject): OperationResult =
+        OperationResult.Error("Illegal addition operation")
 
     operator fun minus(other: RObject): OperationResult =
         OperationResult.Error("Illegal subtraction operation")
