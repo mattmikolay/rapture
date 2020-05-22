@@ -166,7 +166,7 @@ arithmeticExpression
 
 subopExpression
     : subopExpression (indexExpression | functionArguments) #subopModifiedExpression
-    | '#' subopExpression #lengthExpression
+    | HASH subopExpression #lengthExpression
     | baseExpression #baseSubopExpression
     ;
 
@@ -244,6 +244,8 @@ NOT : 'not' ;
 LPAREN : '(' ;
 
 RPAREN : ')' ;
+
+HASH : '#' ;
 
 CALL
     : 'call'

@@ -132,7 +132,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext) =
         visit(ctx.subopExpression())
             .length()
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.HASH().symbol) }
 
     override fun visitIdentifierValue(ctx: RapiraLangParser.IdentifierValueContext) =
         environment[ctx.IDENTIFIER().text].value
