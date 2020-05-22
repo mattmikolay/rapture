@@ -9,19 +9,19 @@ import com.mattmik.rapira.errors.RapiraIllegalInvocationError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
-import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.ParamType
 import com.mattmik.rapira.objects.Parameter
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RCallable
-import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.getOrThrow
 import com.mattmik.rapira.objects.parseEscapedText
 import com.mattmik.rapira.objects.toLogical
+import com.mattmik.rapira.objects.toRInteger
+import com.mattmik.rapira.objects.toSequence
 
 /**
  * A visitor that evaluates expressions while walking the tree within a given [environment].
@@ -45,18 +45,17 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             .not()
             .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.NOT().symbol) }
 
-    override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.expression()
-        val leftResult = visit(leftExpr)
-        val rightResult = visit(rightExpr)
-        return when (ctx.op.type) {
-            RapiraLangParser.LESS -> Logical(leftResult < rightResult)
-            RapiraLangParser.GREATER -> Logical(leftResult > rightResult)
-            RapiraLangParser.LESSEQ -> Logical(leftResult <= rightResult)
-            RapiraLangParser.GREATEREQ -> Logical(leftResult >= rightResult)
-            else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
-        }
-    }
+    override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext) =
+        ctx.expression()
+            .map { visit(it) }
+            .let { (leftExpr, rightExpr) -> when (ctx.op.type) {
+                RapiraLangParser.LESS -> leftExpr < rightExpr
+                RapiraLangParser.GREATER -> leftExpr > rightExpr
+                RapiraLangParser.LESSEQ -> leftExpr <= rightExpr
+                RapiraLangParser.GREATEREQ -> leftExpr >= rightExpr
+                else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
+            } }
+            .toLogical()
 
     override fun visitEqualityExpression(ctx: RapiraLangParser.EqualityExpressionContext) =
         ctx.expression()
@@ -64,13 +63,11 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             .let { (leftExpr, rightExpr) -> if (ctx.op.type == RapiraLangParser.EQ) leftExpr == rightExpr else leftExpr != rightExpr }
             .toLogical()
 
-    override fun visitExponentiationExpression(ctx: RapiraLangParser.ExponentiationExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.arithmeticExpression().map { visit(it) }
-        return when (val operationResult = leftExpr.power(rightExpr)) {
-            is OperationResult.Success -> operationResult.obj
-            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.POWER().symbol)
-        }
-    }
+    override fun visitExponentiationExpression(ctx: RapiraLangParser.ExponentiationExpressionContext) =
+        ctx.arithmeticExpression()
+            .map { visit(it) }
+            .let { (leftExpr, rightExpr) -> leftExpr.power(rightExpr) }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.POWER().symbol) }
 
     override fun visitMultiplicationExpression(ctx: RapiraLangParser.MultiplicationExpressionContext) =
         ctx.arithmeticExpression()
@@ -84,31 +81,20 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             } }
             .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
 
-    override fun visitAdditionExpression(ctx: RapiraLangParser.AdditionExpressionContext): RObject {
-        val (leftExpr, rightExpr) = ctx.arithmeticExpression().map { visit(it) }
+    override fun visitAdditionExpression(ctx: RapiraLangParser.AdditionExpressionContext) =
+        ctx.arithmeticExpression()
+            .map { visit(it) }
+            .let { (leftExpr, rightExpr) -> when (ctx.op.type) {
+                RapiraLangParser.PLUS -> OperationResult.Success(leftExpr + rightExpr)
+                RapiraLangParser.MINUS -> leftExpr - rightExpr
+                else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
+            } }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
 
-        val operationResult = when (ctx.op.type) {
-            RapiraLangParser.PLUS -> OperationResult.Success(leftExpr + rightExpr)
-            RapiraLangParser.MINUS -> leftExpr - rightExpr
-            else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
-        }
-
-        return when (operationResult) {
-            is OperationResult.Success -> operationResult.obj
-            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.op)
-        }
-    }
-
-    override fun visitUnaryExpression(ctx: RapiraLangParser.UnaryExpressionContext): RObject {
-        val result = visit(ctx.subopExpression())
-        if (ctx.op?.type != RapiraLangParser.MINUS)
-            return result
-
-        return when (val operationResult = result.negate()) {
-            is OperationResult.Success -> operationResult.obj
-            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason, token = ctx.op)
-        }
-    }
+    override fun visitUnaryExpression(ctx: RapiraLangParser.UnaryExpressionContext) =
+        visit(ctx.subopExpression())
+            .let { if (ctx.op?.type == RapiraLangParser.MINUS) it.negate() else OperationResult.Success(it) }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
 
     override fun visitSubopModifiedExpression(ctx: RapiraLangParser.SubopModifiedExpressionContext): RObject {
         val baseResult = visit(ctx.subopExpression())
@@ -142,22 +128,22 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         return Empty
     }
 
-    override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext): RObject {
-        val result = visit(ctx.subopExpression())
-        return when (val operationResult = result.length()) {
-            is OperationResult.Success -> operationResult.obj
-            is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason)
-        }
-    }
+    override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext) =
+        visit(ctx.subopExpression())
+            .length()
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
 
     override fun visitIdentifierValue(ctx: RapiraLangParser.IdentifierValueContext) =
         environment[ctx.IDENTIFIER().text].value
 
-    override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) = RInteger(Integer.valueOf(ctx.text))
+    override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) =
+        Integer.valueOf(ctx.text).toRInteger()
 
-    override fun visitRealValue(ctx: RapiraLangParser.RealValueContext) = Real(ctx.text.toDouble())
+    override fun visitRealValue(ctx: RapiraLangParser.RealValueContext) =
+        Real(ctx.text.toDouble())
 
-    override fun visitTextValue(ctx: RapiraLangParser.TextValueContext) = parseEscapedText(ctx.text)
+    override fun visitTextValue(ctx: RapiraLangParser.TextValueContext) =
+        parseEscapedText(ctx.text)
 
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext): RObject {
         val procedureName = ctx.IDENTIFIER()?.text
@@ -182,10 +168,10 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         ctx: RapiraLangParser.ParentheticalExpressionContext
     ): RObject = visit(ctx.expression())
 
-    override fun visitCommaExpression(ctx: RapiraLangParser.CommaExpressionContext): RObject {
-        val expressionResults = ctx.expression().map { visit(it) }
-        return Sequence(expressionResults)
-    }
+    override fun visitCommaExpression(ctx: RapiraLangParser.CommaExpressionContext) =
+        ctx.expression()
+            .map { visit(it) }
+            .toSequence()
 
     private fun readProcedureParams(ctx: RapiraLangParser.ProcedureParamsContext?): List<Parameter> =
         ctx?.procedureParam()?.map { paramContext ->
