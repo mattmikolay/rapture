@@ -6,14 +6,14 @@ import com.mattmik.rapira.objects.shouldSucceedWith
 import io.kotest.core.spec.style.WordSpec
 
 class ReadOnlyVariableTest : WordSpec({
-    "get" should {
+    "getValue" should {
         "succeed with wrapped object" {
             val obj = Text("Hello, world!")
             ReadOnlyVariable(obj).getValue() shouldSucceedWith obj
         }
     }
 
-    "set" should {
+    "setValue" should {
         "error" {
             val obj = Text("Hello, world!")
             val variable = ReadOnlyVariable(obj)

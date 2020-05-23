@@ -10,7 +10,7 @@ import io.kotest.core.spec.style.WordSpec
 
 class SliceVariableTest : WordSpec({
 
-    "get" When {
+    "getValue" When {
         "base variable is text" should {
             val textObject = "Hello, world!".toText()
             val textVariable = SimpleVariable(textObject)
@@ -48,7 +48,7 @@ class SliceVariableTest : WordSpec({
         }
     }
 
-    "set" When {
+    "setValue" When {
         "base variable is text" should {
             val textObject = "Hello, world!".toText()
             val textVariable = SimpleVariable(textObject)
