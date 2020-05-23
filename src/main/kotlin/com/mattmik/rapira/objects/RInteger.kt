@@ -1,6 +1,7 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.util.Result
 import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.pow
@@ -40,7 +41,7 @@ data class RInteger(val value: Int) : RObject {
     override fun intDivide(other: RObject) = when (other) {
         is RInteger -> {
             if (other.value <= 0)
-                OperationResult.Error("Cannot perform integer division with negative value")
+                Result.Error("Cannot perform integer division with negative value")
             else
                 RInteger(value / other.value).toSuccess()
         }

@@ -3,8 +3,8 @@ package com.mattmik.rapira.variables
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
-import com.mattmik.rapira.objects.andThen
-import com.mattmik.rapira.objects.getOrThrow
+import com.mattmik.rapira.util.andThen
+import com.mattmik.rapira.util.getOrThrow
 
 class SliceVariable(
     private val baseVariable: Variable,

@@ -1,7 +1,6 @@
 package com.mattmik.rapira.objects
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -53,7 +52,7 @@ class SequenceTest : WordSpec({
 
         "error when given negative integer" {
             checkAll(Arb.negativeInts()) { num ->
-                sequence * RInteger(num) should beOfType<OperationResult.Error>()
+                (sequence * RInteger(num)).shouldError()
             }
         }
     }
@@ -82,8 +81,8 @@ class SequenceTest : WordSpec({
         }
 
         "error when given out of bounds integer" {
-            sequence.elementAt(0.toRInteger()) should beOfType<OperationResult.Error>()
-            sequence.elementAt(5.toRInteger()) should beOfType<OperationResult.Error>()
+            sequence.elementAt(0.toRInteger()).shouldError()
+            sequence.elementAt(5.toRInteger()).shouldError()
         }
     }
 

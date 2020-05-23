@@ -9,7 +9,6 @@ import com.mattmik.rapira.errors.RapiraIllegalInvocationError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
-import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.ParamType
 import com.mattmik.rapira.objects.Parameter
 import com.mattmik.rapira.objects.Procedure
@@ -17,11 +16,12 @@ import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.objects.Sequence
-import com.mattmik.rapira.objects.getOrThrow
 import com.mattmik.rapira.objects.parseEscapedText
 import com.mattmik.rapira.objects.toLogical
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toSequence
+import com.mattmik.rapira.util.Result
+import com.mattmik.rapira.util.getOrThrow
 
 /**
  * A visitor that evaluates expressions while walking the tree within a given [environment].
@@ -93,7 +93,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
     override fun visitUnaryExpression(ctx: RapiraLangParser.UnaryExpressionContext) =
         visit(ctx.subopExpression())
-            .let { if (ctx.op?.type == RapiraLangParser.MINUS) it.negate() else OperationResult.Success(it) }
+            .let { if (ctx.op?.type == RapiraLangParser.MINUS) it.negate() else Result.Success(it) }
             .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
 
     override fun visitSubopModifiedExpression(ctx: RapiraLangParser.SubopModifiedExpressionContext): RObject {
@@ -104,8 +104,8 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             if (evaluatedCommaExpressions != null) {
                 return evaluatedCommaExpressions.fold(baseResult) { result, index ->
                     when (val operationResult = result.elementAt(index)) {
-                        is OperationResult.Success -> operationResult.obj
-                        is OperationResult.Error -> throw RapiraInvalidOperationError(operationResult.reason)
+                        is Result.Success -> operationResult.obj
+                        is Result.Error -> throw RapiraInvalidOperationError(operationResult.reason)
                     }
                 }
             }

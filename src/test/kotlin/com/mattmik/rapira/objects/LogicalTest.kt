@@ -3,7 +3,6 @@ package com.mattmik.rapira.objects
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
-import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
 import io.kotest.property.checkAll
 
@@ -25,8 +24,8 @@ class LogicalTest : WordSpec({
                 row(Text("hello")),
                 row(Sequence())
             ) { obj ->
-                LogicalYes and obj should beOfType<OperationResult.Error>()
-                LogicalNo and obj should beOfType<OperationResult.Error>()
+                (LogicalYes and obj).shouldError()
+                (LogicalNo and obj).shouldError()
             }
         }
     }
@@ -48,8 +47,8 @@ class LogicalTest : WordSpec({
                 row(Text("hello")),
                 row(Sequence())
             ) { obj ->
-                LogicalYes or obj should beOfType<OperationResult.Error>()
-                LogicalNo or obj should beOfType<OperationResult.Error>()
+                (LogicalYes or obj).shouldError()
+                (LogicalNo or obj).shouldError()
             }
         }
     }

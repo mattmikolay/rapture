@@ -1,5 +1,7 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.util.Result
+
 const val ESCAPE_SEQUENCE = "\"\""
 
 fun parseEscapedText(escapedText: String) =
@@ -17,4 +19,4 @@ fun String.toText(): Text = Text(this)
 
 fun List<RObject>.toSequence(): Sequence = Sequence(this)
 
-fun RObject.toSuccess(): OperationResult.Success = OperationResult.Success(this)
+fun RObject.toSuccess(): Result.Success<RObject> = Result.Success(this)

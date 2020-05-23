@@ -1,11 +1,11 @@
 package com.mattmik.rapira.control
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
-import com.mattmik.rapira.objects.getOrThrow
+import com.mattmik.rapira.util.Result
+import com.mattmik.rapira.util.getOrThrow
 import com.mattmik.rapira.variables.Variable
 
 class ForLoopController(
@@ -28,11 +28,11 @@ class ForLoopController(
             return true
         }
 
-        val toDifference = ((toValue - variable.value) as? OperationResult.Success)?.obj
+        val toDifference = ((toValue - variable.value) as? Result.Success)?.obj
             ?: throw RapiraInvalidOperationError("Failed to compute for loop status")
 
         val forValue = toDifference * (stepValue ?: RInteger(1))
-        forValue as? OperationResult.Success
+        forValue as? Result.Success
             ?: throw RapiraInvalidOperationError("Failed to compute for loop status")
 
         return forValue.obj >= RInteger(0)

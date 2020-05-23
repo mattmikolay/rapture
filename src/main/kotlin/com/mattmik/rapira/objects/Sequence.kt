@@ -1,5 +1,7 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.util.Result
+
 data class Sequence(val entries: List<RObject> = emptyList()) : RObject {
     constructor(vararg entries: RObject) : this(entries.toList())
 
@@ -15,7 +17,7 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject {
                     List(entries.size * other.value) { index -> entries[index % entries.size] }
                 ).toSuccess()
             else
-                OperationResult.Error("Cannot multiply sequence by negative number")
+                Result.Error("Cannot multiply sequence by negative number")
         }
         else -> super.times(other)
     }
@@ -27,7 +29,7 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject {
         is RInteger -> {
             val index = other.value
             if (index < 1 || index > entries.size) {
-                OperationResult.Error("Index $index is out of bounds")
+                Result.Error("Index $index is out of bounds")
             } else {
                 entries[index - 1].toSuccess()
             }
@@ -35,11 +37,11 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject {
         else -> super.elementAt(other)
     }
 
-    override fun slice(start: RObject?, end: RObject?): OperationResult {
+    override fun slice(start: RObject?, end: RObject?): Result<RObject> {
         val startIndex = start ?: 1.toRInteger()
         val endIndex = end ?: entries.size.toRInteger()
         if (startIndex !is RInteger || endIndex !is RInteger) {
-            return OperationResult.Error("Cannot invoke slice with non-integer arguments")
+            return Result.Error("Cannot invoke slice with non-integer arguments")
         }
         return entries.subList(startIndex.value - 1, endIndex.value).toSequence().toSuccess()
     }

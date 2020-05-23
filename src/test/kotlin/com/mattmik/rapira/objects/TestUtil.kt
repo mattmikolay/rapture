@@ -1,7 +1,9 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.util.Result
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bool
@@ -23,16 +25,18 @@ fun convertToString(expected: String) = object : Matcher<RObject> {
 
 infix fun RObject.shouldConvertToString(expected: String) = this should convertToString(expected)
 
-fun succeedWith(expected: RObject) = object : Matcher<OperationResult> {
-    override fun test(value: OperationResult) =
+fun <T> succeedWith(expected: T) = object : Matcher<Result<T>> {
+    override fun test(value: Result<T>) =
         MatcherResult(
-            value is OperationResult.Success && value.obj == expected,
-            "OperationResult $value should be successful with value $expected",
-            "OperationResult $value should not be successful with value $expected"
+            value is Result.Success && value.obj == expected,
+            "Result $value should be successful with value $expected",
+            "Result $value should not be successful with value $expected"
         )
 }
 
-infix fun OperationResult.shouldSucceedWith(expected: RObject) = this should succeedWith(expected)
+infix fun <T> Result<T>.shouldSucceedWith(expected: T) = this should succeedWith(expected)
+
+fun <T> Result<T>.shouldError() = this should beOfType<Result.Error>()
 
 val rapiraEmptyArb = Arb.create { Empty }
 val rapiraFunctionArb = Arb.create { Function() }

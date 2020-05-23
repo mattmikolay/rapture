@@ -1,13 +1,13 @@
 package com.mattmik.rapira.variables
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
-import com.mattmik.rapira.objects.OperationResult
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Text
-import com.mattmik.rapira.objects.andThen
-import com.mattmik.rapira.objects.getOrThrow
 import com.mattmik.rapira.objects.toSequence
+import com.mattmik.rapira.util.Result
+import com.mattmik.rapira.util.andThen
+import com.mattmik.rapira.util.getOrThrow
 
 class IndexedVariable(
     private val variable: Variable,
@@ -16,8 +16,8 @@ class IndexedVariable(
 
     override var value: RObject
         get() = when (val result = variable.value.elementAt(index)) {
-            is OperationResult.Success -> result.obj
-            is OperationResult.Error -> throw RapiraInvalidOperationError(result.reason)
+            is Result.Success -> result.obj
+            is Result.Error -> throw RapiraInvalidOperationError(result.reason)
         }
         set(value) {
             val leftSliceEnd = (index - RInteger(1))

@@ -1,50 +1,51 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.util.Result
 
 interface RObject : Comparable<RObject> {
 
-    operator fun plus(other: RObject): OperationResult =
-        OperationResult.Error("Illegal addition operation")
+    operator fun plus(other: RObject): Result<RObject> =
+        Result.Error("Illegal addition operation")
 
-    operator fun minus(other: RObject): OperationResult =
-        OperationResult.Error("Illegal subtraction operation")
+    operator fun minus(other: RObject): Result<RObject> =
+        Result.Error("Illegal subtraction operation")
 
-    fun negate(): OperationResult =
-        OperationResult.Error("Illegal negation operation")
+    fun negate(): Result<RObject> =
+        Result.Error("Illegal negation operation")
 
-    operator fun times(other: RObject): OperationResult =
-        OperationResult.Error("Illegal multiplication operation")
+    operator fun times(other: RObject): Result<RObject> =
+        Result.Error("Illegal multiplication operation")
 
-    operator fun div(other: RObject): OperationResult =
-        OperationResult.Error("Illegal division operation")
+    operator fun div(other: RObject): Result<RObject> =
+        Result.Error("Illegal division operation")
 
-    fun intDivide(other: RObject): OperationResult =
-        OperationResult.Error("Illegal integer division operation")
+    fun intDivide(other: RObject): Result<RObject> =
+        Result.Error("Illegal integer division operation")
 
-    operator fun rem(other: RObject): OperationResult =
-        OperationResult.Error("Illegal modulo operation")
+    operator fun rem(other: RObject): Result<RObject> =
+        Result.Error("Illegal modulo operation")
 
-    fun power(other: RObject): OperationResult =
-        OperationResult.Error("Illegal exponent operation")
+    fun power(other: RObject): Result<RObject> =
+        Result.Error("Illegal exponent operation")
 
-    fun length(): OperationResult =
-        OperationResult.Error("Illegal length operation")
+    fun length(): Result<RObject> =
+        Result.Error("Illegal length operation")
 
-    infix fun and(other: RObject): OperationResult =
-        OperationResult.Error("Illegal and operation")
+    infix fun and(other: RObject): Result<RObject> =
+        Result.Error("Illegal and operation")
 
-    infix fun or(other: RObject): OperationResult =
-        OperationResult.Error("Illegal or operation")
+    infix fun or(other: RObject): Result<RObject> =
+        Result.Error("Illegal or operation")
 
-    fun not(): OperationResult =
-        OperationResult.Error("Illegal not operation")
+    fun not(): Result<RObject> =
+        Result.Error("Illegal not operation")
 
-    fun elementAt(other: RObject): OperationResult =
-        OperationResult.Error("Illegal indexing operation")
+    fun elementAt(other: RObject): Result<RObject> =
+        Result.Error("Illegal indexing operation")
 
-    fun slice(start: RObject?, end: RObject?): OperationResult =
-        OperationResult.Error("Illegal slice operation")
+    fun slice(start: RObject?, end: RObject?): Result<RObject> =
+        Result.Error("Illegal slice operation")
 
     override fun compareTo(other: RObject): Int =
         throw RapiraInvalidOperationError("Cannot compare objects")
