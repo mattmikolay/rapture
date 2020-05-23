@@ -115,7 +115,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
             val leftOfColon = it.leftIndex?.let { expr -> visit(expr) }
             val rightOfColon = it.rightIndex?.let { expr -> visit(expr) }
-            return baseResult.slice(leftOfColon, rightOfColon)
+            return baseResult.slice(start = leftOfColon, end = rightOfColon)
                 .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
         }
 

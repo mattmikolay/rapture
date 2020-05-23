@@ -1,6 +1,7 @@
 package com.mattmik.rapira.variables
 
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.toRInteger
@@ -20,9 +21,6 @@ class IndexedVariable(
             .andThen { it.elementAt(index.toRInteger()) }
 
     override fun setValue(obj: RObject): Result<Unit> {
-        val leftSliceEnd = (index - 1).toRInteger()
-        val rightSliceStart = (index + 1).toRInteger()
-
         val currentValue = variable.getValue()
         if (currentValue !is Result.Success)
             return currentValue.map { Unit }
@@ -31,9 +29,9 @@ class IndexedVariable(
             return Result.Error("Must pass text of length 1 to index assignment")
         }
 
-        val leftSlice = currentValue.obj.slice(start = null, end = leftSliceEnd)
+        val leftSlice = currentValue.obj.slice(end = RInteger(index - 1))
             .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
-        val rightSlice = currentValue.obj.slice(start = rightSliceStart, end = null)
+        val rightSlice = currentValue.obj.slice(start = RInteger(index + 1))
             .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
         val middleSlice = if (currentValue.obj is Text) obj else listOf(obj).toSequence()
 

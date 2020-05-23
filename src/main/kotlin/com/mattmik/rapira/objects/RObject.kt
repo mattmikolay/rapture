@@ -43,7 +43,7 @@ interface RObject {
     fun elementAt(other: RObject): Result<RObject> =
         Result.Error("Illegal indexing operation")
 
-    fun slice(start: RObject?, end: RObject?): Result<RObject> =
+    fun slice(start: RObject? = null, end: RObject? = null): Result<RObject> =
         Result.Error("Illegal slice operation")
 
     fun compare(other: RObject): Result<Int> =

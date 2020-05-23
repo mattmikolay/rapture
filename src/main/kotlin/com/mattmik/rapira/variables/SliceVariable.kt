@@ -27,9 +27,9 @@ class SliceVariable(
         if (currentValue !is Result.Success)
             return currentValue.map { Unit }
 
-        val leftSlice = currentValue.obj.slice(start = null, end = RInteger(startIndex.value - 1))
+        val leftSlice = currentValue.obj.slice(end = RInteger(startIndex.value - 1))
             .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
-        val rightSlice = currentValue.obj.slice(start = RInteger(endIndex.value + 1), end = null)
+        val rightSlice = currentValue.obj.slice(start = RInteger(endIndex.value + 1))
             .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
 
         val result = (leftSlice + obj)
