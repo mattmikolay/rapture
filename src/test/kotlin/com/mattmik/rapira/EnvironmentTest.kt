@@ -33,8 +33,8 @@ class EnvironmentTest : WordSpec({
         "store custom objects" {
             val environment = Environment()
             val obj = RInteger(123)
-            environment["abc"].setValue(obj) shouldSucceedWith obj
-            environment["abc"].setValue(obj) shouldSucceedWith obj
+            environment["abc"].setValue(obj) shouldSucceedWith Unit
+            environment["abc"].setValue(obj) shouldSucceedWith Unit
         }
 
         "throw exception with reserved names" {

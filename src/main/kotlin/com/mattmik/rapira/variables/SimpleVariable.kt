@@ -9,8 +9,8 @@ class SimpleVariable(private var value: RObject) : Variable {
     override fun getValue(): Result<RObject> =
         value.toSuccess()
 
-    override fun setValue(obj: RObject): Result<RObject> {
+    override fun setValue(obj: RObject): Result<Unit> {
         value = obj
-        return value.toSuccess()
+        return Result.Success(Unit)
     }
 }

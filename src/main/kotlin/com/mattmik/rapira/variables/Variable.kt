@@ -5,5 +5,5 @@ import com.mattmik.rapira.util.Result
 
 interface Variable {
     fun getValue(): Result<RObject>
-    fun setValue(obj: RObject): Result<RObject>
+    fun setValue(obj: RObject): Result<Unit>
 }

@@ -6,6 +6,7 @@ import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.andThen
 import com.mattmik.rapira.util.getOrThrow
+import com.mattmik.rapira.util.map
 
 class SliceVariable(
     private val baseVariable: Variable,
@@ -17,14 +18,14 @@ class SliceVariable(
         baseVariable.getValue()
             .andThen { it.slice(startIndex, endIndex) }
 
-    override fun setValue(obj: RObject): Result<RObject> {
+    override fun setValue(obj: RObject): Result<Unit> {
         if (startIndex !is RInteger || endIndex !is RInteger) {
             return Result.Error("Cannot perform slice assignment with non-integer index")
         }
 
         val currentValue = baseVariable.getValue()
         if (currentValue !is Result.Success)
-            return currentValue
+            return currentValue.map { Unit }
 
         val leftSlice = currentValue.obj.slice(start = null, end = RInteger(startIndex.value - 1))
             .getOrThrow { reason -> RapiraInvalidOperationError(reason) }

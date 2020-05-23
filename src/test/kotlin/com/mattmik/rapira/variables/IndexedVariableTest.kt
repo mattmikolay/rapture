@@ -32,7 +32,7 @@ class IndexedVariableTest : WordSpec({
                 val indexedVariable = IndexedVariable(textVariable, RInteger(2))
 
                 indexedVariable.getValue() shouldSucceedWith Text("e")
-                indexedVariable.setValue(Text("a")) shouldSucceedWith "Hallo, world!".toText()
+                indexedVariable.setValue(Text("a")) shouldSucceedWith Unit
                 indexedVariable.getValue() shouldSucceedWith Text("a")
                 textVariable.getValue() shouldSucceedWith "Hallo, world!".toText()
             }
@@ -60,11 +60,7 @@ class IndexedVariableTest : WordSpec({
                 val indexedVariable = IndexedVariable(sequenceVariable, RInteger(2))
 
                 indexedVariable.getValue() shouldSucceedWith Text("beta")
-                indexedVariable.setValue(Text("delta")) shouldSucceedWith Sequence(
-                    Text("alpha"),
-                    Text("delta"),
-                    Text("gamma")
-                )
+                indexedVariable.setValue(Text("delta")) shouldSucceedWith Unit
                 indexedVariable.getValue() shouldSucceedWith Text("delta")
                 sequenceVariable.getValue() shouldSucceedWith Sequence(
                     Text("alpha"),

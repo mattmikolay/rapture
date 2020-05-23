@@ -61,7 +61,7 @@ class SliceVariableTest : WordSpec({
                 )
                 sliceVariable.getValue() shouldSucceedWith Text("lo, w")
 
-                sliceVariable.setValue(Text("p me escape from this w")) shouldSucceedWith Text("Help me escape from this world!")
+                sliceVariable.setValue(Text("p me escape from this w")) shouldSucceedWith Unit
 
                 sliceVariable.getValue() shouldSucceedWith Text("p me ")
                 textVariable.getValue() shouldSucceedWith Text("Help me escape from this world!")
@@ -88,11 +88,7 @@ class SliceVariableTest : WordSpec({
                     Text("gamma")
                 )
 
-                sliceVariable.setValue(Sequence(Text("epsilon"))) shouldSucceedWith Sequence(
-                    Text("alpha"),
-                    Text("epsilon"),
-                    Text("delta")
-                )
+                sliceVariable.setValue(Sequence(Text("epsilon"))) shouldSucceedWith Unit
 
                 sliceVariable.getValue() shouldSucceedWith Sequence(
                     Text("epsilon"),
