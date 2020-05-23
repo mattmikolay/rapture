@@ -1,7 +1,6 @@
 package com.mattmik.rapira.variables
 
 import com.mattmik.rapira.objects.Empty
-import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.shouldError
@@ -18,7 +17,7 @@ class IndexedVariableTest : WordSpec({
                 Text("gamma")
             )
             val simpleVariable = SimpleVariable(sequence)
-            val indexedVariable = IndexedVariable(simpleVariable, RInteger(2))
+            val indexedVariable = IndexedVariable(simpleVariable, index = 2)
             indexedVariable.getValue() shouldSucceedWith Text("beta")
         }
     }
@@ -29,7 +28,7 @@ class IndexedVariableTest : WordSpec({
             val textVariable = SimpleVariable(textObject)
 
             "update character at specified index" {
-                val indexedVariable = IndexedVariable(textVariable, RInteger(2))
+                val indexedVariable = IndexedVariable(textVariable, index = 2)
 
                 indexedVariable.getValue() shouldSucceedWith Text("e")
                 indexedVariable.setValue(Text("a")) shouldSucceedWith Unit
@@ -38,12 +37,12 @@ class IndexedVariableTest : WordSpec({
             }
 
             "error if index is non-text" {
-                val indexedVariable = IndexedVariable(textVariable, RInteger(2))
+                val indexedVariable = IndexedVariable(textVariable, index = 2)
                 indexedVariable.setValue(Empty).shouldError()
             }
 
             "error if index is text with invalid length" {
-                val indexedVariable = IndexedVariable(textVariable, RInteger(2))
+                val indexedVariable = IndexedVariable(textVariable, index = 2)
                 indexedVariable.setValue(Text("hello")).shouldError()
             }
         }
@@ -57,7 +56,7 @@ class IndexedVariableTest : WordSpec({
             val sequenceVariable = SimpleVariable(sequenceObject)
 
             "update element at specified index" {
-                val indexedVariable = IndexedVariable(sequenceVariable, RInteger(2))
+                val indexedVariable = IndexedVariable(sequenceVariable, index = 2)
 
                 indexedVariable.getValue() shouldSucceedWith Text("beta")
                 indexedVariable.setValue(Text("delta")) shouldSucceedWith Unit

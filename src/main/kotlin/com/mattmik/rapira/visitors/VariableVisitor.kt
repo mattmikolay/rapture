@@ -22,7 +22,9 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
 
             indexExprContext.commaExpression()?.let {
                 it.expression().forEach { expr ->
-                    variable = IndexedVariable(variable, expressionVisitor.visit(expr))
+                    val index = (expressionVisitor.visit(expr) as? RInteger)?.value
+                        ?: throw RapiraInvalidOperationError("Cannot use non-integer value as index", token = ctx.IDENTIFIER().symbol)
+                    variable = IndexedVariable(variable, index)
                 }
             }
 
