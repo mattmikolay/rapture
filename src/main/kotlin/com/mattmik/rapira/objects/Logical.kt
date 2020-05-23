@@ -1,5 +1,7 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.util.toSuccess
+
 data class Logical(val value: Boolean) : RObject {
 
     override fun and(other: RObject) = when (other) {

@@ -1,7 +1,7 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.util.Result
+import com.mattmik.rapira.util.toSuccess
 import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.pow
@@ -59,10 +59,10 @@ data class RInteger(val value: Int) : RObject {
         else -> super.power(other)
     }
 
-    override fun compareTo(other: RObject) = when (other) {
-        is RInteger -> value.compareTo(other.value)
-        is Real -> value.compareTo(other.value)
-        else -> throw RapiraInvalidOperationError("Cannot compare")
+    override fun compare(other: RObject) = when (other) {
+        is RInteger -> value.compareTo(other.value).toSuccess()
+        is Real -> value.compareTo(other.value).toSuccess()
+        else -> super.compare(other)
     }
 
     override fun toString() = "$value"

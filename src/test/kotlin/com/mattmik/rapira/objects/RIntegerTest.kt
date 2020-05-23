@@ -1,7 +1,6 @@
 package com.mattmik.rapira.objects
 
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
 
 class RIntegerTest : WordSpec({
@@ -41,16 +40,16 @@ class RIntegerTest : WordSpec({
         }
     }
 
-    "compareTo" should {
-        "compare with integers" {
+    "compare" should {
+        "compare when given integer" {
             checkAll<Int, Int> { a, b ->
-                a.toRInteger().compareTo(b.toRInteger()) shouldBe a.compareTo(b)
+                a.toRInteger().compare(b.toRInteger()) shouldSucceedWith a.compareTo(b)
             }
         }
 
-        "compare with real numbers" {
+        "compare when given real number" {
             checkAll<Int, Double> { a, b ->
-                a.toRInteger().compareTo(b.toReal()) shouldBe a.compareTo(b)
+                a.toRInteger().compare(b.toReal()) shouldSucceedWith a.compareTo(b)
             }
         }
     }

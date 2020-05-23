@@ -22,6 +22,7 @@ import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.getOrThrow
+import com.mattmik.rapira.util.map
 
 /**
  * A visitor that evaluates expressions while walking the tree within a given [environment].
@@ -48,13 +49,15 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext) =
         ctx.expression()
             .map { visit(it) }
-            .let { (leftExpr, rightExpr) -> when (ctx.op.type) {
-                RapiraLangParser.LESS -> leftExpr < rightExpr
-                RapiraLangParser.GREATER -> leftExpr > rightExpr
-                RapiraLangParser.LESSEQ -> leftExpr <= rightExpr
-                RapiraLangParser.GREATEREQ -> leftExpr >= rightExpr
+            .let { (leftExpr, rightExpr) -> leftExpr.compare(rightExpr) }
+            .map { when (ctx.op.type) {
+                RapiraLangParser.LESS -> it < 0
+                RapiraLangParser.GREATER -> it > 0
+                RapiraLangParser.LESSEQ -> it <= 0
+                RapiraLangParser.GREATEREQ -> it >= 0
                 else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
             } }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
             .toLogical()
 
     override fun visitEqualityExpression(ctx: RapiraLangParser.EqualityExpressionContext) =

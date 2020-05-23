@@ -1,6 +1,7 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.util.Result
+import com.mattmik.rapira.util.toSuccess
 
 data class Text(val value: String) : RObject {
 

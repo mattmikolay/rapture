@@ -35,7 +35,9 @@ class ForLoopController(
         forValue as? Result.Success
             ?: throw RapiraInvalidOperationError("Failed to compute for loop status")
 
-        return forValue.obj >= RInteger(0)
+        return forValue.obj.compare(RInteger(0))
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            .let { it >= 0 }
     }
 
     override fun update() {

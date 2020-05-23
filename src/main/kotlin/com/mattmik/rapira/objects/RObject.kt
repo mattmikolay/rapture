@@ -1,9 +1,8 @@
 package com.mattmik.rapira.objects
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.util.Result
 
-interface RObject : Comparable<RObject> {
+interface RObject {
 
     operator fun plus(other: RObject): Result<RObject> =
         Result.Error("Illegal addition operation")
@@ -47,6 +46,6 @@ interface RObject : Comparable<RObject> {
     fun slice(start: RObject?, end: RObject?): Result<RObject> =
         Result.Error("Illegal slice operation")
 
-    override fun compareTo(other: RObject): Int =
-        throw RapiraInvalidOperationError("Cannot compare objects")
+    fun compare(other: RObject): Result<Int> =
+        Result.Error("Illegal comparison operation")
 }
