@@ -2,10 +2,10 @@ package com.mattmik.rapira.args
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.visitors.ExpressionVisitor
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
@@ -31,7 +31,7 @@ class InArgumentTest : WordSpec({
             val argument = InArgument(mockExpressionContext)
             val actualResult = argument.evaluate(environment)
 
-            actualResult.value shouldBe expectedResult
+            actualResult.getValue() shouldSucceedWith expectedResult
             verify {
                 anyConstructed<ExpressionVisitor>().visit(mockExpressionContext)
             }

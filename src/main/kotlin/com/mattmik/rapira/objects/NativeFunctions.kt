@@ -4,6 +4,8 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
+import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.util.getOrThrow
 import kotlin.math.absoluteValue
 import kotlin.math.asin
 import kotlin.math.atan
@@ -19,21 +21,26 @@ import kotlin.math.sqrt
 import kotlin.math.tan
 import kotlin.random.Random
 
-private abstract class NativeFunction(
-    val paramCount: Int
-) : RObject, RCallable {
+private interface NativeFunction : RObject, RCallable
 
-    override fun call(environment: Environment, arguments: List<Argument>) =
-        if (arguments.size == paramCount)
-            callInternal(environment, arguments)
-        else throw RapiraIncorrectArgumentCountError(
-            expectedArgCount = paramCount,
-            actualArgCount = arguments.size
-        )
+private interface SingleParamNativeFunction : RObject, RCallable {
 
-    abstract fun callInternal(environment: Environment, arguments: List<Argument>): RObject?
+    override fun call(environment: Environment, arguments: List<Argument>): RObject? {
+        if (arguments.size != 1) {
+            throw RapiraIncorrectArgumentCountError(
+                expectedArgCount = 1,
+                actualArgCount = arguments.size
+            )
+        }
 
-    override fun toString() = "native function"
+        val obj = arguments[0].evaluate(environment)
+            .getValue()
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+
+        return call(obj)
+    }
+
+    fun call(obj: RObject): RObject
 }
 
 /**
@@ -49,66 +56,79 @@ private abstract class NativeFunction(
  * - circle
  */
 val nativeFunctions = mapOf<String, RObject>(
-    "abs" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> arg.value.absoluteValue.toRInteger()
-                is Real -> arg.value.absoluteValue.toReal()
+    "abs" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> obj.value.absoluteValue.toRInteger()
+                is Real -> obj.value.absoluteValue.toReal()
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }
     },
-    "sign" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> arg.value.sign
-                is Real -> arg.value.sign.toInt()
+    "sign" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> obj.value.sign
+                is Real -> obj.value.sign.toInt()
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toRInteger()
     },
-    "sqrt" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> sqrt(arg.value.toDouble())
-                is Real -> sqrt(arg.value)
+    "sqrt" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> sqrt(obj.value.toDouble())
+                is Real -> sqrt(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "entier" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> arg.value
-                is Real -> floor(arg.value).toInt()
+    "entier" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> obj.value
+                is Real -> floor(obj.value).toInt()
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toRInteger()
     },
-    "round" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> arg.value
-                is Real -> arg.value.let { if (it.isNaN()) 0 else round(it).toInt() }
+    "round" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> obj.value
+                is Real -> obj.value.let { if (it.isNaN()) 0 else round(it).toInt() }
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toRInteger()
     },
-    "rand" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> Random.nextDouble() * arg.value
-                is Real -> Random.nextDouble() * arg.value
+    "rand" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> Random.nextDouble() * obj.value
+                is Real -> Random.nextDouble() * obj.value
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "int_rand" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> (1..arg.value).random()
-                is Real -> (1..arg.value.toInt()).random()
+    "int_rand" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> (1..obj.value).random()
+                is Real -> (1..obj.value.toInt()).random()
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toRInteger()
     },
-    "index" to object : NativeFunction(2) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg1 = arguments[0].evaluate(environment).value
-            return when (val arg2 = arguments[1].evaluate(environment).value) {
+    "index" to object : NativeFunction {
+        override fun call(environment: Environment, arguments: List<Argument>): RObject? {
+            if (arguments.size != 2) {
+                throw RapiraIncorrectArgumentCountError(
+                    expectedArgCount = 2,
+                    actualArgCount = arguments.size
+                )
+            }
+
+            val arg1 = arguments[0].evaluate(environment)
+                .getValue()
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            val arg2 = arguments[1].evaluate(environment)
+                .getValue()
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+
+            return when (arg2) {
                 is Sequence -> arg2.entries.indexOf(arg1) + 1
                 is Text -> {
                     if (arg1 !is Text) {
@@ -121,115 +141,99 @@ val nativeFunctions = mapOf<String, RObject>(
             }.toRInteger()
         }
     },
-    "is_empty" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments[0].evaluate(environment).value
-            return Logical(arg is Empty)
-        }
+    "is_empty" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            Logical(obj is Empty)
     },
-    "is_log" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments[0].evaluate(environment).value
-            return Logical(arg is Logical)
-        }
+    "is_log" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            Logical(obj is Logical)
     },
-    "is_int" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments[0].evaluate(environment).value
-            return Logical(arg is RInteger)
-        }
+    "is_int" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            Logical(obj is RInteger)
     },
-    "is_real" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments[0].evaluate(environment).value
-            return Logical(arg is Real)
-        }
+    "is_real" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            Logical(obj is Real)
     },
-    "is_text" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments[0].evaluate(environment).value
-            return Logical(arg is Text)
-        }
+    "is_text" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            Logical(obj is Text)
     },
-    "is_seq" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments[0].evaluate(environment).value
-            return Logical(arg is Sequence)
-        }
+    "is_seq" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            Logical(obj is Sequence)
     },
-    "is_proc" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments[0].evaluate(environment).value
-            return Logical(arg is Procedure)
-        }
+    "is_proc" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            Logical(obj is Procedure)
     },
-    "is_fun" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>): RObject? {
-            val arg = arguments[0].evaluate(environment).value
-            return Logical(arg is Function || arg is NativeFunction)
-        }
+    "is_fun" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            Logical(obj is Function || obj is NativeFunction)
     },
-    "sin" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> sin(arg.value.toDouble())
-                is Real -> sin(arg.value)
+    "sin" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> sin(obj.value.toDouble())
+                is Real -> sin(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "cos" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> cos(arg.value.toDouble())
-                is Real -> cos(arg.value)
+    "cos" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> cos(obj.value.toDouble())
+                is Real -> cos(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "tg" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> tan(arg.value.toDouble())
-                is Real -> tan(arg.value)
+    "tg" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> tan(obj.value.toDouble())
+                is Real -> tan(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "arcsin" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> asin(arg.value.toDouble())
-                is Real -> asin(arg.value)
+    "arcsin" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> asin(obj.value.toDouble())
+                is Real -> asin(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "arctg" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> atan(arg.value.toDouble())
-                is Real -> atan(arg.value)
+    "arctg" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> atan(obj.value.toDouble())
+                is Real -> atan(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "exp" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> exp(arg.value.toDouble())
-                is Real -> exp(arg.value)
+    "exp" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> exp(obj.value.toDouble())
+                is Real -> exp(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "ln" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> ln(arg.value.toDouble())
-                is Real -> ln(arg.value)
+    "ln" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> ln(obj.value.toDouble())
+                is Real -> ln(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     },
-    "lg" to object : NativeFunction(1) {
-        override fun callInternal(environment: Environment, arguments: List<Argument>) =
-            when (val arg = arguments[0].evaluate(environment).value) {
-                is RInteger -> log10(arg.value.toDouble())
-                is Real -> log10(arg.value)
+    "lg" to object : SingleParamNativeFunction {
+        override fun call(obj: RObject) =
+            when (obj) {
+                is RInteger -> log10(obj.value.toDouble())
+                is Real -> log10(obj.value)
                 else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
             }.toReal()
     }

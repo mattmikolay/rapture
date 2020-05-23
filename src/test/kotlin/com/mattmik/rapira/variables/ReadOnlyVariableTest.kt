@@ -1,26 +1,23 @@
 package com.mattmik.rapira.variables
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Text
-import io.kotest.assertions.throwables.shouldThrowUnit
+import com.mattmik.rapira.objects.shouldError
+import com.mattmik.rapira.objects.shouldSucceedWith
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 
 class ReadOnlyVariableTest : WordSpec({
     "get" should {
-        "return wrapped object" {
+        "succeed with wrapped object" {
             val obj = Text("Hello, world!")
-            ReadOnlyVariable(obj).value shouldBe obj
+            ReadOnlyVariable(obj).getValue() shouldSucceedWith obj
         }
     }
 
     "set" should {
-        "throw exception" {
+        "error" {
             val obj = Text("Hello, world!")
             val variable = ReadOnlyVariable(obj)
-            shouldThrowUnit<RapiraInvalidOperationError> {
-                variable.value = Text("TEST")
-            }
+            variable.setValue(Text("TEST")).shouldError()
         }
     }
 })

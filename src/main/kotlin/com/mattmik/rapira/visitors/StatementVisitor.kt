@@ -15,10 +15,12 @@ import com.mattmik.rapira.control.MasterLoopController
 import com.mattmik.rapira.control.RepeatLoopController
 import com.mattmik.rapira.control.WhileLoopController
 import com.mattmik.rapira.errors.RapiraIllegalInvocationError
+import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RCallable
+import com.mattmik.rapira.util.getOrThrow
 
 /**
  * A visitor that executes statements while walking the tree within a given [environment].
@@ -30,29 +32,37 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext) {
         val procedure = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
-            environment[it.text].value = procedure
+            environment[it.text].setValue(procedure)
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason, it.symbol) }
         }
     }
 
     override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext) {
         val function = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
-            environment[it.text].value = function
+            environment[it.text].setValue(function)
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason, it.symbol) }
         }
     }
 
     override fun visitAssignStatement(ctx: RapiraLangParser.AssignStatementContext) {
         val evaluatedExpression = expressionVisitor.visit(ctx.expression())
         val variable = VariableVisitor(environment).visit(ctx.variable())
-        variable.value = evaluatedExpression
+        variable.setValue(evaluatedExpression)
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.variable().IDENTIFIER().symbol) }
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
-        val obj = ctx.IDENTIFIER()?.let { environment[it.text].value }
+        val obj = ctx.IDENTIFIER()?.let {
+            environment[it.text].getValue()
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.symbol) }
+        }
             ?: expressionVisitor.visit(ctx.expression())
 
         val callable = obj as? RCallable
-            ?: throw RapiraIllegalInvocationError(token = ctx.CALL()?.symbol ?: ctx.procedureArguments().LPAREN().symbol)
+            ?: throw RapiraIllegalInvocationError(
+                token = ctx.CALL()?.symbol ?: ctx.procedureArguments().LPAREN().symbol
+            )
 
         val arguments = readProcedureArguments(ctx.procedureArguments())
 
@@ -156,7 +166,12 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
         ctx.variable().forEach {
             val variable = variableVisitor.visit(it)
-            variable.value = if (isTextMode) ConsoleReader.readText() else ConsoleReader.readObject()
+            variable.setValue(
+                if (isTextMode)
+                    ConsoleReader.readText()
+                else
+                    ConsoleReader.readObject()
+            ).getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.IDENTIFIER().symbol) }
         }
     }
 

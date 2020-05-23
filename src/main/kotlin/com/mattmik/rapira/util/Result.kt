@@ -17,7 +17,7 @@ fun <T> Result<T>.mapError(transform: (String) -> String): Result<T> =
         is Result.Error -> Result.Error(transform(this.reason))
     }
 
-fun <T> Result<T>.andThen(transform: (T) -> Result<T>): Result<T> =
+fun <T, U> Result<T>.andThen(transform: (T) -> Result<U>): Result<U> =
     when (this) {
         is Result.Success -> transform(this.obj)
         is Result.Error -> this

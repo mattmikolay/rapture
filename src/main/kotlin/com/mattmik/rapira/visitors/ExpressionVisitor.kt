@@ -138,7 +138,9 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.HASH().symbol) }
 
     override fun visitIdentifierValue(ctx: RapiraLangParser.IdentifierValueContext) =
-        environment[ctx.IDENTIFIER().text].value
+        environment[ctx.IDENTIFIER().text]
+            .getValue()
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.IDENTIFIER().symbol) }
 
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) =
         Integer.valueOf(ctx.text).toRInteger()

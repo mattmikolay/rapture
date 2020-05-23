@@ -3,9 +3,9 @@ package com.mattmik.rapira.args
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toText
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -18,7 +18,7 @@ class InOutArgumentTest : WordSpec() {
     init {
         beforeTest {
             environment = Environment()
-            environment[VARIABLE_NAME].value = "Hello, world!".toText()
+            environment[VARIABLE_NAME].setValue("Hello, world!".toText())
         }
         "evaluate" should {
             "return variable in environment" {
@@ -32,7 +32,7 @@ class InOutArgumentTest : WordSpec() {
                 val actualVariable = argument.evaluate(environment)
 
                 actualVariable shouldBeSameInstanceAs expectedVariable
-                actualVariable.value shouldBe expectedObject
+                actualVariable.getValue() shouldSucceedWith expectedObject
             }
         }
     }

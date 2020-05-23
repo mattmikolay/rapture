@@ -4,7 +4,7 @@ import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
-import com.mattmik.rapira.util.Result
+import com.mattmik.rapira.util.andThen
 import com.mattmik.rapira.util.getOrThrow
 import com.mattmik.rapira.variables.Variable
 
@@ -16,7 +16,8 @@ class ForLoopController(
 ) : LoopController {
     init {
         // Set initial value using "from" expression
-        variable.value = fromValue ?: RInteger(1)
+        variable.setValue(fromValue ?: RInteger(1))
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
 
         if (toValue != null && toValue !is RInteger && toValue !is Real) {
             throw RapiraInvalidOperationError("To value in for loop must be number")
@@ -28,21 +29,18 @@ class ForLoopController(
             return true
         }
 
-        val toDifference = ((toValue - variable.value) as? Result.Success)?.obj
-            ?: throw RapiraInvalidOperationError("Failed to compute for loop status")
-
-        val forValue = toDifference * (stepValue ?: RInteger(1))
-        forValue as? Result.Success
-            ?: throw RapiraInvalidOperationError("Failed to compute for loop status")
-
-        return forValue.obj.compare(RInteger(0))
+        return variable.getValue()
+            .andThen { obj -> toValue - obj }
+            .andThen { obj -> obj * (stepValue ?: RInteger(1)) }
+            .andThen { obj -> obj.compare(RInteger(0)) }
             .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
             .let { it >= 0 }
     }
 
     override fun update() {
-        val result = (variable.value + (stepValue ?: RInteger(1)))
+        variable.getValue()
+            .andThen { obj -> obj + (stepValue ?: RInteger(1)) }
+            .andThen { variable.setValue(it) }
             .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
-        variable.value = result
     }
 }

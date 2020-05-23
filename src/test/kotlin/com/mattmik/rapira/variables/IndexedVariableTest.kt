@@ -1,18 +1,17 @@
 package com.mattmik.rapira.variables
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
+import com.mattmik.rapira.objects.shouldError
+import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toText
-import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 
 class IndexedVariableTest : WordSpec({
     "get" should {
-        "return element at specified index" {
+        "succeed with element at specified index" {
             val sequence = Sequence(
                 Text("alpha"),
                 Text("beta"),
@@ -20,7 +19,7 @@ class IndexedVariableTest : WordSpec({
             )
             val simpleVariable = SimpleVariable(sequence)
             val indexedVariable = IndexedVariable(simpleVariable, RInteger(2))
-            indexedVariable.value shouldBe Text("beta")
+            indexedVariable.getValue() shouldSucceedWith Text("beta")
         }
     }
 
@@ -32,24 +31,20 @@ class IndexedVariableTest : WordSpec({
             "update character at specified index" {
                 val indexedVariable = IndexedVariable(textVariable, RInteger(2))
 
-                indexedVariable.value shouldBe Text("e")
-                indexedVariable.value = Text("a")
-                indexedVariable.value shouldBe Text("a")
-                textVariable.value shouldBe "Hallo, world!".toText()
+                indexedVariable.getValue() shouldSucceedWith Text("e")
+                indexedVariable.setValue(Text("a")) shouldSucceedWith "Hallo, world!".toText()
+                indexedVariable.getValue() shouldSucceedWith Text("a")
+                textVariable.getValue() shouldSucceedWith "Hallo, world!".toText()
             }
 
-            "throw error if index is non-text" {
+            "error if index is non-text" {
                 val indexedVariable = IndexedVariable(textVariable, RInteger(2))
-                shouldThrowUnit<RapiraInvalidOperationError> {
-                    indexedVariable.value = Empty
-                }
+                indexedVariable.setValue(Empty).shouldError()
             }
 
-            "throw error if index is text with invalid length" {
+            "error if index is text with invalid length" {
                 val indexedVariable = IndexedVariable(textVariable, RInteger(2))
-                shouldThrowUnit<RapiraInvalidOperationError> {
-                    indexedVariable.value = Text("hello")
-                }
+                indexedVariable.setValue(Text("hello")).shouldError()
             }
         }
 
@@ -64,10 +59,14 @@ class IndexedVariableTest : WordSpec({
             "update element at specified index" {
                 val indexedVariable = IndexedVariable(sequenceVariable, RInteger(2))
 
-                indexedVariable.value shouldBe Text("beta")
-                indexedVariable.value = Text("delta")
-                indexedVariable.value shouldBe Text("delta")
-                sequenceVariable.value shouldBe Sequence(
+                indexedVariable.getValue() shouldSucceedWith Text("beta")
+                indexedVariable.setValue(Text("delta")) shouldSucceedWith Sequence(
+                    Text("alpha"),
+                    Text("delta"),
+                    Text("gamma")
+                )
+                indexedVariable.getValue() shouldSucceedWith Text("delta")
+                sequenceVariable.getValue() shouldSucceedWith Sequence(
                     Text("alpha"),
                     Text("delta"),
                     Text("gamma")

@@ -1,5 +1,16 @@
 package com.mattmik.rapira.variables
 
 import com.mattmik.rapira.objects.RObject
+import com.mattmik.rapira.util.Result
+import com.mattmik.rapira.util.toSuccess
 
-class SimpleVariable(override var value: RObject) : Variable
+class SimpleVariable(private var value: RObject) : Variable {
+
+    override fun getValue(): Result<RObject> =
+        value.toSuccess()
+
+    override fun setValue(obj: RObject): Result<RObject> {
+        value = obj
+        return value.toSuccess()
+    }
+}

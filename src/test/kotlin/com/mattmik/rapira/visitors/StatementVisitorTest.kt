@@ -15,15 +15,16 @@ import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
+import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.objects.toText
+import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockkObject
@@ -67,7 +68,7 @@ class StatementVisitorTest : WordSpec({
 
     "visit" should {
         "handle procedure definitions" {
-            environment["test_procedure"].value shouldBe Empty
+            environment["test_procedure"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -77,14 +78,14 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["test_procedure"].value should beOfType<Procedure>()
+            environment["test_procedure"].getValue() should beOfType<Result.Success<Procedure>>()
             verify {
                 ConsoleWriter wasNot Called
             }
         }
 
         "handle function definitions" {
-            environment["test_function"].value shouldBe Empty
+            environment["test_function"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -94,22 +95,22 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["test_function"].value should beOfType<Function>()
+            environment["test_function"].getValue() should beOfType<Result.Success<Function>>()
             verify {
                 ConsoleWriter wasNot Called
             }
         }
 
         "handle assignment statements" {
-            environment["str_value"].value shouldBe Empty
+            environment["str_value"].getValue() shouldSucceedWith Empty
             evaluateStatements(
                 """
                     str_value := 3 * alpha
                     weather_types[1 + 1] := "snowy"
                 """.trimIndent()
             )
-            environment["str_value"].value shouldBe Text("Ready!Ready!Ready!")
-            environment["weather_types"].value shouldBe Sequence(
+            environment["str_value"].getValue() shouldSucceedWith Text("Ready!Ready!Ready!")
+            environment["weather_types"].getValue() shouldSucceedWith Sequence(
                 Text("sunny"),
                 Text("snowy")
             )
@@ -181,8 +182,8 @@ class StatementVisitorTest : WordSpec({
         }
 
         "handle if statements without else clauses" {
-            environment["season"].value shouldBe Empty
-            environment["sound"].value shouldBe Empty
+            environment["season"].getValue() shouldSucceedWith Empty
+            environment["sound"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -195,13 +196,13 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["season"].value shouldBe Text("winter")
-            environment["sound"].value shouldBe Empty
+            environment["season"].getValue() shouldSucceedWith Text("winter")
+            environment["sound"].getValue() shouldSucceedWith Empty
         }
 
         "handle if statements with else clauses" {
-            environment["season"].value shouldBe Empty
-            environment["sound"].value shouldBe Empty
+            environment["season"].getValue() shouldSucceedWith Empty
+            environment["sound"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -219,12 +220,12 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["season"].value shouldBe Text("winter")
-            environment["sound"].value shouldBe Text("meow")
+            environment["season"].getValue() shouldSucceedWith Text("winter")
+            environment["sound"].getValue() shouldSucceedWith Text("meow")
         }
 
         "handle condition case statements 1" {
-            environment["sound"].value shouldBe Empty
+            environment["sound"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -235,12 +236,12 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"].value shouldBe Text("meow")
+            environment["sound"].getValue() shouldSucceedWith Text("meow")
         }
 
         "handle condition case statements 2" {
-            environment["animal"].value = Text("hedgehog")
-            environment["sound"].value shouldBe Empty
+            environment["animal"].setValue(Text("hedgehog"))
+            environment["sound"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -251,12 +252,12 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"].value shouldBe Text("moo")
+            environment["sound"].getValue() shouldSucceedWith Text("moo")
         }
 
         "handle condition case statements 3" {
-            environment["animal"].value = Text("seal")
-            environment["sound"].value shouldBe Empty
+            environment["animal"].setValue(Text("seal"))
+            environment["sound"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -267,11 +268,11 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"].value shouldBe Text("bark")
+            environment["sound"].getValue() shouldSucceedWith Text("bark")
         }
 
         "handle conditionless case statements 1" {
-            environment["sound"].value shouldBe Empty
+            environment["sound"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -282,12 +283,12 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"].value shouldBe Text("meow")
+            environment["sound"].getValue() shouldSucceedWith Text("meow")
         }
 
         "handle conditionless case statements 2" {
-            environment["animal"].value = Text("hedgehog")
-            environment["sound"].value shouldBe Empty
+            environment["animal"].setValue(Text("hedgehog"))
+            environment["sound"].getValue() shouldSucceedWith Empty
 
             evaluateStatements(
                 """
@@ -298,7 +299,7 @@ class StatementVisitorTest : WordSpec({
                 """.trimIndent()
             )
 
-            environment["sound"].value shouldBe Text("moo")
+            environment["sound"].getValue() shouldSucceedWith Text("moo")
         }
 
         "handle do loops with until" {
@@ -575,9 +576,9 @@ class StatementVisitorTest : WordSpec({
                 ConsoleReader.readText()
             }
 
-            environment["alpha"].value shouldBe Text("Go!")
-            environment["animal"].value shouldBe Text("dog")
-            environment["weather_types"].value shouldBe listOf(
+            environment["alpha"].getValue() shouldSucceedWith Text("Go!")
+            environment["animal"].getValue() shouldSucceedWith Text("dog")
+            environment["weather_types"].getValue() shouldSucceedWith listOf(
                 Text("sunny"),
                 Text("snowy")
             ).toSequence()
@@ -602,9 +603,9 @@ class StatementVisitorTest : WordSpec({
                 ConsoleReader.readObject()
             }
 
-            environment["alpha"].value shouldBe LogicalYes
-            environment["animal"].value shouldBe Text("dog")
-            environment["weather_types"].value shouldBe listOf(
+            environment["alpha"].getValue() shouldSucceedWith LogicalYes
+            environment["animal"].getValue() shouldSucceedWith Text("dog")
+            environment["weather_types"].getValue() shouldSucceedWith listOf(
                 Text("sunny"),
                 RInteger(123)
             ).toSequence()

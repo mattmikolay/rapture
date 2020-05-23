@@ -3,10 +3,10 @@ package com.mattmik.rapira.variables
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
+import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.objects.toText
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.shouldBe
 
 class SliceVariableTest : WordSpec({
 
@@ -15,13 +15,13 @@ class SliceVariableTest : WordSpec({
             val textObject = "Hello, world!".toText()
             val textVariable = SimpleVariable(textObject)
 
-            "return slice at specified indexes" {
+            "succeed with slice at specified indexes" {
                 val sliceVariable = SliceVariable(
                     textVariable,
                     RInteger(4),
                     RInteger(8)
                 )
-                sliceVariable.value shouldBe Text("lo, w")
+                sliceVariable.getValue() shouldSucceedWith Text("lo, w")
             }
         }
 
@@ -34,13 +34,13 @@ class SliceVariableTest : WordSpec({
             ).toSequence()
             val sequenceVariable = SimpleVariable(sequenceObject)
 
-            "return slice at specified indexes" {
+            "succeed with slice at specified indexes" {
                 val sliceVariable = SliceVariable(
                     sequenceVariable,
                     RInteger(2),
                     RInteger(3)
                 )
-                sliceVariable.value shouldBe listOf(
+                sliceVariable.getValue() shouldSucceedWith listOf(
                     Text("beta"),
                     Text("gamma")
                 ).toSequence()
@@ -59,12 +59,12 @@ class SliceVariableTest : WordSpec({
                     RInteger(4),
                     RInteger(8)
                 )
-                sliceVariable.value shouldBe Text("lo, w")
+                sliceVariable.getValue() shouldSucceedWith Text("lo, w")
 
-                sliceVariable.value = Text("p me escape from this w")
+                sliceVariable.setValue(Text("p me escape from this w")) shouldSucceedWith Text("Help me escape from this world!")
 
-                sliceVariable.value shouldBe Text("p me ")
-                textVariable.value shouldBe Text("Help me escape from this world!")
+                sliceVariable.getValue() shouldSucceedWith Text("p me ")
+                textVariable.getValue() shouldSucceedWith Text("Help me escape from this world!")
             }
         }
 
@@ -83,18 +83,22 @@ class SliceVariableTest : WordSpec({
                     RInteger(2),
                     RInteger(3)
                 )
-                sliceVariable.value shouldBe Sequence(
+                sliceVariable.getValue() shouldSucceedWith Sequence(
                     Text("beta"),
                     Text("gamma")
                 )
 
-                sliceVariable.value = Sequence(Text("epsilon"))
-
-                sliceVariable.value shouldBe Sequence(
+                sliceVariable.setValue(Sequence(Text("epsilon"))) shouldSucceedWith Sequence(
+                    Text("alpha"),
                     Text("epsilon"),
                     Text("delta")
                 )
-                sequenceVariable.value shouldBe Sequence(
+
+                sliceVariable.getValue() shouldSucceedWith Sequence(
+                    Text("epsilon"),
+                    Text("delta")
+                )
+                sequenceVariable.getValue() shouldSucceedWith Sequence(
                     Text("alpha"),
                     Text("epsilon"),
                     Text("delta")
