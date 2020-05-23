@@ -4,6 +4,7 @@ import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.control.ControlFlowException
 import com.mattmik.rapira.errors.RapiraRuntimeError
+import com.mattmik.rapira.errors.SyntaxErrorListener
 import com.mattmik.rapira.visitors.StatementVisitor
 import java.io.InputStream
 import kotlin.system.exitProcess

@@ -1,4 +1,4 @@
-package com.mattmik.rapira
+package com.mattmik.rapira.errors
 
 import com.mattmik.rapira.ConsoleWriter.printError
 import org.antlr.v4.runtime.BaseErrorListener
