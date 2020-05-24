@@ -32,10 +32,8 @@ class SliceVariable(
         val rightSlice = currentValue.obj.slice(start = RInteger(endIndex.value + 1))
             .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
 
-        val result = (leftSlice + obj)
+        return (leftSlice + obj)
             .andThen { it + rightSlice }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
-
-        return baseVariable.setValue(result)
+            .andThen { resultObj -> baseVariable.setValue(resultObj) }
     }
 }
