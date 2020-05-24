@@ -1,12 +1,9 @@
 package com.mattmik.rapira.variables
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.andThen
-import com.mattmik.rapira.util.getOrThrow
-import com.mattmik.rapira.util.map
 
 class SliceVariable(
     private val baseVariable: Variable,
@@ -23,17 +20,17 @@ class SliceVariable(
             return Result.Error("Cannot perform slice assignment with non-integer index")
         }
 
-        val currentValue = baseVariable.getValue()
-        if (currentValue !is Result.Success)
-            return currentValue.map { Unit }
-
-        val leftSlice = currentValue.obj.slice(end = RInteger(startIndex.value - 1))
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
-        val rightSlice = currentValue.obj.slice(start = RInteger(endIndex.value + 1))
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
-
-        return (leftSlice + obj)
-            .andThen { it + rightSlice }
-            .andThen { resultObj -> baseVariable.setValue(resultObj) }
+        return baseVariable.getValue()
+            .andThen {
+                Result.zip(
+                    it.slice(end = RInteger(startIndex.value - 1)),
+                    it.slice(start = RInteger(endIndex.value + 1))
+                )
+            }
+            .andThen { (leftSlice, rightSlice) -> mergeObjects(leftSlice, obj, rightSlice) }
+            .andThen { newValue -> baseVariable.setValue(newValue) }
     }
 }
+
+private fun mergeObjects(obj1: RObject, obj2: RObject, obj3: RObject) =
+    (obj1 + obj2).andThen { it + obj3 }
