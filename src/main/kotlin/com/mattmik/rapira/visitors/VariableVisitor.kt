@@ -14,31 +14,35 @@ import com.mattmik.rapira.variables.Variable
 class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Variable>() {
     private val expressionVisitor = ExpressionVisitor(environment)
 
-    override fun visitVariable(ctx: RapiraLangParser.VariableContext): Variable {
-        var variable = environment[ctx.IDENTIFIER().text]
+    override fun visitVariableCommaIndex(ctx: RapiraLangParser.VariableCommaIndexContext): Variable {
+        val variable = visit(ctx.variable())
 
-        // Flatten comma expressions
-        ctx.indexExpression().forEach { indexExprContext ->
-
-            indexExprContext.commaExpression()?.let {
-                it.expression().forEach { expr ->
-                    val index = (expressionVisitor.visit(expr) as? RInteger)?.value
-                        ?: throw RapiraInvalidOperationError("Cannot use non-integer value as index", token = ctx.IDENTIFIER().symbol)
-                    variable = IndexedVariable(variable, index)
-                }
+        return ctx.commaExpression().expression()
+            .map { expressionVisitor.visit(it) }
+            .map { expr ->
+                expr as? RInteger
+                    ?: throw RapiraInvalidOperationError("Cannot use non-integer value as index")
             }
+            .fold(variable) { resultVariable, index -> IndexedVariable(resultVariable, index.value) }
+    }
 
-            val leftIndex = indexExprContext.leftIndex?.let { expressionVisitor.visit(it) }
-            val rightIndex = indexExprContext.rightIndex?.let { expressionVisitor.visit(it) }
-            if (leftIndex != null || rightIndex != null) {
-                val startIndex = leftIndex ?: RInteger(1)
-                val endIndex = rightIndex ?: (variable.getValue().andThen { it.length() } as? Result.Success)?.obj
-                    ?: throw RapiraInvalidOperationError("Cannot access index of object")
+    override fun visitVariableColonIndex(ctx: RapiraLangParser.VariableColonIndexContext): Variable {
+        val variable = visit(ctx.variable())
 
-                variable = SliceVariable(variable, startIndex, endIndex)
-            }
+        val leftExpr = ctx.leftExpr?.let { expressionVisitor.visit(it) }
+        val rightExpr = ctx.rightExpr?.let { expressionVisitor.visit(it) }
+
+        if (leftExpr == null && rightExpr == null) {
+            return variable
         }
 
-        return variable
+        val startIndex = leftExpr ?: RInteger(1)
+        val endIndex = rightExpr ?: (variable.getValue().andThen { it.length() } as? Result.Success)?.obj
+            ?: throw RapiraInvalidOperationError("Cannot access index of object")
+
+        return SliceVariable(variable, startIndex, endIndex)
     }
+
+    override fun visitVariableIdentifier(ctx: RapiraLangParser.VariableIdentifierContext) =
+        environment[ctx.IDENTIFIER().text]
 }

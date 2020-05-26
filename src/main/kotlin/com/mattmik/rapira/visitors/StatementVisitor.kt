@@ -49,7 +49,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val evaluatedExpression = expressionVisitor.visit(ctx.expression())
         val variable = VariableVisitor(environment).visit(ctx.variable())
         variable.setValue(evaluatedExpression)
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.variable().IDENTIFIER().symbol) }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
@@ -171,7 +171,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
                     ConsoleReader.readText()
                 else
                     ConsoleReader.readObject()
-            ).getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.IDENTIFIER().symbol) }
+            ).getOrThrow { reason -> RapiraInvalidOperationError(reason) }
         }
     }
 

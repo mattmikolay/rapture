@@ -44,7 +44,9 @@ assignStatement
     ;
 
 variable
-    : IDENTIFIER (indexExpression)*
+    : variable '[' commaExpression ']' #variableCommaIndex
+    | variable '[' leftExpr=expression? ':' rightExpr=expression? ']' #variableColonIndex
+    | IDENTIFIER #variableIdentifier
     ;
 
 callStatement
