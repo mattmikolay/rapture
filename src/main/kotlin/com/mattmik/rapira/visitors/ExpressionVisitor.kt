@@ -100,10 +100,10 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             .let { if (ctx.op?.type == RapiraLangParser.MINUS) it.negate() else Result.Success(it) }
             .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
 
-    override fun visitSubopModifiedExpression(ctx: RapiraLangParser.SubopModifiedExpressionContext): RObject {
+    override fun visitSubopIndexExpression(ctx: RapiraLangParser.SubopIndexExpressionContext): RObject {
         val baseResult = visit(ctx.subopExpression())
 
-        ctx.indexExpression()?.let {
+        ctx.indexExpression().let {
             val evaluatedCommaExpressions = it.commaExpression()?.expression()?.map { expr -> visit(expr) }
             if (evaluatedCommaExpressions != null) {
                 return evaluatedCommaExpressions.fold(baseResult) { result, index ->
@@ -119,18 +119,17 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             return baseResult.slice(start = leftOfColon, end = rightOfColon)
                 .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
         }
+    }
 
-        ctx.functionArguments()?.let {
-            val arguments = readFunctionArguments(it)
+    override fun visitFunctionInvocationExpression(ctx: RapiraLangParser.FunctionInvocationExpressionContext): RObject {
+        val baseResult = visit(ctx.subopExpression())
+        val arguments = readFunctionArguments(ctx.functionArguments())
 
-            return when (baseResult) {
-                is Procedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
-                is RCallable -> baseResult.call(environment, arguments) ?: Empty
-                else -> throw RapiraIllegalInvocationError(it.LPAREN().symbol)
-            }
+        return when (baseResult) {
+            is Procedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
+            is RCallable -> baseResult.call(environment, arguments) ?: Empty
+            else -> throw RapiraIllegalInvocationError(ctx.functionArguments().LPAREN().symbol)
         }
-
-        return Empty
     }
 
     override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext) =

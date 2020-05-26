@@ -167,7 +167,8 @@ arithmeticExpression
     ;
 
 subopExpression
-    : subopExpression (indexExpression | functionArguments) #subopModifiedExpression
+    : subopExpression indexExpression #subopIndexExpression
+    | subopExpression functionArguments #functionInvocationExpression
     | HASH subopExpression #lengthExpression
     | baseExpression #baseSubopExpression
     ;
