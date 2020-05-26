@@ -11,7 +11,12 @@ import com.mattmik.rapira.variables.IndexedVariable
 import com.mattmik.rapira.variables.SliceVariable
 import com.mattmik.rapira.variables.Variable
 
+/**
+ * A visitor that constructs a [Variable] while walking the tree within a given
+ * [environment].
+ */
 class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Variable>() {
+
     private val expressionVisitor = ExpressionVisitor(environment)
 
     override fun visitVariableCommaIndex(ctx: RapiraLangParser.VariableCommaIndexContext): Variable {

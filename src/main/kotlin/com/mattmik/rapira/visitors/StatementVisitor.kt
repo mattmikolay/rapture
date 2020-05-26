@@ -23,7 +23,8 @@ import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.util.getOrThrow
 
 /**
- * A visitor that executes statements while walking the tree within a given [environment].
+ * A visitor that executes statements while walking the tree within a given
+ * [environment].
  */
 class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
 

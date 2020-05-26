@@ -25,7 +25,8 @@ import com.mattmik.rapira.util.getOrThrow
 import com.mattmik.rapira.util.map
 
 /**
- * A visitor that evaluates expressions while walking the tree within a given [environment].
+ * A visitor that evaluates expressions while walking the tree within a given
+ * [environment].
  */
 class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVisitor<RObject>() {
 

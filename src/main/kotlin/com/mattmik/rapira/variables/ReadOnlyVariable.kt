@@ -4,6 +4,9 @@ import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.toSuccess
 
+/**
+ * A [Variable] that blocks write access to an instance of [RObject].
+ */
 class ReadOnlyVariable(private val obj: RObject) : Variable {
 
     override fun getValue() =
