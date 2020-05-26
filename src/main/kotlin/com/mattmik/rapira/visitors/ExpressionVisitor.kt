@@ -15,7 +15,6 @@ import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
-import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.parseEscapedText
 import com.mattmik.rapira.objects.toLogical
 import com.mattmik.rapira.objects.toRInteger
@@ -169,19 +168,13 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         return Function(functionName, ctx.stmts(), params, extern)
     }
 
-    override fun visitSequenceValue(ctx: RapiraLangParser.SequenceValueContext): RObject {
-        val commaExpression = ctx.commaExpression()
-        return if (commaExpression != null) visit(commaExpression) else Sequence()
-    }
-
-    override fun visitParentheticalExpression(
-        ctx: RapiraLangParser.ParentheticalExpressionContext
-    ): RObject = visit(ctx.expression())
-
-    override fun visitCommaExpression(ctx: RapiraLangParser.CommaExpressionContext) =
-        ctx.expression()
+    override fun visitSequenceValue(ctx: RapiraLangParser.SequenceValueContext) =
+        (ctx.commaExpression()?.expression() ?: emptyList())
             .map { visit(it) }
             .toSequence()
+
+    override fun visitParentheticalExpression(ctx: RapiraLangParser.ParentheticalExpressionContext): RObject =
+        visit(ctx.expression())
 
     private fun readProcedureParams(ctx: RapiraLangParser.ProcedureParamsContext?): List<Parameter> =
         ctx?.procedureParam()?.map { paramContext ->
