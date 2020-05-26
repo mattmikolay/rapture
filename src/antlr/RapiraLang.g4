@@ -44,8 +44,8 @@ assignStatement
     ;
 
 variable
-    : variable '[' commaExpression ']' #variableCommaIndex
-    | variable '[' leftExpr=expression? COLON rightExpr=expression? ']' #variableColonIndex
+    : variable LBRACKET commaExpression RBRACKET #variableCommaIndex
+    | variable LBRACKET leftExpr=expression? COLON rightExpr=expression? RBRACKET #variableColonIndex
     | IDENTIFIER #variableIdentifier
     ;
 
@@ -167,8 +167,8 @@ arithmeticExpression
     ;
 
 subopExpression
-    : subopExpression '[' commaExpression ']' #indexCommaExpression
-    | subopExpression '[' leftExpr=expression? COLON rightExpr=expression? ']' #indexColonExpression
+    : subopExpression LBRACKET commaExpression RBRACKET #indexCommaExpression
+    | subopExpression LBRACKET leftExpr=expression? COLON rightExpr=expression? RBRACKET #indexColonExpression
     | subopExpression functionArguments #functionInvocationExpression
     | HASH subopExpression #lengthExpression
     | baseExpression #baseSubopExpression
@@ -243,6 +243,10 @@ NOT : 'not' ;
 LPAREN : '(' ;
 
 RPAREN : ')' ;
+
+LBRACKET : '[' ;
+
+RBRACKET : ']' ;
 
 COLON : ':' ;
 

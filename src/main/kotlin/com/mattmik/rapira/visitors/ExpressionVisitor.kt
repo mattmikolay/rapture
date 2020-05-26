@@ -106,7 +106,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             .map { visit(it) }
             .fold(baseResult) { result, index ->
                 result.elementAt(index)
-                    .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+                    .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.LBRACKET().symbol) }
             }
     }
 

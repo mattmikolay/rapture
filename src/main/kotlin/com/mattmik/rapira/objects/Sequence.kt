@@ -35,7 +35,7 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject {
                 entries[index - 1].toSuccess()
             }
         }
-        else -> super.elementAt(other)
+        else -> Result.Error("Cannot index with non-integer value")
     }
 
     override fun slice(start: RObject?, end: RObject?): Result<RObject> {
