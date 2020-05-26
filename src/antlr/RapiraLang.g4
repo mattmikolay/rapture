@@ -167,7 +167,8 @@ arithmeticExpression
     ;
 
 subopExpression
-    : subopExpression indexExpression #subopIndexExpression
+    : subopExpression '[' commaExpression ']' #indexCommaExpression
+    | subopExpression '[' leftExpr=expression? ':' rightExpr=expression? ']' #indexColonExpression
     | subopExpression functionArguments #functionInvocationExpression
     | HASH subopExpression #lengthExpression
     | baseExpression #baseSubopExpression
@@ -186,11 +187,6 @@ baseExpression
 
 commaExpression
     : expression (',' expression)*
-    ;
-
-indexExpression
-    : '[' commaExpression ']'
-    | '[' leftIndex=expression? ':' rightIndex=expression? ']'
     ;
 
 procedureArguments

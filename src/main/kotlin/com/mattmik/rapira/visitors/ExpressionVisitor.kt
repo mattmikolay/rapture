@@ -100,25 +100,29 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             .let { if (ctx.op?.type == RapiraLangParser.MINUS) it.negate() else Result.Success(it) }
             .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
 
-    override fun visitSubopIndexExpression(ctx: RapiraLangParser.SubopIndexExpressionContext): RObject {
+    override fun visitIndexCommaExpression(ctx: RapiraLangParser.IndexCommaExpressionContext): RObject {
         val baseResult = visit(ctx.subopExpression())
 
-        ctx.indexExpression().let {
-            val evaluatedCommaExpressions = it.commaExpression()?.expression()?.map { expr -> visit(expr) }
-            if (evaluatedCommaExpressions != null) {
-                return evaluatedCommaExpressions.fold(baseResult) { result, index ->
-                    when (val operationResult = result.elementAt(index)) {
-                        is Result.Success -> operationResult.obj
-                        is Result.Error -> throw RapiraInvalidOperationError(operationResult.reason)
-                    }
-                }
+        return ctx.commaExpression().expression()
+            .map { visit(it) }
+            .fold(baseResult) { result, index ->
+                result.elementAt(index)
+                    .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
             }
+    }
 
-            val leftOfColon = it.leftIndex?.let { expr -> visit(expr) }
-            val rightOfColon = it.rightIndex?.let { expr -> visit(expr) }
-            return baseResult.slice(start = leftOfColon, end = rightOfColon)
-                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+    override fun visitIndexColonExpression(ctx: RapiraLangParser.IndexColonExpressionContext): RObject {
+        val baseResult = visit(ctx.subopExpression())
+
+        val leftExpr = ctx.leftExpr?.let { expr -> visit(expr) }
+        val rightExpr = ctx.rightExpr?.let { expr -> visit(expr) }
+
+        if (leftExpr == null && rightExpr == null) {
+            return baseResult
         }
+
+        return baseResult.slice(start = leftExpr, end = rightExpr)
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
     }
 
     override fun visitFunctionInvocationExpression(ctx: RapiraLangParser.FunctionInvocationExpressionContext): RObject {
