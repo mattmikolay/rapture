@@ -45,7 +45,7 @@ assignStatement
 
 variable
     : variable '[' commaExpression ']' #variableCommaIndex
-    | variable '[' leftExpr=expression? ':' rightExpr=expression? ']' #variableColonIndex
+    | variable '[' leftExpr=expression? COLON rightExpr=expression? ']' #variableColonIndex
     | IDENTIFIER #variableIdentifier
     ;
 
@@ -89,11 +89,11 @@ declarations
     ;
 
 intern
-    : 'intern' ':' IDENTIFIER (',' IDENTIFIER)* STMT_END
+    : 'intern' COLON IDENTIFIER (',' IDENTIFIER)* STMT_END
     ;
 
 extern
-    : 'extern' ':' IDENTIFIER (',' IDENTIFIER)* STMT_END
+    : 'extern' COLON IDENTIFIER (',' IDENTIFIER)* STMT_END
     ;
 
 ifStatement
@@ -106,11 +106,11 @@ caseStatement
     ;
 
 multiWhenClause
-    : 'when' expression (',' expression)* ':' stmts
+    : 'when' expression (',' expression)* COLON stmts
     ;
 
 singleWhenClause
-    : 'when' expression ':' stmts
+    : 'when' expression COLON stmts
     ;
 
 loopStatement
@@ -130,11 +130,11 @@ whileClause
     ;
 
 outputStatement
-    : 'output' nlf='nlf'? (':' expression (',' expression)*)?
+    : 'output' nlf='nlf'? (COLON expression (',' expression)*)?
     ;
 
 inputStatement
-    : 'input' inputMode=MODE_TEXT? ':' variable (',' variable)*
+    : 'input' inputMode=MODE_TEXT? COLON variable (',' variable)*
     ;
 
 exitStatement
@@ -168,7 +168,7 @@ arithmeticExpression
 
 subopExpression
     : subopExpression '[' commaExpression ']' #indexCommaExpression
-    | subopExpression '[' leftExpr=expression? ':' rightExpr=expression? ']' #indexColonExpression
+    | subopExpression '[' leftExpr=expression? COLON rightExpr=expression? ']' #indexColonExpression
     | subopExpression functionArguments #functionInvocationExpression
     | HASH subopExpression #lengthExpression
     | baseExpression #baseSubopExpression
@@ -243,6 +243,8 @@ NOT : 'not' ;
 LPAREN : '(' ;
 
 RPAREN : ')' ;
+
+COLON : ':' ;
 
 HASH : '#' ;
 

@@ -121,7 +121,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         }
 
         return baseResult.slice(start = leftExpr, end = rightExpr)
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.COLON().symbol) }
     }
 
     override fun visitFunctionInvocationExpression(ctx: RapiraLangParser.FunctionInvocationExpressionContext): RObject {
