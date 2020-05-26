@@ -128,10 +128,15 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val baseResult = visit(ctx.subopExpression())
         val arguments = readFunctionArguments(ctx.functionArguments())
 
+        val leftParenToken = ctx.functionArguments().LPAREN().symbol
+
         return when (baseResult) {
-            is Procedure -> throw RapiraInvalidOperationError("Cannot invoke procedure within expression")
-            is RCallable -> baseResult.call(environment, arguments) ?: Empty
-            else -> throw RapiraIllegalInvocationError(ctx.functionArguments().LPAREN().symbol)
+            is Procedure ->
+                throw RapiraInvalidOperationError("Cannot invoke procedure within expression", token = leftParenToken)
+            is RCallable ->
+                baseResult.call(environment, arguments) ?: Empty
+            else ->
+                throw RapiraIllegalInvocationError(token = leftParenToken)
         }
     }
 
