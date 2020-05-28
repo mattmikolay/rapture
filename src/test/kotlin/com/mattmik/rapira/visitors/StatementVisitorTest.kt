@@ -1,10 +1,10 @@
 package com.mattmik.rapira.visitors
 
-import com.mattmik.rapira.ConsoleReader
-import com.mattmik.rapira.ConsoleWriter
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.console.ConsoleReader
+import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.errors.RapiraInvalidOperationError

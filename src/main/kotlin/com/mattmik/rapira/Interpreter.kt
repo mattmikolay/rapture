@@ -2,6 +2,7 @@ package com.mattmik.rapira
 
 import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.control.ControlFlowException
 import com.mattmik.rapira.errors.RapiraRuntimeError
 import com.mattmik.rapira.errors.SyntaxErrorListener

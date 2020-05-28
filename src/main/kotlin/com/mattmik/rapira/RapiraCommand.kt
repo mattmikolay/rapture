@@ -5,6 +5,8 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.file
+import com.mattmik.rapira.console.printREPLHeader
+import com.mattmik.rapira.console.readREPLStatement
 
 const val VERSION = "0.1"
 

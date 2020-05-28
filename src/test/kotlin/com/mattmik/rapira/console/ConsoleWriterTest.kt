@@ -1,5 +1,6 @@
-package com.mattmik.rapira
+package com.mattmik.rapira.console
 
+import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Logical

@@ -1,6 +1,6 @@
 package com.mattmik.rapira.errors
 
-import com.mattmik.rapira.ConsoleWriter.printError
+import com.mattmik.rapira.console.ConsoleWriter.printError
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.RecognitionException
 import org.antlr.v4.runtime.Recognizer
