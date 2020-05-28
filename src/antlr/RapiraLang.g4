@@ -40,7 +40,7 @@ statement
     ;
 
 assignStatement
-    : variable ':=' expression
+    : variable ASSIGN expression
     ;
 
 variable
@@ -203,6 +203,8 @@ functionArguments
     ;
 
 // Lexer rules
+
+ASSIGN : ':=' ;
 
 LARROW : '<*' ;
 

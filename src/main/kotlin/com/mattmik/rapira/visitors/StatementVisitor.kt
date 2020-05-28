@@ -34,7 +34,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val procedure = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
             environment[it.text].setValue(procedure)
-                .getOrThrow { reason -> RapiraInvalidOperationError(reason, it.symbol) }
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.symbol) }
         }
     }
 
@@ -42,7 +42,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val function = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
             environment[it.text].setValue(function)
-                .getOrThrow { reason -> RapiraInvalidOperationError(reason, it.symbol) }
+                .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.symbol) }
         }
     }
 
@@ -50,7 +50,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val evaluatedExpression = expressionVisitor.visit(ctx.expression())
         val variable = VariableVisitor(environment).visit(ctx.variable())
         variable.setValue(evaluatedExpression)
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.ASSIGN().symbol) }
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
@@ -165,14 +165,15 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val variableVisitor = VariableVisitor(environment)
         val isTextMode = ctx.inputMode?.type == RapiraLangParser.MODE_TEXT
 
-        ctx.variable().forEach {
-            val variable = variableVisitor.visit(it)
-            variable.setValue(
-                if (isTextMode)
-                    ConsoleReader.readText()
-                else
-                    ConsoleReader.readObject()
-            ).getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+        ctx.variable()
+            .map { variableVisitor.visit(it) }
+            .forEach { variable ->
+                variable.setValue(
+                    if (isTextMode)
+                        ConsoleReader.readText()
+                    else
+                        ConsoleReader.readObject()
+                ).getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.COLON().symbol) }
         }
     }
 
