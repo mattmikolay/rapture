@@ -9,16 +9,29 @@ import com.mattmik.rapira.objects.toText
 import io.kotest.core.spec.style.WordSpec
 
 class IndexedVariableTest : WordSpec({
-    "getValue" should {
-        "succeed with element at specified index" {
+    "getValue" When {
+        "base variable is text" should {
+            val text = "Hello, world!".toText()
+
+            "succeed with character at specified index" {
+                val simpleVariable = SimpleVariable(text)
+                val indexedVariable = IndexedVariable(simpleVariable, index = 2)
+                indexedVariable.getValue() shouldSucceedWith Text("e")
+            }
+        }
+
+        "base variable is sequence" should {
             val sequence = Sequence(
                 Text("alpha"),
                 Text("beta"),
                 Text("gamma")
             )
-            val simpleVariable = SimpleVariable(sequence)
-            val indexedVariable = IndexedVariable(simpleVariable, index = 2)
-            indexedVariable.getValue() shouldSucceedWith Text("beta")
+
+            "succeed with element at specified index" {
+                val simpleVariable = SimpleVariable(sequence)
+                val indexedVariable = IndexedVariable(simpleVariable, index = 2)
+                indexedVariable.getValue() shouldSucceedWith Text("beta")
+            }
         }
     }
 
