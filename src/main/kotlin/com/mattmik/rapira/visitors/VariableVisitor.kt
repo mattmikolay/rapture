@@ -43,7 +43,7 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
 
         val startIndex = leftExpr ?: RInteger(1)
         val endIndex = rightExpr ?: (variable.getValue().andThen { it.length() } as? Result.Success)?.obj
-            ?: throw RapiraInvalidOperationError("Cannot access index of object")
+            ?: throw RapiraInvalidOperationError("Cannot access index of object", token = ctx.COLON().symbol)
 
         return SliceVariable(variable, startIndex, endIndex)
     }
