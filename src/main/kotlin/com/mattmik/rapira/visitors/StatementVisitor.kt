@@ -21,6 +21,7 @@ import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.objects.RInteger
+import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.util.getOrThrow
 
 /**
@@ -203,11 +204,19 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     private fun makeForLoopController(ctx: RapiraLangParser.ForClauseContext): LoopController {
+        val fromValue = ctx.fromExpr?.let { expressionVisitor.visit(it) }
+        val toValue = ctx.toExpr?.let { expressionVisitor.visit(it) }
+        val stepValue = ctx.stepExpr?.let { expressionVisitor.visit(it) }
+
+        if (toValue != null && toValue !is RInteger && toValue !is Real) {
+            throw RapiraInvalidOperationError("To value in for loop must be numeric", token = ctx.TO().symbol)
+        }
+
         return ForLoopController(
             variable = environment[ctx.IDENTIFIER().text],
-            fromValue = ctx.fromExpr?.let { expr -> expressionVisitor.visit(expr) },
-            toValue = ctx.toExpr?.let { expr -> expressionVisitor.visit(expr) },
-            stepValue = ctx.stepExpr?.let { expr -> expressionVisitor.visit(expr) }
+            fromValue = fromValue,
+            toValue = toValue,
+            stepValue = stepValue
         )
     }
 

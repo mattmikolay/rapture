@@ -118,7 +118,7 @@ loopStatement
     ;
 
 forClause
-    : 'for' IDENTIFIER ('from' fromExpr=expression)? ('to' toExpr=expression)? ('step' stepExpr=expression)?
+    : 'for' IDENTIFIER ('from' fromExpr=expression)? (TO toExpr=expression)? ('step' stepExpr=expression)?
     ;
 
 repeatClause
@@ -272,6 +272,10 @@ RETURN
 
 REPEAT
     : 'repeat'
+    ;
+
+TO
+    : 'to'
     ;
 
 UNSIGNED_INT
