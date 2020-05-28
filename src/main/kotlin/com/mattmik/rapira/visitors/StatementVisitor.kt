@@ -129,12 +129,8 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
 
         ctx.whileClause()?.let {
-            allControllers.add(
-                WhileLoopController(
-                    condition = it.expression(),
-                    expressionVisitor = expressionVisitor
-                )
-            )
+            val loopController = makeWhileLoopController(it)
+            allControllers.add(loopController)
         }
 
         val loopController = MasterLoopController(allControllers)
@@ -211,4 +207,10 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
         return RepeatLoopController(initialValue.value)
     }
+
+    private fun makeWhileLoopController(ctx: RapiraLangParser.WhileClauseContext): LoopController =
+        WhileLoopController(
+            condition = ctx.expression(),
+            expressionVisitor = expressionVisitor
+        )
 }
