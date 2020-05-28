@@ -4,6 +4,7 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
 
 class Procedure private constructor(

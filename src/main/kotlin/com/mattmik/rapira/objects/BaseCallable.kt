@@ -7,6 +7,8 @@ import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
 import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
+import com.mattmik.rapira.params.ParamType
+import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.visitors.StatementVisitor
 
 class BaseCallable(

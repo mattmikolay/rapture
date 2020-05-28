@@ -9,8 +9,6 @@ import com.mattmik.rapira.errors.RapiraIllegalInvocationError
 import com.mattmik.rapira.errors.RapiraInvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
-import com.mattmik.rapira.objects.ParamType
-import com.mattmik.rapira.objects.Parameter
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.objects.RObject
@@ -19,6 +17,8 @@ import com.mattmik.rapira.objects.parseEscapedText
 import com.mattmik.rapira.objects.toLogical
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toSequence
+import com.mattmik.rapira.params.ParamType
+import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.getOrThrow
 import com.mattmik.rapira.util.map
@@ -178,14 +178,28 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         visit(ctx.expression())
 
     private fun readProcedureParams(ctx: RapiraLangParser.ProcedureParamsContext?): List<Parameter> =
-        ctx?.procedureParam()?.map { paramContext ->
-            paramContext.inParam()?.let { Parameter(ParamType.In, it.IDENTIFIER().text) }
-                ?: Parameter(ParamType.InOut, paramContext.inOutParam().IDENTIFIER().text)
-        } ?: emptyList()
+        (ctx?.procedureParam() ?: emptyList())
+            .map { paramContext ->
+                paramContext.inParam()?.let {
+                    Parameter(
+                        type = ParamType.In,
+                        name = it.IDENTIFIER().text
+                    )
+                }
+                    ?: Parameter(
+                        type = ParamType.InOut,
+                        name = paramContext.inOutParam().IDENTIFIER().text
+                    )
+            }
 
     private fun readFunctionParams(ctx: RapiraLangParser.FunctionParamsContext?): List<Parameter> =
-        ctx?.inParam()?.map { paramContext -> Parameter(ParamType.In, paramContext.IDENTIFIER().text) }
-            ?: emptyList()
+        (ctx?.inParam() ?: emptyList())
+            .map { paramContext ->
+                Parameter(
+                    type = ParamType.In,
+                    name = paramContext.IDENTIFIER().text
+                )
+            }
 
     private fun readFunctionArguments(ctx: RapiraLangParser.FunctionArgumentsContext): List<Argument> =
         ctx.expression().map { expr -> InArgument(expr) }

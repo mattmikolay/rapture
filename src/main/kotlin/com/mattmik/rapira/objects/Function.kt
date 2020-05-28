@@ -5,6 +5,7 @@ import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
+import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
 
 class Function private constructor(
