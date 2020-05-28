@@ -118,14 +118,8 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
 
         ctx.forClause()?.let {
-            allControllers.add(
-                ForLoopController(
-                    variable = environment[it.IDENTIFIER().text],
-                    fromValue = it.fromExpr?.let { expr -> expressionVisitor.visit(expr) },
-                    toValue = it.toExpr?.let { expr -> expressionVisitor.visit(expr) },
-                    stepValue = it.stepExpr?.let { expr -> expressionVisitor.visit(expr) }
-                )
-            )
+            val loopController = makeForLoopController(it)
+            allControllers.add(loopController)
         }
 
         ctx.whileClause()?.let {
@@ -206,6 +200,15 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             throw RapiraInvalidOperationError("Cannot call repeat with negative integer value", token = ctx.REPEAT().symbol)
 
         return RepeatLoopController(initialValue.value)
+    }
+
+    private fun makeForLoopController(ctx: RapiraLangParser.ForClauseContext): LoopController {
+        return ForLoopController(
+            variable = environment[ctx.IDENTIFIER().text],
+            fromValue = ctx.fromExpr?.let { expr -> expressionVisitor.visit(expr) },
+            toValue = ctx.toExpr?.let { expr -> expressionVisitor.visit(expr) },
+            stepValue = ctx.stepExpr?.let { expr -> expressionVisitor.visit(expr) }
+        )
     }
 
     private fun makeWhileLoopController(ctx: RapiraLangParser.WhileClauseContext): LoopController =
