@@ -116,10 +116,6 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val leftExpr = ctx.leftExpr?.let { expr -> visit(expr) }
         val rightExpr = ctx.rightExpr?.let { expr -> visit(expr) }
 
-        if (leftExpr == null && rightExpr == null) {
-            return baseResult
-        }
-
         return baseResult.slice(start = leftExpr, end = rightExpr)
             .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.COLON().symbol) }
     }
