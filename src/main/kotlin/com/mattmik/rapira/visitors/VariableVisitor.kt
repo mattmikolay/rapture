@@ -26,7 +26,7 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
             .map { expressionVisitor.visit(it) }
             .map { expr ->
                 expr as? RInteger
-                    ?: throw RapiraInvalidOperationError("Cannot use non-integer value as index")
+                    ?: throw RapiraInvalidOperationError("Value $expr is not a valid index", token = ctx.LBRACKET().symbol)
             }
             .fold(variable) { resultVariable, index -> IndexedVariable(resultVariable, index.value) }
     }
