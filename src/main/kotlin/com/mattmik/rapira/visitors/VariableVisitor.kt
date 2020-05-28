@@ -37,10 +37,6 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
         val leftExpr = ctx.leftExpr?.let { expressionVisitor.visit(it) }
         val rightExpr = ctx.rightExpr?.let { expressionVisitor.visit(it) }
 
-        if (leftExpr == null && rightExpr == null) {
-            return variable
-        }
-
         val startIndex = leftExpr ?: RInteger(1)
         val endIndex = rightExpr ?: (variable.getValue().andThen { it.length() } as? Result.Success)?.obj
             ?: throw RapiraInvalidOperationError("Cannot access index of object", token = ctx.COLON().symbol)

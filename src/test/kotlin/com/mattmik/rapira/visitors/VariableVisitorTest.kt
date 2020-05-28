@@ -64,12 +64,6 @@ class VariableVisitorTest : WordSpec({
             variable.getValue() shouldSucceedWith Empty
         }
 
-        "return simple variable for single slice with no indexes" {
-            val expectedVariable = environment["string_value"]
-            val actualVariable = evaluateVariable("string_value[:]")
-            actualVariable shouldBeSameInstanceAs expectedVariable
-        }
-
         "return indexed variable for single index expression" {
             val variable = evaluateVariable("seq_value[one + 1]")
             variable should beOfType<IndexedVariable>()
@@ -86,6 +80,12 @@ class VariableVisitorTest : WordSpec({
             val variable = evaluateVariable("nested_sequence[one + 1, 3]")
             variable should beOfType<IndexedVariable>()
             variable.getValue() shouldSucceedWith Text("Quack")
+        }
+
+        "return slice variable for single slice with no indexes" {
+            val variable = evaluateVariable("string_value[:]")
+            variable should beOfType<SliceVariable>()
+            variable.getValue() shouldSucceedWith Text("Hello, world!")
         }
 
         "return slice variable for single slice and two indexes" {
