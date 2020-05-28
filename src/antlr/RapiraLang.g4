@@ -122,7 +122,7 @@ forClause
     ;
 
 repeatClause
-    : 'repeat' expression
+    : REPEAT expression
     ;
 
 whileClause
@@ -268,6 +268,10 @@ LOOP_EXIT
 
 RETURN
     : 'return'
+    ;
+
+REPEAT
+    : 'repeat'
     ;
 
 UNSIGNED_INT

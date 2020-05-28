@@ -20,6 +20,7 @@ import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RCallable
+import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.util.getOrThrow
 
 /**
@@ -111,9 +112,9 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     override fun visitLoopStatement(ctx: RapiraLangParser.LoopStatementContext) {
         val allControllers = mutableListOf<LoopController>()
 
-        ctx.repeatClause()?.expression()?.let {
-            val repeatExprResult = expressionVisitor.visit(it)
-            allControllers.add(RepeatLoopController(repeatExprResult))
+        ctx.repeatClause()?.let {
+            val loopController = makeRepeatLoopController(it)
+            allControllers.add(loopController)
         }
 
         ctx.forClause()?.let {
@@ -198,4 +199,16 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
             arg.expression()?.let { expr -> InArgument(expr) }
                 ?: InOutArgument(arg.variable())
         }
+
+    private fun makeRepeatLoopController(ctx: RapiraLangParser.RepeatClauseContext): LoopController {
+        val expression = ctx.expression()
+
+        val initialValue = expressionVisitor.visit(expression) as? RInteger
+            ?: throw RapiraInvalidOperationError("Cannot call repeat with non-integer value", token = ctx.REPEAT().symbol)
+
+        if (initialValue.value < 0)
+            throw RapiraInvalidOperationError("Cannot call repeat with negative integer value", token = ctx.REPEAT().symbol)
+
+        return RepeatLoopController(initialValue.value)
+    }
 }
