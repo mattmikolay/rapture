@@ -1,6 +1,5 @@
 package com.mattmik.rapira.console
 
-import com.mattmik.rapira.console.ConsoleReader
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
