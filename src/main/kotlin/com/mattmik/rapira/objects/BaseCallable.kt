@@ -44,9 +44,9 @@ class BaseCallable(
         params.zip(arguments).forEach { (param, argument) ->
             when (argument) {
                 is InArgument -> if (param.type != ParamType.In)
-                    throw RapiraIllegalArgumentException("Unexpected in argument passed to in-out param")
+                    throw RapiraIllegalArgumentException("Unexpected in argument passed to in-out param", argument)
                 else -> if (param.type != ParamType.InOut)
-                    throw RapiraIllegalArgumentException("Unexpected in-out argument passed to in param")
+                    throw RapiraIllegalArgumentException("Unexpected in-out argument passed to in param", argument)
             }
 
             newEnvironment[param.name] = argument.evaluate(environment)
