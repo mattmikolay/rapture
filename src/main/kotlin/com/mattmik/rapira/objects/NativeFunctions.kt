@@ -27,6 +27,7 @@ private interface SingleParamNativeFunction : RObject, RCallable {
 
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         if (arguments.size != 1) {
+            // TODO Add token
             throw IncorrectArgumentCountError(
                 expectedArgCount = 1,
                 actualArgCount = arguments.size
@@ -116,6 +117,7 @@ val nativeFunctions = mapOf<String, RObject>(
     "index" to object : NativeFunction {
         override fun call(environment: Environment, arguments: List<Argument>): RObject? {
             if (arguments.size != 2) {
+                // TODO Add token
                 throw IncorrectArgumentCountError(
                     expectedArgCount = 2,
                     actualArgCount = arguments.size
@@ -124,10 +126,10 @@ val nativeFunctions = mapOf<String, RObject>(
 
             val arg1 = arguments[0].evaluate(environment)
                 .getValue()
-                .getOrThrow { reason -> InvalidOperationError(reason) }
+                .getOrThrow { reason -> InvalidOperationError(reason, token = arguments[0].token) }
             val arg2 = arguments[1].evaluate(environment)
                 .getValue()
-                .getOrThrow { reason -> InvalidOperationError(reason) }
+                .getOrThrow { reason -> InvalidOperationError(reason, token = arguments[1].token) }
 
             return when (arg2) {
                 is Sequence -> arg2.entries.indexOf(arg1) + 1

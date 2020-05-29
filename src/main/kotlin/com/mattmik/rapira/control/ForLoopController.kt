@@ -15,6 +15,7 @@ class ForLoopController(
 ) : LoopController {
     init {
         // Set initial value using "from" expression
+        // TODO Add token
         variable.setValue(fromValue ?: RInteger(1))
             .getOrThrow { reason -> InvalidOperationError(reason) }
     }
@@ -24,6 +25,7 @@ class ForLoopController(
             return true
         }
 
+        // TODO Add token
         return variable.getValue()
             .andThen { obj -> toValue - obj }
             .andThen { obj -> obj * (stepValue ?: RInteger(1)) }
@@ -33,6 +35,7 @@ class ForLoopController(
     }
 
     override fun update() {
+        // TODO Add token
         variable.getValue()
             .andThen { obj -> obj + (stepValue ?: RInteger(1)) }
             .andThen { variable.setValue(it) }

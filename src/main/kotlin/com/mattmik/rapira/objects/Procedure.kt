@@ -34,6 +34,7 @@ class Procedure private constructor(
 
         val returnValue = callable.call(environment, arguments)
         if (returnValue != null) {
+            // TODO Add token
             throw InvalidOperationError("Cannot return value within procedure")
         }
 

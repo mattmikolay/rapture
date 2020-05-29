@@ -29,6 +29,7 @@ class Environment private constructor(
 
     operator fun set(name: String, variable: Variable) {
         if (specialValues.containsKey(name)) {
+            // TODO Add token
             throw InvalidOperationError("Cannot overwrite reserved word $name")
         }
         bindings[name] = variable
