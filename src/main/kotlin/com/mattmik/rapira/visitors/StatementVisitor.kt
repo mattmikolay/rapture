@@ -52,7 +52,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val evaluatedExpression = expressionVisitor.visit(ctx.expression())
         val variable = VariableVisitor(environment).visit(ctx.variable())
         variable.setValue(evaluatedExpression)
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.ASSIGN().symbol) }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.variable().start) }
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
@@ -64,7 +64,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
 
         val callable = obj as? RCallable
             ?: throw RapiraIllegalInvocationError(
-                token = ctx.CALL()?.symbol ?: ctx.procedureArguments().LPAREN().symbol
+                token = ctx.expression()?.start ?: ctx.IDENTIFIER().symbol
             )
 
         val arguments = readProcedureArguments(ctx.procedureArguments())
@@ -158,14 +158,14 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val isTextMode = ctx.inputMode?.type == RapiraLangParser.MODE_TEXT
 
         ctx.variable()
-            .map { variableVisitor.visit(it) }
-            .forEach { variable ->
+            .forEach {
+                val variable = variableVisitor.visit(it)
                 variable.setValue(
                     if (isTextMode)
                         ConsoleReader.readText()
                     else
                         ConsoleReader.readObject()
-                ).getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.COLON().symbol) }
+                ).getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.start) }
         }
     }
 
@@ -195,10 +195,10 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val expression = ctx.expression()
 
         val initialValue = expressionVisitor.visit(expression) as? RInteger
-            ?: throw RapiraInvalidOperationError("Cannot call repeat with non-integer value", token = ctx.REPEAT().symbol)
+            ?: throw RapiraInvalidOperationError("Cannot call repeat with non-integer value", token = expression.start)
 
         if (initialValue.value < 0)
-            throw RapiraInvalidOperationError("Cannot call repeat with negative integer value", token = ctx.REPEAT().symbol)
+            throw RapiraInvalidOperationError("Cannot call repeat with negative integer value", token = expression.start)
 
         return RepeatLoopController(initialValue.value)
     }
@@ -209,7 +209,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val stepValue = ctx.stepExpr?.let { expressionVisitor.visit(it) }
 
         if (toValue != null && toValue !is RInteger && toValue !is Real) {
-            throw RapiraInvalidOperationError("To value in for loop must be numeric", token = ctx.TO().symbol)
+            throw RapiraInvalidOperationError("To value in for loop must be numeric", token = ctx.toExpr.start)
         }
 
         return ForLoopController(
