@@ -23,10 +23,9 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
         val variable = visit(ctx.variable())
 
         return ctx.commaExpression().expression()
-            .map { expressionVisitor.visit(it) }
-            .map { expr ->
-                expr as? RInteger
-                    ?: throw RapiraInvalidOperationError("Value $expr is not a valid index", token = ctx.LBRACKET().symbol)
+            .map {
+                expressionVisitor.visit(it) as? RInteger
+                    ?: throw RapiraInvalidOperationError("Value is not a valid index", token = it.start)
             }
             .fold(variable) { resultVariable, index -> IndexedVariable(resultVariable, index.value) }
     }
@@ -39,7 +38,7 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
 
         val startIndex = leftExpr ?: RInteger(1)
         val endIndex = rightExpr ?: (variable.getValue().andThen { it.length() } as? Result.Success)?.obj
-            ?: throw RapiraInvalidOperationError("Cannot access index of object", token = ctx.COLON().symbol)
+            ?: throw RapiraInvalidOperationError("Cannot access index of object", token = ctx.variable().start)
 
         return SliceVariable(variable, startIndex, endIndex)
     }
