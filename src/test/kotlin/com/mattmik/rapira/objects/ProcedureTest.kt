@@ -1,6 +1,7 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
+import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
@@ -23,23 +24,33 @@ class ProcedureTest : WordSpec({
 
     "call" should {
         "throw exception when param and argument count differ" {
+            val mockVariableContext = mockk<RapiraLangParser.VariableContext> {
+                start = mockk()
+                stop = mockk()
+            }
             val params = makeProcedureParams("param1", "param2", "param3")
             val arguments = listOf(
-                InOutArgument(mockk()),
-                InOutArgument(mockk())
+                InOutArgument(mockVariableContext),
+                InOutArgument(mockVariableContext)
             )
             val procedure = Procedure(null, null, params)
+
             shouldThrow<RapiraIncorrectArgumentCountError> {
                 procedure.call(Environment(), arguments)
             }
         }
 
         "throw exception when param and argument type do not match" {
+            val mockExpressionContext = mockk<RapiraLangParser.ExpressionContext> {
+                start = mockk()
+                stop = mockk()
+            }
             val params = makeProcedureParams("param1")
             val arguments = listOf(
-                InArgument(mockk())
+                InArgument(mockExpressionContext)
             )
             val procedure = Procedure(null, null, params)
+
             shouldThrow<RapiraIllegalArgumentException> {
                 procedure.call(Environment(), arguments)
             }

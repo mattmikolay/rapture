@@ -1,6 +1,7 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
+import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.errors.RapiraIllegalArgumentException
@@ -35,11 +36,16 @@ class FunctionTest : WordSpec({
         }
 
         "throw exception when given in-out arguments" {
+            val mockVariableContext = mockk<RapiraLangParser.VariableContext> {
+                start = mockk()
+                stop = mockk()
+            }
             val params = makeFunctionParams("param1")
             val arguments = listOf(
-                InOutArgument(mockk())
+                InOutArgument(mockVariableContext)
             )
             val function = Function(null, null, params)
+
             shouldThrow<RapiraIllegalArgumentException> {
                 function.call(Environment(), arguments)
             }
