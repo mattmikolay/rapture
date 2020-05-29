@@ -33,14 +33,15 @@ private interface SingleParamNativeFunction : RObject, RCallable {
             )
         }
 
-        val obj = arguments[0].evaluate(environment)
+        val arg = arguments[0]
+        val obj = arg.evaluate(environment)
             .getValue()
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = arg.token) }
 
-        return call(obj)
+        return call(obj, arg)
     }
 
-    fun call(obj: RObject): RObject
+    fun call(obj: RObject, arg: Argument): RObject
 }
 
 /**
@@ -57,59 +58,59 @@ private interface SingleParamNativeFunction : RObject, RCallable {
  */
 val nativeFunctions = mapOf<String, RObject>(
     "abs" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> obj.value.absoluteValue.toRInteger()
                 is Real -> obj.value.absoluteValue.toReal()
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }
     },
     "sign" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> obj.value.sign
                 is Real -> obj.value.sign.toInt()
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toRInteger()
     },
     "sqrt" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> sqrt(obj.value.toDouble())
                 is Real -> sqrt(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "entier" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> obj.value
                 is Real -> floor(obj.value).toInt()
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toRInteger()
     },
     "round" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> obj.value
                 is Real -> obj.value.let { if (it.isNaN()) 0 else round(it).toInt() }
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toRInteger()
     },
     "rand" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> Random.nextDouble() * obj.value
                 is Real -> Random.nextDouble() * obj.value
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "int_rand" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> (1..obj.value).random()
                 is Real -> (1..obj.value.toInt()).random()
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toRInteger()
     },
     "index" to object : NativeFunction {
@@ -132,109 +133,109 @@ val nativeFunctions = mapOf<String, RObject>(
                 is Sequence -> arg2.entries.indexOf(arg1) + 1
                 is Text -> {
                     if (arg1 !is Text) {
-                        throw RapiraIllegalArgumentException("Invalid type passed to index function")
+                        throw RapiraIllegalArgumentException("Invalid type passed to index function", arguments[0])
                     }
 
                     arg2.value.indexOf(arg1.value) + 1
                 }
-                else -> throw RapiraIllegalArgumentException("Expected text or sequence at argument 1")
+                else -> throw RapiraIllegalArgumentException("Expected text or sequence at argument 1", arguments[1])
             }.toRInteger()
         }
     },
     "is_empty" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             Logical(obj is Empty)
     },
     "is_log" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             Logical(obj is Logical)
     },
     "is_int" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             Logical(obj is RInteger)
     },
     "is_real" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             Logical(obj is Real)
     },
     "is_text" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             Logical(obj is Text)
     },
     "is_seq" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             Logical(obj is Sequence)
     },
     "is_proc" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             Logical(obj is Procedure)
     },
     "is_fun" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             Logical(obj is Function || obj is NativeFunction)
     },
     "sin" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> sin(obj.value.toDouble())
                 is Real -> sin(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "cos" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> cos(obj.value.toDouble())
                 is Real -> cos(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "tg" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> tan(obj.value.toDouble())
                 is Real -> tan(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "arcsin" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> asin(obj.value.toDouble())
                 is Real -> asin(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "arctg" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> atan(obj.value.toDouble())
                 is Real -> atan(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "exp" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> exp(obj.value.toDouble())
                 is Real -> exp(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "ln" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> ln(obj.value.toDouble())
                 is Real -> ln(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "lg" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject) =
+        override fun call(obj: RObject, arg: Argument) =
             when (obj) {
                 is RInteger -> log10(obj.value.toDouble())
                 is Real -> log10(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0")
+                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
             }.toReal()
     }
 )
