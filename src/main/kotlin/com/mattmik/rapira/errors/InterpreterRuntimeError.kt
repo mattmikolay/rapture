@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.Token
  *
  * @param message a message describing the error that should be displayed to the user
  */
-abstract class RapiraRuntimeError(
+abstract class InterpreterRuntimeError(
     message: String,
     val token: Token? = null
 ) : Exception(message)

@@ -1,6 +1,6 @@
 package com.mattmik.rapira
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
@@ -29,7 +29,7 @@ class Environment private constructor(
 
     operator fun set(name: String, variable: Variable) {
         if (specialValues.containsKey(name)) {
-            throw RapiraInvalidOperationError("Cannot overwrite reserved word $name")
+            throw InvalidOperationError("Cannot overwrite reserved word $name")
         }
         bindings[name] = variable
     }

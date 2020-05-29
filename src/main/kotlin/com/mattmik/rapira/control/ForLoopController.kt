@@ -1,6 +1,6 @@
 package com.mattmik.rapira.control
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.util.andThen
@@ -16,7 +16,7 @@ class ForLoopController(
     init {
         // Set initial value using "from" expression
         variable.setValue(fromValue ?: RInteger(1))
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            .getOrThrow { reason -> InvalidOperationError(reason) }
     }
 
     override fun isLoopActive(): Boolean {
@@ -28,7 +28,7 @@ class ForLoopController(
             .andThen { obj -> toValue - obj }
             .andThen { obj -> obj * (stepValue ?: RInteger(1)) }
             .andThen { obj -> obj.compare(RInteger(0)) }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            .getOrThrow { reason -> InvalidOperationError(reason) }
             .let { it >= 0 }
     }
 
@@ -36,6 +36,6 @@ class ForLoopController(
         variable.getValue()
             .andThen { obj -> obj + (stepValue ?: RInteger(1)) }
             .andThen { variable.setValue(it) }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+            .getOrThrow { reason -> InvalidOperationError(reason) }
     }
 }

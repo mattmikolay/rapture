@@ -3,7 +3,7 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
 
@@ -34,7 +34,7 @@ class Procedure private constructor(
 
         val returnValue = callable.call(environment, arguments)
         if (returnValue != null) {
-            throw RapiraInvalidOperationError("Cannot return value within procedure")
+            throw InvalidOperationError("Cannot return value within procedure")
         }
 
         return null

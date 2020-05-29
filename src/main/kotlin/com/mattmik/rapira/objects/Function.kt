@@ -4,7 +4,7 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
-import com.mattmik.rapira.errors.RapiraIllegalArgumentException
+import com.mattmik.rapira.errors.IllegalArgumentError
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
 
@@ -30,7 +30,7 @@ class Function private constructor(
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         arguments.forEach { arg ->
             arg as? InArgument
-                ?: throw RapiraIllegalArgumentException("Cannot pass in-out argument to function call", arg)
+                ?: throw IllegalArgumentError("Cannot pass in-out argument to function call", arg)
         }
 
         val newEnvironment = Environment(environment)

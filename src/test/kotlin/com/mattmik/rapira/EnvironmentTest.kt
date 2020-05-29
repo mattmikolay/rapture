@@ -1,6 +1,6 @@
 package com.mattmik.rapira
 
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.RInteger
@@ -44,7 +44,7 @@ class EnvironmentTest : WordSpec({
                 "yes",
                 "no"
             ).forEach { name ->
-                shouldThrowUnit<RapiraInvalidOperationError> {
+                shouldThrowUnit<InvalidOperationError> {
                     environment[name] = SimpleVariable(Empty)
                 }
             }

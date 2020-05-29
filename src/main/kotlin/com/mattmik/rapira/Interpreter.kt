@@ -4,7 +4,7 @@ import com.mattmik.rapira.antlr.RapiraLangLexer
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.control.ControlFlowException
-import com.mattmik.rapira.errors.RapiraRuntimeError
+import com.mattmik.rapira.errors.InterpreterRuntimeError
 import com.mattmik.rapira.errors.SyntaxErrorListener
 import com.mattmik.rapira.visitors.StatementVisitor
 import java.io.InputStream
@@ -55,7 +55,7 @@ object Interpreter {
                 line = exception.token.line,
                 charPositionInLine = exception.token.charPositionInLine
             )
-        } catch (error: RapiraRuntimeError) {
+        } catch (error: InterpreterRuntimeError) {
             ConsoleWriter.printError(
                 "${error.message}",
                 line = error.token?.line ?: 0,

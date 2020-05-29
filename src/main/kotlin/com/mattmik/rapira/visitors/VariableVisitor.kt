@@ -3,7 +3,7 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.andThen
@@ -25,7 +25,7 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
         return ctx.commaExpression().expression()
             .map {
                 expressionVisitor.visit(it) as? RInteger
-                    ?: throw RapiraInvalidOperationError("Value is not a valid index", token = it.start)
+                    ?: throw InvalidOperationError("Value is not a valid index", token = it.start)
             }
             .fold(variable) { resultVariable, index -> IndexedVariable(resultVariable, index.value) }
     }
@@ -38,7 +38,7 @@ class VariableVisitor(private val environment: Environment) : RapiraLangBaseVisi
 
         val startIndex = leftExpr ?: RInteger(1)
         val endIndex = rightExpr ?: (variable.getValue().andThen { it.length() } as? Result.Success)?.obj
-            ?: throw RapiraInvalidOperationError("Cannot access index of object", token = ctx.variable().start)
+            ?: throw InvalidOperationError("Cannot access index of object", token = ctx.variable().start)
 
         return SliceVariable(variable, startIndex, endIndex)
     }

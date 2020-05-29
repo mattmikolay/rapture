@@ -14,8 +14,8 @@ import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.control.MasterLoopController
 import com.mattmik.rapira.control.RepeatLoopController
 import com.mattmik.rapira.control.WhileLoopController
-import com.mattmik.rapira.errors.RapiraIllegalInvocationError
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.IllegalInvocationError
+import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.LogicalYes
@@ -36,7 +36,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val procedure = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
             environment[it.text].setValue(procedure)
-                .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.symbol) }
+                .getOrThrow { reason -> InvalidOperationError(reason, token = it.symbol) }
         }
     }
 
@@ -44,7 +44,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val function = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
             environment[it.text].setValue(function)
-                .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.symbol) }
+                .getOrThrow { reason -> InvalidOperationError(reason, token = it.symbol) }
         }
     }
 
@@ -52,18 +52,18 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val evaluatedExpression = expressionVisitor.visit(ctx.expression())
         val variable = VariableVisitor(environment).visit(ctx.variable())
         variable.setValue(evaluatedExpression)
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.variable().start) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.variable().start) }
     }
 
     override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
         val obj = ctx.IDENTIFIER()?.let {
             environment[it.text].getValue()
-                .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.symbol) }
+                .getOrThrow { reason -> InvalidOperationError(reason, token = it.symbol) }
         }
             ?: expressionVisitor.visit(ctx.expression())
 
         val callable = obj as? RCallable
-            ?: throw RapiraIllegalInvocationError(
+            ?: throw IllegalInvocationError(
                 token = ctx.expression()?.start ?: ctx.IDENTIFIER().symbol
             )
 
@@ -165,7 +165,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
                         ConsoleReader.readText()
                     else
                         ConsoleReader.readObject()
-                ).getOrThrow { reason -> RapiraInvalidOperationError(reason, token = it.start) }
+                ).getOrThrow { reason -> InvalidOperationError(reason, token = it.start) }
         }
     }
 
@@ -195,10 +195,10 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val expression = ctx.expression()
 
         val initialValue = expressionVisitor.visit(expression) as? RInteger
-            ?: throw RapiraInvalidOperationError("Cannot call repeat with non-integer value", token = expression.start)
+            ?: throw InvalidOperationError("Cannot call repeat with non-integer value", token = expression.start)
 
         if (initialValue.value < 0)
-            throw RapiraInvalidOperationError("Cannot call repeat with negative integer value", token = expression.start)
+            throw InvalidOperationError("Cannot call repeat with negative integer value", token = expression.start)
 
         return RepeatLoopController(initialValue.value)
     }
@@ -209,7 +209,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         val stepValue = ctx.stepExpr?.let { expressionVisitor.visit(it) }
 
         if (toValue != null && toValue !is RInteger && toValue !is Real) {
-            throw RapiraInvalidOperationError("To value in for loop must be numeric", token = ctx.toExpr.start)
+            throw InvalidOperationError("To value in for loop must be numeric", token = ctx.toExpr.start)
         }
 
         return ForLoopController(

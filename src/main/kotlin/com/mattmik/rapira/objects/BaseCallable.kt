@@ -5,8 +5,8 @@ import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.control.CallableReturnException
-import com.mattmik.rapira.errors.RapiraIllegalArgumentException
-import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
+import com.mattmik.rapira.errors.IllegalArgumentError
+import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.params.ParamType
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.visitors.StatementVisitor
@@ -19,7 +19,7 @@ class BaseCallable(
 
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         if (params.size != arguments.size) {
-            throw RapiraIncorrectArgumentCountError(
+            throw IncorrectArgumentCountError(
                 expectedArgCount = params.size,
                 actualArgCount = arguments.size
             )
@@ -44,9 +44,9 @@ class BaseCallable(
         params.zip(arguments).forEach { (param, argument) ->
             when (argument) {
                 is InArgument -> if (param.type != ParamType.In)
-                    throw RapiraIllegalArgumentException("Unexpected in argument passed to in-out param", argument)
+                    throw IllegalArgumentError("Unexpected in argument passed to in-out param", argument)
                 else -> if (param.type != ParamType.InOut)
-                    throw RapiraIllegalArgumentException("Unexpected in-out argument passed to in param", argument)
+                    throw IllegalArgumentError("Unexpected in-out argument passed to in param", argument)
             }
 
             newEnvironment[param.name] = argument.evaluate(environment)

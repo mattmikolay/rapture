@@ -2,9 +2,9 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.Argument
-import com.mattmik.rapira.errors.RapiraIllegalArgumentException
-import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.IllegalArgumentError
+import com.mattmik.rapira.errors.IncorrectArgumentCountError
+import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.util.getOrThrow
 import kotlin.math.absoluteValue
 import kotlin.math.asin
@@ -27,7 +27,7 @@ private interface SingleParamNativeFunction : RObject, RCallable {
 
     override fun call(environment: Environment, arguments: List<Argument>): RObject? {
         if (arguments.size != 1) {
-            throw RapiraIncorrectArgumentCountError(
+            throw IncorrectArgumentCountError(
                 expectedArgCount = 1,
                 actualArgCount = arguments.size
             )
@@ -36,7 +36,7 @@ private interface SingleParamNativeFunction : RObject, RCallable {
         val arg = arguments[0]
         val obj = arg.evaluate(environment)
             .getValue()
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = arg.token) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = arg.token) }
 
         return call(obj, arg)
     }
@@ -62,7 +62,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> obj.value.absoluteValue.toRInteger()
                 is Real -> obj.value.absoluteValue.toReal()
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }
     },
     "sign" to object : SingleParamNativeFunction {
@@ -70,7 +70,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> obj.value.sign
                 is Real -> obj.value.sign.toInt()
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toRInteger()
     },
     "sqrt" to object : SingleParamNativeFunction {
@@ -78,7 +78,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> sqrt(obj.value.toDouble())
                 is Real -> sqrt(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "entier" to object : SingleParamNativeFunction {
@@ -86,7 +86,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> obj.value
                 is Real -> floor(obj.value).toInt()
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toRInteger()
     },
     "round" to object : SingleParamNativeFunction {
@@ -94,7 +94,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> obj.value
                 is Real -> obj.value.let { if (it.isNaN()) 0 else round(it).toInt() }
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toRInteger()
     },
     "rand" to object : SingleParamNativeFunction {
@@ -102,7 +102,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> Random.nextDouble() * obj.value
                 is Real -> Random.nextDouble() * obj.value
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "int_rand" to object : SingleParamNativeFunction {
@@ -110,13 +110,13 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> (1..obj.value).random()
                 is Real -> (1..obj.value.toInt()).random()
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toRInteger()
     },
     "index" to object : NativeFunction {
         override fun call(environment: Environment, arguments: List<Argument>): RObject? {
             if (arguments.size != 2) {
-                throw RapiraIncorrectArgumentCountError(
+                throw IncorrectArgumentCountError(
                     expectedArgCount = 2,
                     actualArgCount = arguments.size
                 )
@@ -124,21 +124,21 @@ val nativeFunctions = mapOf<String, RObject>(
 
             val arg1 = arguments[0].evaluate(environment)
                 .getValue()
-                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+                .getOrThrow { reason -> InvalidOperationError(reason) }
             val arg2 = arguments[1].evaluate(environment)
                 .getValue()
-                .getOrThrow { reason -> RapiraInvalidOperationError(reason) }
+                .getOrThrow { reason -> InvalidOperationError(reason) }
 
             return when (arg2) {
                 is Sequence -> arg2.entries.indexOf(arg1) + 1
                 is Text -> {
                     if (arg1 !is Text) {
-                        throw RapiraIllegalArgumentException("Invalid type passed to index function", arguments[0])
+                        throw IllegalArgumentError("Invalid type passed to index function", arguments[0])
                     }
 
                     arg2.value.indexOf(arg1.value) + 1
                 }
-                else -> throw RapiraIllegalArgumentException("Expected text or sequence at argument 1", arguments[1])
+                else -> throw IllegalArgumentError("Expected text or sequence at argument 1", arguments[1])
             }.toRInteger()
         }
     },
@@ -179,7 +179,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> sin(obj.value.toDouble())
                 is Real -> sin(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "cos" to object : SingleParamNativeFunction {
@@ -187,7 +187,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> cos(obj.value.toDouble())
                 is Real -> cos(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "tg" to object : SingleParamNativeFunction {
@@ -195,7 +195,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> tan(obj.value.toDouble())
                 is Real -> tan(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "arcsin" to object : SingleParamNativeFunction {
@@ -203,7 +203,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> asin(obj.value.toDouble())
                 is Real -> asin(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "arctg" to object : SingleParamNativeFunction {
@@ -211,7 +211,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> atan(obj.value.toDouble())
                 is Real -> atan(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "exp" to object : SingleParamNativeFunction {
@@ -219,7 +219,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> exp(obj.value.toDouble())
                 is Real -> exp(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "ln" to object : SingleParamNativeFunction {
@@ -227,7 +227,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> ln(obj.value.toDouble())
                 is Real -> ln(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     },
     "lg" to object : SingleParamNativeFunction {
@@ -235,7 +235,7 @@ val nativeFunctions = mapOf<String, RObject>(
             when (obj) {
                 is RInteger -> log10(obj.value.toDouble())
                 is Real -> log10(obj.value)
-                else -> throw RapiraIllegalArgumentException("Expected integer or real at argument 0", arg)
+                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
             }.toReal()
     }
 )

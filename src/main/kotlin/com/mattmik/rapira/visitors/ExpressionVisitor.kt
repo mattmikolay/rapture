@@ -5,8 +5,8 @@ import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
-import com.mattmik.rapira.errors.RapiraIllegalInvocationError
-import com.mattmik.rapira.errors.RapiraInvalidOperationError
+import com.mattmik.rapira.errors.IllegalInvocationError
+import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
@@ -33,18 +33,18 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         ctx.expression()
             .map { visit(it) }
             .let { (leftExpr, rightExpr) -> leftExpr and rightExpr }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.AND().symbol) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.AND().symbol) }
 
     override fun visitOrExpression(ctx: RapiraLangParser.OrExpressionContext) =
         ctx.expression()
             .map { visit(it) }
             .let { (leftExpr, rightExpr) -> leftExpr or rightExpr }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.OR().symbol) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.OR().symbol) }
 
     override fun visitNotExpression(ctx: RapiraLangParser.NotExpressionContext) =
         visit(ctx.expression())
             .not()
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.NOT().symbol) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.NOT().symbol) }
 
     override fun visitRelationalExpression(ctx: RapiraLangParser.RelationalExpressionContext) =
         ctx.expression()
@@ -57,7 +57,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
                 RapiraLangParser.GREATEREQ -> it >= 0
                 else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
             } }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.op) }
             .toLogical()
 
     override fun visitEqualityExpression(ctx: RapiraLangParser.EqualityExpressionContext) =
@@ -70,7 +70,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         ctx.arithmeticExpression()
             .map { visit(it) }
             .let { (leftExpr, rightExpr) -> leftExpr.power(rightExpr) }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.POWER().symbol) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.POWER().symbol) }
 
     override fun visitMultiplicationExpression(ctx: RapiraLangParser.MultiplicationExpressionContext) =
         ctx.arithmeticExpression()
@@ -82,7 +82,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
                 RapiraLangParser.MOD -> leftExpr % rightExpr
                 else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
             } }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.op) }
 
     override fun visitAdditionExpression(ctx: RapiraLangParser.AdditionExpressionContext) =
         ctx.arithmeticExpression()
@@ -92,12 +92,12 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
                 RapiraLangParser.MINUS -> leftExpr - rightExpr
                 else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
             } }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.op) }
 
     override fun visitUnaryExpression(ctx: RapiraLangParser.UnaryExpressionContext) =
         visit(ctx.subopExpression())
             .let { if (ctx.op?.type == RapiraLangParser.MINUS) it.negate() else Result.Success(it) }
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.op) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.op) }
 
     override fun visitIndexCommaExpression(ctx: RapiraLangParser.IndexCommaExpressionContext): RObject {
         val baseResult = visit(ctx.subopExpression())
@@ -106,7 +106,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             .map { visit(it) }
             .fold(baseResult) { result, index ->
                 result.elementAt(index)
-                    .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.LBRACKET().symbol) }
+                    .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.LBRACKET().symbol) }
             }
     }
 
@@ -117,7 +117,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
         val rightExpr = ctx.rightExpr?.let { expr -> visit(expr) }
 
         return baseResult.slice(start = leftExpr, end = rightExpr)
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.COLON().symbol) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.COLON().symbol) }
     }
 
     override fun visitFunctionInvocationExpression(ctx: RapiraLangParser.FunctionInvocationExpressionContext): RObject {
@@ -128,23 +128,23 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
 
         return when (baseResult) {
             is Procedure ->
-                throw RapiraInvalidOperationError("Cannot invoke procedure within expression", token = leftParenToken)
+                throw InvalidOperationError("Cannot invoke procedure within expression", token = leftParenToken)
             is RCallable ->
                 baseResult.call(environment, arguments) ?: Empty
             else ->
-                throw RapiraIllegalInvocationError(token = leftParenToken)
+                throw IllegalInvocationError(token = leftParenToken)
         }
     }
 
     override fun visitLengthExpression(ctx: RapiraLangParser.LengthExpressionContext) =
         visit(ctx.subopExpression())
             .length()
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.HASH().symbol) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.HASH().symbol) }
 
     override fun visitIdentifierValue(ctx: RapiraLangParser.IdentifierValueContext) =
         environment[ctx.IDENTIFIER().text]
             .getValue()
-            .getOrThrow { reason -> RapiraInvalidOperationError(reason, token = ctx.IDENTIFIER().symbol) }
+            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.IDENTIFIER().symbol) }
 
     override fun visitIntValue(ctx: RapiraLangParser.IntValueContext) =
         Integer.valueOf(ctx.text).toRInteger()

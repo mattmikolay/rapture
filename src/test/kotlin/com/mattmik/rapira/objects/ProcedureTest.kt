@@ -4,8 +4,8 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
-import com.mattmik.rapira.errors.RapiraIllegalArgumentException
-import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
+import com.mattmik.rapira.errors.IllegalArgumentError
+import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.params.ParamType
 import com.mattmik.rapira.params.Parameter
 import io.kotest.assertions.throwables.shouldThrow
@@ -35,7 +35,7 @@ class ProcedureTest : WordSpec({
             )
             val procedure = Procedure(null, null, params)
 
-            shouldThrow<RapiraIncorrectArgumentCountError> {
+            shouldThrow<IncorrectArgumentCountError> {
                 procedure.call(Environment(), arguments)
             }
         }
@@ -51,7 +51,7 @@ class ProcedureTest : WordSpec({
             )
             val procedure = Procedure(null, null, params)
 
-            shouldThrow<RapiraIllegalArgumentException> {
+            shouldThrow<IllegalArgumentError> {
                 procedure.call(Environment(), arguments)
             }
         }

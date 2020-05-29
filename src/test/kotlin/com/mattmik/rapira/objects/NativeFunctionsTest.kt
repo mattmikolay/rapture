@@ -2,7 +2,7 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.Argument
-import com.mattmik.rapira.errors.RapiraIncorrectArgumentCountError
+import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
@@ -63,7 +63,7 @@ class NativeFunctionsTest : WordSpec() {
                     row("ln", 1),
                     row("lg", 1)
                 ) { functionName, expectedArgumentCount ->
-                    shouldThrow<RapiraIncorrectArgumentCountError> {
+                    shouldThrow<IncorrectArgumentCountError> {
                         (nativeFunctions[functionName] as RCallable).call(environment, emptyList())
                     }
                 }
