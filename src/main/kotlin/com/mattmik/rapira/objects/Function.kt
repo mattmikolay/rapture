@@ -4,6 +4,7 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
+import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.IllegalArgumentError
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
@@ -43,7 +44,11 @@ class Function private constructor(
             newEnvironment[it] = ReadOnlyVariable(this)
         }
 
-        return callable.call(newEnvironment, arguments, callToken)
+        return try {
+            callable.call(newEnvironment, arguments, callToken)
+        } catch (exception: CallableReturnException) {
+            exception.returnValue
+        }
     }
 
     override fun toString() = "function"

@@ -4,7 +4,6 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLangParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
-import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.IllegalArgumentError
 import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.params.ParamType
@@ -33,12 +32,8 @@ class BaseCallable(
 
         val newEnvironment = makeNewEnvironment(environment, arguments)
 
-        try {
-            statements?.let {
-                StatementVisitor(newEnvironment).visit(it)
-            }
-        } catch (exception: CallableReturnException) {
-            return exception.returnValue
+        statements?.let {
+            StatementVisitor(newEnvironment).visit(it)
         }
 
         return null
