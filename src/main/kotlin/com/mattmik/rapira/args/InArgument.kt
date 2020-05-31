@@ -16,5 +16,7 @@ class InArgument(private val expressionContext: RapiraLangParser.ExpressionConte
         get() = expressionContext.start
 
     override fun evaluate(environment: Environment): Variable =
-        SimpleVariable(ExpressionVisitor(environment).visit(expressionContext))
+        SimpleVariable(
+            ExpressionVisitor(environment).visit(expressionContext)
+        )
 }
