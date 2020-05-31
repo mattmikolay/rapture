@@ -10,6 +10,7 @@ import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.params.ParamType
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.visitors.StatementVisitor
+import org.antlr.v4.runtime.Token
 
 class BaseCallable(
     private val statements: RapiraLangParser.StmtsContext?,
@@ -17,12 +18,16 @@ class BaseCallable(
     private val extern: List<String>
 ) : RCallable {
 
-    override fun call(environment: Environment, arguments: List<Argument>): RObject? {
+    override fun call(
+        environment: Environment,
+        arguments: List<Argument>,
+        callToken: Token
+    ): RObject? {
         if (params.size != arguments.size) {
-            // TODO Add token
             throw IncorrectArgumentCountError(
                 expectedArgCount = params.size,
-                actualArgCount = arguments.size
+                actualArgCount = arguments.size,
+                token = callToken
             )
         }
 

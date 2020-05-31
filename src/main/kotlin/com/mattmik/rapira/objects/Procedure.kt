@@ -6,6 +6,7 @@ import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
+import org.antlr.v4.runtime.Token
 
 class Procedure private constructor(
     private val name: String?,
@@ -26,13 +27,17 @@ class Procedure private constructor(
         )
     )
 
-    override fun call(environment: Environment, arguments: List<Argument>): RObject? {
+    override fun call(
+        environment: Environment,
+        arguments: List<Argument>,
+        callToken: Token
+    ): RObject? {
         val newEnvironment = Environment(environment)
         name?.let {
             newEnvironment[it] = ReadOnlyVariable(this)
         }
 
-        val returnValue = callable.call(environment, arguments)
+        val returnValue = callable.call(environment, arguments, callToken)
         if (returnValue != null) {
             // TODO Add token
             throw InvalidOperationError("Cannot return value within procedure")

@@ -20,17 +20,22 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 import kotlin.random.Random
+import org.antlr.v4.runtime.Token
 
 private interface NativeFunction : RObject, RCallable
 
 private interface SingleParamNativeFunction : RObject, RCallable {
 
-    override fun call(environment: Environment, arguments: List<Argument>): RObject? {
+    override fun call(
+        environment: Environment,
+        arguments: List<Argument>,
+        callToken: Token
+    ): RObject? {
         if (arguments.size != 1) {
-            // TODO Add token
             throw IncorrectArgumentCountError(
                 expectedArgCount = 1,
-                actualArgCount = arguments.size
+                actualArgCount = arguments.size,
+                token = callToken
             )
         }
 
@@ -115,12 +120,16 @@ val nativeFunctions = mapOf<String, RObject>(
             }.toRInteger()
     },
     "index" to object : NativeFunction {
-        override fun call(environment: Environment, arguments: List<Argument>): RObject? {
+        override fun call(
+            environment: Environment,
+            arguments: List<Argument>,
+            callToken: Token
+        ): RObject? {
             if (arguments.size != 2) {
-                // TODO Add token
                 throw IncorrectArgumentCountError(
                     expectedArgCount = 2,
-                    actualArgCount = arguments.size
+                    actualArgCount = arguments.size,
+                    token = callToken
                 )
             }
 

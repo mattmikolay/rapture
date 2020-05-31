@@ -130,7 +130,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
             is Procedure ->
                 throw InvalidOperationError("Cannot invoke procedure within expression", token = leftParenToken)
             is RCallable ->
-                baseResult.call(environment, arguments) ?: Empty
+                baseResult.call(environment, arguments, callToken = leftParenToken) ?: Empty
             else ->
                 throw IllegalInvocationError(token = leftParenToken)
         }

@@ -24,7 +24,7 @@ class BaseCallableTest : WordSpec({
                 extern = extern
             )
 
-            baseCallable.call(mockEnvironment, emptyList())
+            baseCallable.call(mockEnvironment, emptyList(), mockk())
 
             verifyAll {
                 mockEnvironment["externVariable1"]

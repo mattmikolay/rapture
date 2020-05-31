@@ -64,7 +64,7 @@ class NativeFunctionsTest : WordSpec() {
                     row("lg", 1)
                 ) { functionName, expectedArgumentCount ->
                     shouldThrow<IncorrectArgumentCountError> {
-                        (nativeFunctions[functionName] as RCallable).call(environment, emptyList())
+                        (nativeFunctions[functionName] as RCallable).call(environment, emptyList(), callToken = mockk())
                     }
                 }
             }
@@ -77,7 +77,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe RInteger(num.absoluteValue)
                 }
@@ -87,7 +87,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe Real(num.absoluteValue)
                 }
@@ -101,7 +101,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe RInteger(num.sign)
                 }
@@ -111,7 +111,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe RInteger(num.sign.toInt())
                 }
@@ -125,7 +125,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe sqrt(num.toDouble()).toReal()
                 }
@@ -135,7 +135,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe sqrt(num).toReal()
                 }
@@ -149,7 +149,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe RInteger(num)
                 }
@@ -159,7 +159,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe floor(num).toInt().toRInteger()
                 }
@@ -173,7 +173,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe RInteger(num)
                 }
@@ -183,7 +183,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     when {
                         num.isNaN() -> result shouldBe RInteger(0)
@@ -208,7 +208,7 @@ class NativeFunctionsTest : WordSpec() {
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(123))
                     every { mockArgument2.evaluate(any()) } returns SimpleVariable(sequence)
 
-                    val result = function.call(environment, listOf(mockArgument, mockArgument2))
+                    val result = function.call(environment, listOf(mockArgument, mockArgument2), callToken = mockk())
 
                     result shouldBe RInteger(2)
                 }
@@ -217,7 +217,7 @@ class NativeFunctionsTest : WordSpec() {
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(LogicalYes)
                     every { mockArgument2.evaluate(any()) } returns SimpleVariable(sequence)
 
-                    val result = function.call(environment, listOf(mockArgument, mockArgument2))
+                    val result = function.call(environment, listOf(mockArgument, mockArgument2), callToken = mockk())
 
                     result shouldBe RInteger(0)
                 }
@@ -230,7 +230,7 @@ class NativeFunctionsTest : WordSpec() {
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Text("lo, wo"))
                     every { mockArgument2.evaluate(any()) } returns SimpleVariable(text)
 
-                    val result = function.call(environment, listOf(mockArgument, mockArgument2))
+                    val result = function.call(environment, listOf(mockArgument, mockArgument2), callToken = mockk())
 
                     result shouldBe RInteger(4)
                 }
@@ -239,7 +239,7 @@ class NativeFunctionsTest : WordSpec() {
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Text("okay"))
                     every { mockArgument2.evaluate(any()) } returns SimpleVariable(text)
 
-                    val result = function.call(environment, listOf(mockArgument, mockArgument2))
+                    val result = function.call(environment, listOf(mockArgument, mockArgument2), callToken = mockk())
 
                     result shouldBe RInteger(0)
                 }
@@ -253,7 +253,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe sin(num.toDouble()).toReal()
                 }
@@ -263,7 +263,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe sin(num).toReal()
                 }
@@ -277,7 +277,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe cos(num.toDouble()).toReal()
                 }
@@ -287,7 +287,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe cos(num).toReal()
                 }
@@ -301,7 +301,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe tan(num.toDouble()).toReal()
                 }
@@ -311,7 +311,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe tan(num).toReal()
                 }
@@ -325,7 +325,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe asin(num.toDouble()).toReal()
                 }
@@ -335,7 +335,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe asin(num).toReal()
                 }
@@ -349,7 +349,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe atan(num.toDouble()).toReal()
                 }
@@ -359,7 +359,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe atan(num).toReal()
                 }
@@ -373,7 +373,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe exp(num.toDouble()).toReal()
                 }
@@ -383,7 +383,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe exp(num).toReal()
                 }
@@ -397,7 +397,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe ln(num.toDouble()).toReal()
                 }
@@ -407,7 +407,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe ln(num).toReal()
                 }
@@ -421,7 +421,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Int> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(RInteger(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe log10(num.toDouble()).toReal()
                 }
@@ -431,7 +431,7 @@ class NativeFunctionsTest : WordSpec() {
                 checkAll<Double> { num ->
                     every { mockArgument.evaluate(any()) } returns SimpleVariable(Real(num))
 
-                    val result = function.call(environment, listOf(mockArgument))
+                    val result = function.call(environment, listOf(mockArgument), callToken = mockk())
 
                     result shouldBe log10(num).toReal()
                 }

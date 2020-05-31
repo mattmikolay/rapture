@@ -7,6 +7,7 @@ import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.IllegalArgumentError
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
+import org.antlr.v4.runtime.Token
 
 class Function private constructor(
     private val name: String?,
@@ -27,7 +28,11 @@ class Function private constructor(
         )
     )
 
-    override fun call(environment: Environment, arguments: List<Argument>): RObject? {
+    override fun call(
+        environment: Environment,
+        arguments: List<Argument>,
+        callToken: Token
+    ): RObject? {
         arguments.forEach { arg ->
             arg as? InArgument
                 ?: throw IllegalArgumentError("Cannot pass in-out argument to function call", arg)
@@ -38,7 +43,7 @@ class Function private constructor(
             newEnvironment[it] = ReadOnlyVariable(this)
         }
 
-        return callable.call(newEnvironment, arguments)
+        return callable.call(newEnvironment, arguments, callToken)
     }
 
     override fun toString() = "function"

@@ -36,7 +36,7 @@ class ProcedureTest : WordSpec({
             val procedure = Procedure(null, null, params)
 
             shouldThrow<IncorrectArgumentCountError> {
-                procedure.call(Environment(), arguments)
+                procedure.call(Environment(), arguments, mockk())
             }
         }
 
@@ -52,7 +52,7 @@ class ProcedureTest : WordSpec({
             val procedure = Procedure(null, null, params)
 
             shouldThrow<IllegalArgumentError> {
-                procedure.call(Environment(), arguments)
+                procedure.call(Environment(), arguments, mockk())
             }
         }
     }

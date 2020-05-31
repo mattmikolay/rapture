@@ -31,7 +31,7 @@ class FunctionTest : WordSpec({
             )
             val function = Function(null, null, params)
             shouldThrow<IncorrectArgumentCountError> {
-                function.call(Environment(), arguments)
+                function.call(Environment(), arguments, mockk())
             }
         }
 
@@ -47,7 +47,7 @@ class FunctionTest : WordSpec({
             val function = Function(null, null, params)
 
             shouldThrow<IllegalArgumentError> {
-                function.call(Environment(), arguments)
+                function.call(Environment(), arguments, mockk())
             }
         }
     }
