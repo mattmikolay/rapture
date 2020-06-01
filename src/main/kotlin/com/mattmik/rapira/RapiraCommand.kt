@@ -6,7 +6,6 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.optional
 import com.github.ajalt.clikt.parameters.options.versionOption
 import com.github.ajalt.clikt.parameters.types.file
-import com.mattmik.rapira.console.printREPLHeader
 
 const val VERSION = "0.1"
 
@@ -23,22 +22,23 @@ class RapiraCommand : CliktCommand(
     }
 
     override fun run() {
-        if (inputFile == null) {
-            printREPLHeader()
-
-            var line: String?
-            while (true) {
-                line = prompt(text = "", promptSuffix = ">>> ")
-
-                if (line == null || line == "quit")
-                    return
-
-                Interpreter.interpretStatement(line)
-            }
-        }
-
         inputFile?.inputStream()?.use {
             Interpreter.interpretInputStream(it)
+        } ?: startREPL()
+    }
+
+    private fun startREPL() {
+        echo("ReRap3 v$VERSION")
+        echo("Type \"quit\" to exit")
+
+        var line: String?
+        while (true) {
+            line = prompt(text = "", promptSuffix = ">>> ")
+
+            if (line == null || line == "quit")
+                return
+
+            Interpreter.interpretStatement(line)
         }
     }
 }
