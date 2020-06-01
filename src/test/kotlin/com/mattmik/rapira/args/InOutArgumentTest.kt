@@ -1,8 +1,8 @@
 package com.mattmik.rapira.args
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangLexer
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraLexer
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toText
 import io.kotest.core.spec.style.WordSpec
@@ -24,8 +24,8 @@ class InOutArgumentTest : WordSpec() {
             "return variable in environment" {
                 val expectedVariable = environment[VARIABLE_NAME]
                 val expectedObject = "Hello, world!".toText()
-                val lexer = RapiraLangLexer(CharStreams.fromString(VARIABLE_NAME))
-                val parser = RapiraLangParser(CommonTokenStream(lexer))
+                val lexer = RapiraLexer(CharStreams.fromString(VARIABLE_NAME))
+                val parser = RapiraParser(CommonTokenStream(lexer))
                 val tree = parser.variable()
 
                 val argument = InOutArgument(tree)

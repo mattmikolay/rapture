@@ -1,8 +1,8 @@
 package com.mattmik.rapira.visitors
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangLexer
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraLexer
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.Procedure
@@ -23,8 +23,8 @@ class ExpressionVisitorTest : WordSpec({
     lateinit var environment: Environment
 
     fun evaluateExpression(input: String): RObject? {
-        val lexer = RapiraLangLexer(CharStreams.fromString(input))
-        val parser = RapiraLangParser(CommonTokenStream(lexer))
+        val lexer = RapiraLexer(CharStreams.fromString(input))
+        val parser = RapiraParser(CommonTokenStream(lexer))
         val tree = parser.expression()
         return ExpressionVisitor(environment).visit(tree)
     }

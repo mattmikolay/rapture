@@ -1,8 +1,8 @@
 package com.mattmik.rapira.visitors
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangLexer
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraLexer
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.console.ConsoleReader
 import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.control.CallableReturnException
@@ -40,8 +40,8 @@ class StatementVisitorTest : WordSpec({
     lateinit var environment: Environment
 
     fun evaluateStatements(input: String) {
-        val lexer = RapiraLangLexer(CharStreams.fromString(input))
-        val parser = RapiraLangParser(CommonTokenStream(lexer))
+        val lexer = RapiraLexer(CharStreams.fromString(input))
+        val parser = RapiraParser(CommonTokenStream(lexer))
         val tree = parser.fileInput()
         StatementVisitor(environment).visit(tree)
     }
@@ -674,8 +674,8 @@ class StatementVisitorTest : WordSpec({
         "handle expression statements" {
             val statement = "3 * alpha"
 
-            val lexer = RapiraLangLexer(CharStreams.fromString("$statement\n"))
-            val parser = RapiraLangParser(CommonTokenStream(lexer))
+            val lexer = RapiraLexer(CharStreams.fromString("$statement\n"))
+            val parser = RapiraParser(CommonTokenStream(lexer))
             val tree = parser.dialogUnit()
             StatementVisitor(environment).visit(tree)
 

@@ -1,11 +1,11 @@
 package com.mattmik.rapira.control
 
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.visitors.ExpressionVisitor
 
 class WhileLoopController(
-    private val condition: RapiraLangParser.ExpressionContext,
+    private val condition: RapiraParser.ExpressionContext,
     private val expressionVisitor: ExpressionVisitor
 ) : LoopController {
 

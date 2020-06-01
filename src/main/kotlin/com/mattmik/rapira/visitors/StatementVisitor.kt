@@ -1,8 +1,8 @@
 package com.mattmik.rapira.visitors
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangBaseVisitor
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraBaseVisitor
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
 import com.mattmik.rapira.console.ConsoleReader
@@ -28,11 +28,11 @@ import com.mattmik.rapira.util.getOrThrow
  * A visitor that executes statements while walking the tree within a given
  * [environment].
  */
-class StatementVisitor(private val environment: Environment) : RapiraLangBaseVisitor<Unit>() {
+class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor<Unit>() {
 
     private val expressionVisitor = ExpressionVisitor(environment)
 
-    override fun visitProcedureDefinition(ctx: RapiraLangParser.ProcedureDefinitionContext) {
+    override fun visitProcedureDefinition(ctx: RapiraParser.ProcedureDefinitionContext) {
         val procedure = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
             environment[it.text].setValue(procedure)
@@ -40,7 +40,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
     }
 
-    override fun visitFunctionDefinition(ctx: RapiraLangParser.FunctionDefinitionContext) {
+    override fun visitFunctionDefinition(ctx: RapiraParser.FunctionDefinitionContext) {
         val function = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
             environment[it.text].setValue(function)
@@ -48,14 +48,14 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
     }
 
-    override fun visitAssignStatement(ctx: RapiraLangParser.AssignStatementContext) {
+    override fun visitAssignStatement(ctx: RapiraParser.AssignStatementContext) {
         val evaluatedExpression = expressionVisitor.visit(ctx.expression())
         val variable = VariableVisitor(environment).visit(ctx.variable())
         variable.setValue(evaluatedExpression)
             .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.variable().start) }
     }
 
-    override fun visitCallStatement(ctx: RapiraLangParser.CallStatementContext) {
+    override fun visitCallStatement(ctx: RapiraParser.CallStatementContext) {
         val obj = ctx.IDENTIFIER()?.let {
             environment[it.text].getValue()
                 .getOrThrow { reason -> InvalidOperationError(reason, token = it.symbol) }
@@ -72,7 +72,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         callable.call(environment, arguments, callToken)
     }
 
-    override fun visitIfStatement(ctx: RapiraLangParser.IfStatementContext) {
+    override fun visitIfStatement(ctx: RapiraParser.IfStatementContext) {
         val conditionResult = expressionVisitor.visit(ctx.condition)
         if (conditionResult == Logical(true)) {
             visit(ctx.ifBody)
@@ -81,7 +81,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
     }
 
-    override fun visitConditionCaseStatement(ctx: RapiraLangParser.ConditionCaseStatementContext) {
+    override fun visitConditionCaseStatement(ctx: RapiraParser.ConditionCaseStatementContext) {
         val conditionResult = expressionVisitor.visit(ctx.condition)
 
         val whenClauses = ctx.multiWhenClause().flatMap { multiWhenClause ->
@@ -98,7 +98,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         ctx.elseBody?.let { visit(it) }
     }
 
-    override fun visitConditionlessCaseStatement(ctx: RapiraLangParser.ConditionlessCaseStatementContext) {
+    override fun visitConditionlessCaseStatement(ctx: RapiraParser.ConditionlessCaseStatementContext) {
         for (whenClause in ctx.singleWhenClause()) {
             val whenResult = expressionVisitor.visit(whenClause.expression())
             if (whenResult == LogicalYes) {
@@ -110,7 +110,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         ctx.elseBody?.let { visit(it) }
     }
 
-    override fun visitLoopStatement(ctx: RapiraLangParser.LoopStatementContext) {
+    override fun visitLoopStatement(ctx: RapiraParser.LoopStatementContext) {
         val allControllers = mutableListOf<LoopController>()
 
         ctx.repeatClause()?.let {
@@ -145,7 +145,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
     }
 
-    override fun visitOutputStatement(ctx: RapiraLangParser.OutputStatementContext) {
+    override fun visitOutputStatement(ctx: RapiraParser.OutputStatementContext) {
         val expressionResults = ctx.expression().map { expr -> expressionVisitor.visit(expr) }
         ConsoleWriter.printObjects(
             objects = expressionResults,
@@ -153,9 +153,9 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         )
     }
 
-    override fun visitInputStatement(ctx: RapiraLangParser.InputStatementContext) {
+    override fun visitInputStatement(ctx: RapiraParser.InputStatementContext) {
         val variableVisitor = VariableVisitor(environment)
-        val isTextMode = ctx.inputMode?.type == RapiraLangParser.MODE_TEXT
+        val isTextMode = ctx.inputMode?.type == RapiraParser.MODE_TEXT
 
         ctx.variable()
             .forEach {
@@ -169,10 +169,10 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         }
     }
 
-    override fun visitExitStatement(ctx: RapiraLangParser.ExitStatementContext) =
+    override fun visitExitStatement(ctx: RapiraParser.ExitStatementContext) =
         throw LoopExitException(token = ctx.LOOP_EXIT().symbol)
 
-    override fun visitReturnStatement(ctx: RapiraLangParser.ReturnStatementContext) {
+    override fun visitReturnStatement(ctx: RapiraParser.ReturnStatementContext) {
         val returnValue = ctx.expression()?.let {
             expressionVisitor.visit(it)
         }
@@ -180,18 +180,18 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
     }
 
     // Expression statements are only valid in the REPL
-    override fun visitExpressionStatement(ctx: RapiraLangParser.ExpressionStatementContext) {
+    override fun visitExpressionStatement(ctx: RapiraParser.ExpressionStatementContext) {
         val expressionResult = expressionVisitor.visit(ctx.expression()) ?: Empty
         ConsoleWriter.println(expressionResult.toString())
     }
 
-    private fun readProcedureArguments(ctx: RapiraLangParser.ProcedureArgumentsContext) =
+    private fun readProcedureArguments(ctx: RapiraParser.ProcedureArgumentsContext) =
         ctx.procedureArgument().map { arg ->
             arg.expression()?.let { expr -> InArgument(expr) }
                 ?: InOutArgument(arg.variable())
         }
 
-    private fun makeRepeatLoopController(ctx: RapiraLangParser.RepeatClauseContext): LoopController {
+    private fun makeRepeatLoopController(ctx: RapiraParser.RepeatClauseContext): LoopController {
         val expression = ctx.expression()
 
         val initialValue = expressionVisitor.visit(expression) as? RInteger
@@ -203,7 +203,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         return RepeatLoopController(initialValue.value)
     }
 
-    private fun makeForLoopController(ctx: RapiraLangParser.ForClauseContext): LoopController {
+    private fun makeForLoopController(ctx: RapiraParser.ForClauseContext): LoopController {
         val fromValue = ctx.fromExpr?.let { expressionVisitor.visit(it) }
         val toValue = ctx.toExpr?.let { expressionVisitor.visit(it) }
         val stepValue = ctx.stepExpr?.let { expressionVisitor.visit(it) }
@@ -220,7 +220,7 @@ class StatementVisitor(private val environment: Environment) : RapiraLangBaseVis
         )
     }
 
-    private fun makeWhileLoopController(ctx: RapiraLangParser.WhileClauseContext): LoopController =
+    private fun makeWhileLoopController(ctx: RapiraParser.WhileClauseContext): LoopController =
         WhileLoopController(
             condition = ctx.expression(),
             expressionVisitor = expressionVisitor

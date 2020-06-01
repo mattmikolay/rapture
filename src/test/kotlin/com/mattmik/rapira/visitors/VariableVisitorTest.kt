@@ -1,8 +1,8 @@
 package com.mattmik.rapira.visitors
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangLexer
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraLexer
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
@@ -25,8 +25,8 @@ class VariableVisitorTest : WordSpec({
     lateinit var environment: Environment
 
     fun evaluateVariable(input: String): Variable {
-        val lexer = RapiraLangLexer(CharStreams.fromString(input))
-        val parser = RapiraLangParser(CommonTokenStream(lexer))
+        val lexer = RapiraLexer(CharStreams.fromString(input))
+        val parser = RapiraParser(CommonTokenStream(lexer))
         val tree = parser.variable()
         return VariableVisitor(environment).visit(tree)
     }

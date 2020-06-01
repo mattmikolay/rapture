@@ -1,7 +1,7 @@
 package com.mattmik.rapira.args
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.visitors.ExpressionVisitor
@@ -24,7 +24,7 @@ class InArgumentTest : WordSpec({
 
         "visit expression" {
             val environment = Environment()
-            val mockExpressionContext = mockk<RapiraLangParser.ExpressionContext>()
+            val mockExpressionContext = mockk<RapiraParser.ExpressionContext>()
             val expectedResult = 123.toRInteger()
             every { anyConstructed<ExpressionVisitor>().visit(any()) } returns expectedResult
 

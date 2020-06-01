@@ -1,7 +1,7 @@
 package com.mattmik.rapira
 
-import com.mattmik.rapira.antlr.RapiraLangLexer
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraLexer
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.control.ControlFlowException
 import com.mattmik.rapira.errors.InterpreterRuntimeError
@@ -19,7 +19,7 @@ object Interpreter {
     private val statementVisitor = StatementVisitor(Environment())
 
     fun interpretStatement(statement: String) {
-        val lexer = RapiraLangLexer(CharStreams.fromString("$statement\n"))
+        val lexer = RapiraLexer(CharStreams.fromString("$statement\n"))
         val parser = makeParser(lexer)
 
         val tree = parser.dialogUnit()
@@ -29,7 +29,7 @@ object Interpreter {
     }
 
     fun interpretInputStream(inputStream: InputStream) {
-        val lexer = RapiraLangLexer(CharStreams.fromStream(inputStream))
+        val lexer = RapiraLexer(CharStreams.fromStream(inputStream))
         val parser = makeParser(lexer)
 
         val tree = parser.fileInput()
@@ -40,8 +40,8 @@ object Interpreter {
         interpret(tree)
     }
 
-    private fun makeParser(lexer: RapiraLangLexer) =
-        RapiraLangParser(CommonTokenStream(lexer)).apply {
+    private fun makeParser(lexer: RapiraLexer) =
+        RapiraParser(CommonTokenStream(lexer)).apply {
             removeErrorListener(ConsoleErrorListener.INSTANCE)
             addErrorListener(SyntaxErrorListener)
         }

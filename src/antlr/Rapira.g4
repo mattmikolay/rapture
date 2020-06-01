@@ -1,4 +1,4 @@
-grammar RapiraLang;
+grammar Rapira;
 
 // Parser rules
 

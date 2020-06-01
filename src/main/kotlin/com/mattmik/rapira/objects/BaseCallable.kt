@@ -1,7 +1,7 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.IllegalArgumentError
@@ -12,7 +12,7 @@ import com.mattmik.rapira.visitors.StatementVisitor
 import org.antlr.v4.runtime.Token
 
 class BaseCallable(
-    private val statements: RapiraLangParser.StmtsContext?,
+    private val statements: RapiraParser.StmtsContext?,
     private val params: List<Parameter>,
     private val extern: List<String>
 ) : RCallable {

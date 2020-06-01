@@ -1,7 +1,7 @@
 package com.mattmik.rapira.args
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.variables.Variable
 import com.mattmik.rapira.visitors.VariableVisitor
 import org.antlr.v4.runtime.Token
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.Token
 /**
  * An "in-out" argument. In-out arguments are passed by reference.
  */
-class InOutArgument(private val variableContext: RapiraLangParser.VariableContext) : Argument {
+class InOutArgument(private val variableContext: RapiraParser.VariableContext) : Argument {
 
     override val token: Token
         get() = variableContext.start

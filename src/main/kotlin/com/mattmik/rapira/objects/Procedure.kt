@@ -1,7 +1,7 @@
 package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
-import com.mattmik.rapira.antlr.RapiraLangParser
+import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.InvalidOperationError
@@ -16,7 +16,7 @@ class Procedure private constructor(
 
     constructor(
         name: String? = null,
-        statements: RapiraLangParser.StmtsContext? = null,
+        statements: RapiraParser.StmtsContext? = null,
         params: List<Parameter> = emptyList(),
         extern: List<String> = emptyList()
     ) : this(
