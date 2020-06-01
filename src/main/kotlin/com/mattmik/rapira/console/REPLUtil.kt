@@ -7,8 +7,3 @@ fun printREPLHeader() {
     echo("ReRap3 v$VERSION")
     echo("Type \"quit\" to exit")
 }
-
-fun readREPLStatement(): String? {
-    echo(">>> ", trailingNewline = false)
-    return readLine()
-}
