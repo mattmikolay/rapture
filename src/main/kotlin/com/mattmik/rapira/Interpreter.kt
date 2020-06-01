@@ -51,15 +51,13 @@ object Interpreter {
             statementVisitor.visit(parseTree)
         } catch (exception: ControlFlowException) {
             ConsoleWriter.printError(
-                message = exception.illegalUsageMessage,
-                line = exception.token.line,
-                charPositionInLine = exception.token.charPositionInLine
+                exception.illegalUsageMessage,
+                exception.token
             )
         } catch (error: InterpreterRuntimeError) {
             ConsoleWriter.printError(
-                "${error.message}",
-                line = error.token?.line ?: 0,
-                charPositionInLine = error.token?.charPositionInLine ?: 0
+                error.message,
+                error.token
             )
         }
     }

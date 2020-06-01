@@ -9,6 +9,6 @@ import org.antlr.v4.runtime.Token
  * @param message a message describing the error that should be displayed to the user
  */
 abstract class InterpreterRuntimeError(
-    message: String,
-    val token: Token? = null
+    override val message: String,
+    val token: Token
 ) : Exception(message)

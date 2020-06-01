@@ -2,6 +2,7 @@ package com.mattmik.rapira.console
 
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Text
+import org.antlr.v4.runtime.Token
 
 object ConsoleWriter {
 
@@ -15,6 +16,9 @@ object ConsoleWriter {
         )
         print(formattedOutput)
     }
+
+    fun printError(message: String, token: Token) =
+        printError(message, token.line, token.charPositionInLine)
 
     fun printError(message: String, line: Int, charPositionInLine: Int) =
         System.err.println("Error @ line $line:$charPositionInLine\n\t$message")
