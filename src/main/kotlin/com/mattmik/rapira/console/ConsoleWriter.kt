@@ -1,27 +1,28 @@
 package com.mattmik.rapira.console
 
+import com.github.ajalt.clikt.output.TermUi.echo
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Text
 import org.antlr.v4.runtime.Token
 
 object ConsoleWriter {
 
-    fun println(message: String) = kotlin.io.println(message)
+    fun println(message: String) =
+        echo(message)
 
     fun printObjects(objects: List<RObject>, lineBreak: Boolean) {
         val formattedOutput = objects.joinToString(
             separator = " ",
-            postfix = if (lineBreak) System.lineSeparator() else "",
             transform = { obj -> formatObject(obj) }
         )
-        print(formattedOutput)
+        echo(message = formattedOutput, trailingNewline = lineBreak)
     }
 
     fun printError(message: String, token: Token) =
         printError(message, token.line, token.charPositionInLine)
 
     fun printError(message: String, line: Int, charPositionInLine: Int) =
-        System.err.println("Error @ line $line:$charPositionInLine\n\t$message")
+        echo(message = "Error @ line $line:$charPositionInLine\n\t$message", err = true)
 
     /**
      * Returns a formatted string representation of a Rapira object [obj] for
