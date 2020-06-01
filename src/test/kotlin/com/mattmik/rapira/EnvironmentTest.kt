@@ -1,14 +1,11 @@
 package com.mattmik.rapira
 
-import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toReal
 import com.mattmik.rapira.objects.toText
-import com.mattmik.rapira.variables.SimpleVariable
-import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.WordSpec
 import kotlin.math.PI
 
@@ -35,19 +32,6 @@ class EnvironmentTest : WordSpec({
             val obj = RInteger(123)
             environment["abc"].setValue(obj) shouldSucceedWith Unit
             environment["abc"].setValue(obj) shouldSucceedWith Unit
-        }
-
-        "throw exception with reserved names" {
-            val environment = Environment()
-            listOf(
-                "empty",
-                "yes",
-                "no"
-            ).forEach { name ->
-                shouldThrowUnit<InvalidOperationError> {
-                    environment[name] = SimpleVariable(Empty)
-                }
-            }
         }
     }
 })

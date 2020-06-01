@@ -1,6 +1,5 @@
 package com.mattmik.rapira
 
-import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.LogicalNo
 import com.mattmik.rapira.objects.LogicalYes
@@ -28,14 +27,15 @@ class Environment private constructor(
     constructor(environment: Environment) : this(environment.bindings.toMutableMap())
 
     operator fun set(name: String, variable: Variable) {
-        if (specialValues.containsKey(name)) {
-            // TODO Add token
-            throw InvalidOperationError("Cannot overwrite reserved word $name")
-        }
         bindings[name] = variable
     }
 
     operator fun get(name: String): Variable =
         specialValues[name]?.let { ReadOnlyVariable(it) }
             ?: bindings.getOrPut(name, { SimpleVariable(Empty) })
+
+    companion object {
+        fun isReserved(name: String) =
+            specialValues.containsKey(name)
+    }
 }

@@ -180,26 +180,39 @@ class ExpressionVisitor(private val environment: Environment) : RapiraLangBaseVi
     private fun readProcedureParams(ctx: RapiraLangParser.ProcedureParamsContext?): List<Parameter> =
         (ctx?.procedureParam() ?: emptyList())
             .map { paramContext ->
-                paramContext.inParam()?.let {
-                    Parameter(
-                        type = ParamType.In,
-                        name = it.IDENTIFIER().text
-                    )
-                }
-                    ?: Parameter(
-                        type = ParamType.InOut,
-                        name = paramContext.inOutParam().IDENTIFIER().text
-                    )
+                paramContext.inParam()?.let { readInParam(it) }
+                    ?: readInOutParam(paramContext.inOutParam())
             }
 
     private fun readFunctionParams(ctx: RapiraLangParser.FunctionParamsContext?): List<Parameter> =
         (ctx?.inParam() ?: emptyList())
-            .map { paramContext ->
-                Parameter(
-                    type = ParamType.In,
-                    name = paramContext.IDENTIFIER().text
-                )
-            }
+            .map { readInParam(it) }
+
+    private fun readInParam(ctx: RapiraLangParser.InParamContext): Parameter {
+        val paramName = ctx.IDENTIFIER().text
+
+        if (Environment.isReserved(paramName)) {
+            throw InvalidOperationError(
+                "Param name $paramName is reserved word",
+                token = ctx.IDENTIFIER().symbol
+            )
+        }
+
+        return Parameter(type = ParamType.In, name = paramName)
+    }
+
+    private fun readInOutParam(ctx: RapiraLangParser.InOutParamContext): Parameter {
+        val paramName = ctx.IDENTIFIER().text
+
+        if (Environment.isReserved(paramName)) {
+            throw InvalidOperationError(
+                "Param name $paramName is reserved word",
+                token = ctx.IDENTIFIER().symbol
+            )
+        }
+
+        return Parameter(type = ParamType.InOut, name = paramName)
+    }
 
     private fun readFunctionArguments(ctx: RapiraLangParser.FunctionArgumentsContext): List<Argument> =
         ctx.expression().map { expr -> InArgument(expr) }
