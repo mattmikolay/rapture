@@ -160,12 +160,9 @@ class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor
         ctx.variable()
             .forEach {
                 val variable = variableVisitor.visit(it)
-                variable.setValue(
-                    if (isTextMode)
-                        ConsoleReader.readText()
-                    else
-                        ConsoleReader.readObject()
-                ).getOrThrow { reason -> InvalidOperationError(reason, token = it.start) }
+                val obj = if (isTextMode) ConsoleReader.readText() else ConsoleReader.readObject()
+                variable.setValue(obj ?: Empty)
+                    .getOrThrow { reason -> InvalidOperationError(reason, token = it.start) }
         }
     }
 
