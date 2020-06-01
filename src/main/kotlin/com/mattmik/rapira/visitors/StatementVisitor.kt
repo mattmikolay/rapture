@@ -216,7 +216,8 @@ class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor
             variable = environment[ctx.IDENTIFIER().text],
             fromValue = fromValue,
             toValue = toValue,
-            stepValue = stepValue
+            stepValue = stepValue,
+            ctx = ctx
         )
     }
 
