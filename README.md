@@ -12,13 +12,13 @@ Rapture was built using [Kotlin] and [ANTLR].
 To run the Rapture REPL:
 
 ```
-./rapira
+./rapture
 ```
 
 To interpret a file using Rapture:
 
 ```
-./rapira filename.rap
+./rapture filename.rap
 ```
 
 ## Development
