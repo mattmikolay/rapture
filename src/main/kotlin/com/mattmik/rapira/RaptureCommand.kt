@@ -9,9 +9,9 @@ import com.github.ajalt.clikt.parameters.types.file
 
 const val VERSION = "0.1"
 
-class RapiraCommand : CliktCommand(
-    name = "rapira",
-    help = "ReRap 3 interpreter for the Rapira programming language"
+class RaptureCommand : CliktCommand(
+    name = "rapture",
+    help = "Rapture interpreter for the Rapira programming language"
 ) {
     private val inputFile by argument(name = "file")
         .file(mustExist = true, mustBeReadable = true, canBeDir = false)
@@ -28,7 +28,7 @@ class RapiraCommand : CliktCommand(
     }
 
     private fun startREPL() {
-        echo("ReRap3 v$VERSION")
+        echo("Rapture v$VERSION")
         echo("Type \"quit\" to exit")
 
         var line: String?
@@ -43,4 +43,4 @@ class RapiraCommand : CliktCommand(
     }
 }
 
-fun main(args: Array<String>) = RapiraCommand().main(args)
+fun main(args: Array<String>) = RaptureCommand().main(args)

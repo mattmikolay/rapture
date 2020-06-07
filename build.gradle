@@ -13,7 +13,7 @@ repositories {
 }
 
 application {
-    mainClassName = 'com.mattmik.rapira.RapiraCommandKt'
+    mainClassName = 'com.mattmik.rapira.RaptureCommandKt'
 }
 
 sourceSets.main.antlr.srcDirs = ["src/antlr"]
