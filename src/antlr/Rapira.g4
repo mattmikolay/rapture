@@ -55,7 +55,7 @@ callStatement
     ;
 
 functionDefinition
-    : 'fun' IDENTIFIER? LPAREN functionParams? RPAREN STMT_END declarations? stmts 'end'
+    : FUN IDENTIFIER? LPAREN functionParams? RPAREN STMT_END declarations? stmts END
     ;
 
 functionParams
@@ -63,7 +63,7 @@ functionParams
     ;
 
 procedureDefinition
-    : 'proc' IDENTIFIER? LPAREN procedureParams? RPAREN STMT_END declarations? stmts 'end'
+    : PROC IDENTIFIER? LPAREN procedureParams? RPAREN STMT_END declarations? stmts END
     ;
 
 procedureParams
@@ -89,36 +89,36 @@ declarations
     ;
 
 intern
-    : 'intern' COLON IDENTIFIER (',' IDENTIFIER)* STMT_END
+    : INTERN COLON IDENTIFIER (',' IDENTIFIER)* STMT_END
     ;
 
 extern
-    : 'extern' COLON IDENTIFIER (',' IDENTIFIER)* STMT_END
+    : EXTERN COLON IDENTIFIER (',' IDENTIFIER)* STMT_END
     ;
 
 ifStatement
-    : 'if' condition=expression 'then' ifBody=stmts ('else' elseBody=stmts)? 'fi'
+    : IF condition=expression THEN ifBody=stmts (ELSE elseBody=stmts)? FI
     ;
 
 caseStatement
-    : 'case' condition=expression multiWhenClause* ('else' elseBody=stmts)? 'esac' #conditionCaseStatement
-    | 'case' singleWhenClause* ('else' elseBody=stmts)? 'esac' #conditionlessCaseStatement
+    : CASE condition=expression multiWhenClause* (ELSE elseBody=stmts)? ESAC #conditionCaseStatement
+    | CASE singleWhenClause* (ELSE elseBody=stmts)? ESAC #conditionlessCaseStatement
     ;
 
 multiWhenClause
-    : 'when' expression (',' expression)* COLON stmts
+    : WHEN expression (',' expression)* COLON stmts
     ;
 
 singleWhenClause
-    : 'when' expression COLON stmts
+    : WHEN expression COLON stmts
     ;
 
 loopStatement
-    : (forClause | repeatClause)? whileClause? 'do' stmts ('od' | ('until' untilExpr=expression))
+    : (forClause | repeatClause)? whileClause? DO stmts (OD | (UNTIL untilExpr=expression))
     ;
 
 forClause
-    : 'for' IDENTIFIER ('from' fromExpr=expression)? (TO toExpr=expression)? ('step' stepExpr=expression)?
+    : FOR IDENTIFIER (FROM fromExpr=expression)? (TO toExpr=expression)? (STEP stepExpr=expression)?
     ;
 
 repeatClause
@@ -126,15 +126,15 @@ repeatClause
     ;
 
 whileClause
-    : 'while' expression
+    : WHILE expression
     ;
 
 outputStatement
-    : 'output' nlf='nlf'? (COLON expression (',' expression)*)?
+    : OUTPUT nlf=NLF? (COLON expression (',' expression)*)?
     ;
 
 inputStatement
-    : 'input' inputMode=MODE_TEXT? COLON variable (',' variable)*
+    : INPUT inputMode=MODE_TEXT? COLON variable (',' variable)*
     ;
 
 exitStatement
@@ -238,6 +238,10 @@ MOD : '/%' ;
 
 AND : 'and' ;
 
+END
+    : 'end'
+    ;
+
 OR : 'or' ;
 
 NOT : 'not' ;
@@ -254,8 +258,92 @@ COLON : ':' ;
 
 HASH : '#' ;
 
+FUN
+    : 'fun'
+    ;
+
+PROC
+    : 'proc'
+    ;
+
+INTERN
+    : 'intern'
+    ;
+
+EXTERN
+    : 'extern'
+    ;
+
 CALL
     : 'call'
+    ;
+
+IF
+    : 'if'
+    ;
+
+THEN
+    : 'then'
+    ;
+
+FI
+    : 'fi'
+    ;
+
+ELSE
+    : 'else'
+    ;
+
+CASE
+    : 'case'
+    ;
+
+ESAC
+    : 'esac'
+    ;
+
+WHEN
+    : 'when'
+    ;
+
+DO
+    : 'do'
+    ;
+
+OD
+    : 'od'
+    ;
+
+UNTIL
+    : 'until'
+    ;
+
+FOR
+    : 'for'
+    ;
+
+FROM
+    : 'from'
+    ;
+
+STEP
+    : 'step'
+    ;
+
+WHILE
+    : 'while'
+    ;
+
+OUTPUT
+    : 'output'
+    ;
+
+NLF
+    : 'nlf'
+    ;
+
+INPUT
+    : 'input'
     ;
 
 MODE_TEXT
