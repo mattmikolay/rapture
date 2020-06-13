@@ -12,7 +12,7 @@ object ConsoleWriter {
 
     fun printObjects(objects: List<RObject>, lineBreak: Boolean) {
         val formattedOutput = objects.joinToString(
-            separator = " ",
+            separator = "",
             transform = { obj -> formatObject(obj) }
         )
         echo(message = formattedOutput, trailingNewline = lineBreak)
