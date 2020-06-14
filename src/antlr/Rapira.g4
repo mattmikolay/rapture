@@ -97,12 +97,12 @@ extern
     ;
 
 ifStatement
-    : IF condition=expression THEN ifBody=stmts (ELSE elseBody=stmts)? FI
+    : IF condition=expression THEN ifBody=stmts (ELSE elseBody=stmts)? (FI | BCE)
     ;
 
 caseStatement
-    : CASE condition=expression multiWhenClause* (ELSE elseBody=stmts)? ESAC #conditionCaseStatement
-    | CASE singleWhenClause* (ELSE elseBody=stmts)? ESAC #conditionlessCaseStatement
+    : CASE condition=expression multiWhenClause* (ELSE elseBody=stmts)? (ESAC | BCE) #conditionCaseStatement
+    | CASE singleWhenClause* (ELSE elseBody=stmts)? (ESAC | BCE) #conditionlessCaseStatement
     ;
 
 multiWhenClause
@@ -236,15 +236,25 @@ INTDIVIDE : '//' ;
 
 MOD : '/%' ;
 
-AND : 'and' ;
+AND
+    : 'and'
+    | 'и'
+    ;
 
 END
     : 'end'
+    | 'конец'
     ;
 
-OR : 'or' ;
+OR
+    : 'or'
+    | 'или'
+    ;
 
-NOT : 'not' ;
+NOT
+    : 'not'
+    | 'не'
+    ;
 
 LPAREN : '(' ;
 
@@ -260,30 +270,37 @@ HASH : '#' ;
 
 FUN
     : 'fun'
+    | 'функ'
     ;
 
 PROC
     : 'proc'
+    | 'проц'
     ;
 
 INTERN
     : 'intern'
+    | 'свои'
     ;
 
 EXTERN
     : 'extern'
+    | 'чужие'
     ;
 
 CALL
     : 'call'
+    | 'вызов'
     ;
 
 IF
     : 'if'
+    | 'если'
     ;
 
 THEN
     : 'then'
+    | 'то'
     ;
 
 FI
@@ -292,78 +309,112 @@ FI
 
 ELSE
     : 'else'
+    | 'иначе'
     ;
 
 CASE
     : 'case'
+    | 'выбор'
     ;
 
 ESAC
     : 'esac'
     ;
 
+// "Rapira Programming Language" document lists "все" as the terminating lexeme
+// for both if statements and case statements in the Russian variant of Rapira,
+// whereas the English variant has dedicated "fi" and "esac" lexemes.
+//
+// ReRap2 (mistakenly?) translates "fi" as "кесли" and "esac" as "квыбор".
+//
+// https://github.com/freeduke33/rerap2/blob/master/lexer.cpp
+// http://ershov-arc.iis.nsk.su/archive/eaimage.asp?did=7651&fileid=106841
+// http://ershov-arc.iis.nsk.su/archive/eaimage.asp?did=7651&fileid=106815
+BCE
+    : 'все'
+    ;
+
 WHEN
     : 'when'
+    | 'при'
     ;
 
 DO
     : 'do'
+    | 'цикл'
     ;
 
 OD
     : 'od'
+    | 'кц'
     ;
 
+// "Rapira Programming Language" document lists "кц по" as the Russian lexeme
+// for "until". ReRap2 uses only "по".
+// http://ershov-arc.iis.nsk.su/archive/eaimage.asp?did=7651&fileid=106815
 UNTIL
     : 'until'
+    | 'кц по'
     ;
 
 FOR
     : 'for'
+    | 'для'
     ;
 
 FROM
     : 'from'
+    | 'от'
     ;
 
 STEP
     : 'step'
+    | 'шаг'
     ;
 
 WHILE
     : 'while'
+    | 'пока'
     ;
 
 OUTPUT
     : 'output'
+    | 'вывод'
     ;
 
 NLF
     : 'nlf'
+    | 'бпс'
     ;
 
 INPUT
     : 'input'
+    | 'ввод'
     ;
 
 MODE_TEXT
     : 'text'
+    | 'текста'
     ;
 
 LOOP_EXIT
     : 'exit'
+    | 'выход'
     ;
 
 RETURN
     : 'return'
+    | 'возврат'
     ;
 
 REPEAT
     : 'repeat'
+    | 'повтор'
     ;
 
 TO
     : 'to'
+    | 'до'
     ;
 
 UNSIGNED_INT
