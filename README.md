@@ -4,26 +4,30 @@ Rapture is an interpreter for Rapira (Рапира), a programming language crea
 the Soviet Union during the 1980s.
 
 ```
-fun fibonacci(=>n)
-    if n = 0 then
-        return 0
-    fi
-    if n = 1 then
-        return 1
-    fi
-    return fibonacci(n - 1) + fibonacci(n - 2)
-end
+функ фибоначи(=>n)
+    если n = 0 то
+        возврат 0
+    все
+    если n = 1 то
+        возврат 1
+    все
+    возврат фибоначи(n - 1) + фибоначи(n - 2)
+конец
 
 values := <* *>
-for i from 0 to 10 do
-    values := values + <* fibonacci(i) *>
-od
+для i от 0 до 10 цикл
+    values := values + <* фибоначи(i) *>
+кц
 
-output: values      \ Prints <* 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 *>
+вывод: values      \ Prints <* 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55 *>
 ```
 
-At the moment, Rapture only supports the English variant of Rapira. In the
-future, support for Russian lexemes will be added.
+Rapture supports both the English and Russian variants of Rapira:
+
+```
+output: "Good morning!"
+вывод: "Доброе утро"
+```
 
 Rapture was built using [Kotlin] and [ANTLR].
 
