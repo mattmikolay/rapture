@@ -1,7 +1,7 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.CONST_YES
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.list
@@ -13,7 +13,7 @@ class SequenceTest : WordSpec({
         "set entries list" {
             val obj1 = Text("Hello, world!")
             val obj2 = RInteger(123)
-            val obj3 = LogicalYes
+            val obj3 = CONST_YES
 
             val sequence = Sequence(obj1, obj2, obj3)
 

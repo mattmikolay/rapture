@@ -1,5 +1,6 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.CONST_YES
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.errors.IncorrectArgumentCountError
@@ -214,7 +215,7 @@ class NativeFunctionsTest : WordSpec() {
                 }
 
                 "return 0 if element is not present" {
-                    every { mockArgument.evaluate(any()) } returns SimpleVariable(LogicalYes)
+                    every { mockArgument.evaluate(any()) } returns SimpleVariable(CONST_YES)
                     every { mockArgument2.evaluate(any()) } returns SimpleVariable(sequence)
 
                     val result = function.call(environment, listOf(mockArgument, mockArgument2), callToken = mockk())

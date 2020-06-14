@@ -1,8 +1,8 @@
 package com.mattmik.rapira.console
 
+import com.mattmik.rapira.CONST_NO
+import com.mattmik.rapira.CONST_YES
 import com.mattmik.rapira.objects.Empty
-import com.mattmik.rapira.objects.LogicalNo
-import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.objects.Text
@@ -19,11 +19,11 @@ class ConsoleReaderTest : WordSpec({
         }
 
         "handle yes" {
-            ConsoleReader.parseObject("yes") shouldBe LogicalYes
+            ConsoleReader.parseObject("yes") shouldBe CONST_YES
         }
 
         "handle no" {
-            ConsoleReader.parseObject("no") shouldBe LogicalNo
+            ConsoleReader.parseObject("no") shouldBe CONST_NO
         }
 
         "handle text" {

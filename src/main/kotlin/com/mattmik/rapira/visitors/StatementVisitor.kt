@@ -1,5 +1,6 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.CONST_YES
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraBaseVisitor
 import com.mattmik.rapira.antlr.RapiraParser
@@ -18,7 +19,6 @@ import com.mattmik.rapira.errors.IllegalInvocationError
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
-import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.RCallable
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Real
@@ -101,7 +101,7 @@ class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor
     override fun visitConditionlessCaseStatement(ctx: RapiraParser.ConditionlessCaseStatementContext) {
         for (whenClause in ctx.singleWhenClause()) {
             val whenResult = expressionVisitor.visit(whenClause.expression())
-            if (whenResult == LogicalYes) {
+            if (whenResult == CONST_YES) {
                 visit(whenClause.stmts())
                 return
             }
@@ -139,7 +139,7 @@ class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor
 
             loopController.update()
 
-            if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == LogicalYes) {
+            if (ctx.untilExpr?.let { expressionVisitor.visit(it) } == CONST_YES) {
                 break
             }
         }

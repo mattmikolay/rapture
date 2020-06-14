@@ -20,6 +20,3 @@ data class Logical(val value: Boolean) : RObject {
     override fun toString() =
         if (value) "yes" else "no"
 }
-
-val LogicalYes = Logical(true)
-val LogicalNo = Logical(false)

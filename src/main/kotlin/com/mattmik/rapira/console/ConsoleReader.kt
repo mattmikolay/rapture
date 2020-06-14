@@ -2,9 +2,9 @@ package com.mattmik.rapira.console
 
 import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.output.TermUi.prompt
+import com.mattmik.rapira.CONST_NO
+import com.mattmik.rapira.CONST_YES
 import com.mattmik.rapira.objects.Empty
-import com.mattmik.rapira.objects.LogicalNo
-import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.parseEscapedText
 import com.mattmik.rapira.objects.toRInteger
 import com.mattmik.rapira.objects.toReal
@@ -28,8 +28,8 @@ object ConsoleReader {
 
     fun parseObject(input: String) = when {
         input == "empty" -> Empty
-        input == "yes" -> LogicalYes
-        input == "no" -> LogicalNo
+        input == "yes" -> CONST_YES
+        input == "no" -> CONST_NO
         input.matches(textRegex) -> parseEscapedText(input)
         input.matches(realRegex) -> input.toDouble().toReal()
         input.matches(integerRegex) -> input.toInt().toRInteger()

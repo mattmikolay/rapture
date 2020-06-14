@@ -1,5 +1,6 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.CONST_YES
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLexer
 import com.mattmik.rapira.antlr.RapiraParser
@@ -10,7 +11,6 @@ import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
-import com.mattmik.rapira.objects.LogicalYes
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
@@ -587,7 +587,7 @@ class StatementVisitorTest : WordSpec({
         "handle input statements in object mode" {
             every { ConsoleReader.readObject() } returnsMany
                 listOf(
-                    LogicalYes,
+                    CONST_YES,
                     Text("dog"),
                     RInteger(123)
                 )
@@ -603,7 +603,7 @@ class StatementVisitorTest : WordSpec({
                 ConsoleReader.readObject()
             }
 
-            environment["alpha"].getValue() shouldSucceedWith LogicalYes
+            environment["alpha"].getValue() shouldSucceedWith CONST_YES
             environment["animal"].getValue() shouldSucceedWith Text("dog")
             environment["weather_types"].getValue() shouldSucceedWith listOf(
                 Text("sunny"),

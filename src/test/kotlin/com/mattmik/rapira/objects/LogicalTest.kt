@@ -1,9 +1,10 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.CONST_NO
+import com.mattmik.rapira.CONST_YES
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
-import io.kotest.matchers.should
 import io.kotest.property.checkAll
 
 class LogicalTest : WordSpec({
@@ -24,8 +25,8 @@ class LogicalTest : WordSpec({
                 row(Text("hello")),
                 row(Sequence())
             ) { obj ->
-                (LogicalYes and obj).shouldError()
-                (LogicalNo and obj).shouldError()
+                (CONST_YES and obj).shouldError()
+                (CONST_NO and obj).shouldError()
             }
         }
     }
@@ -47,8 +48,8 @@ class LogicalTest : WordSpec({
                 row(Text("hello")),
                 row(Sequence())
             ) { obj ->
-                (LogicalYes or obj).shouldError()
-                (LogicalNo or obj).shouldError()
+                (CONST_YES or obj).shouldError()
+                (CONST_NO or obj).shouldError()
             }
         }
     }
@@ -63,8 +64,8 @@ class LogicalTest : WordSpec({
 
     "toString" should {
         "return user friendly representation" {
-            LogicalYes shouldConvertToString "yes"
-            LogicalNo shouldConvertToString "no"
+            CONST_YES shouldConvertToString "yes"
+            CONST_NO shouldConvertToString "no"
         }
     }
 })
