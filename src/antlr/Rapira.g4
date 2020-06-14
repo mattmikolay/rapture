@@ -376,7 +376,7 @@ UNSIGNED_REAL
     ;
 
 IDENTIFIER
-    : [a-zA-Z][a-zA-Z0-9_]*
+    : [a-zA-Z\p{Cyrillic}][a-zA-Z\p{Cyrillic}0-9_]*
     ;
 
 STMT_END
