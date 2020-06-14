@@ -13,10 +13,15 @@ import kotlin.math.PI
 
 private val specialValues = nativeFunctions + mapOf(
     "empty" to Empty,
+    "пусто" to Empty,
     "yes" to LogicalYes,
+    "да" to LogicalYes,
     "no" to LogicalNo,
+    "нет" to LogicalNo,
     "lf" to System.lineSeparator().toText(),
-    "pi" to PI.toReal()
+    "пс" to System.lineSeparator().toText(),
+    "pi" to PI.toReal(),
+    "пи" to PI.toReal()
 )
 
 class Environment private constructor(

@@ -16,13 +16,22 @@ class EnvironmentTest : WordSpec({
             environment["not_present"].getValue() shouldSucceedWith Empty
         }
 
-        "succeed with special values" {
+        "succeed with English special values" {
             val environment = Environment()
             environment["empty"].getValue() shouldSucceedWith Empty
             environment["yes"].getValue() shouldSucceedWith Logical(true)
             environment["no"].getValue() shouldSucceedWith Logical(false)
             environment["lf"].getValue() shouldSucceedWith System.lineSeparator().toText()
             environment["pi"].getValue() shouldSucceedWith PI.toReal()
+        }
+
+        "succeed with Russian special values" {
+            val environment = Environment()
+            environment["пусто"].getValue() shouldSucceedWith Empty
+            environment["да"].getValue() shouldSucceedWith Logical(true)
+            environment["нет"].getValue() shouldSucceedWith Logical(false)
+            environment["пс"].getValue() shouldSucceedWith System.lineSeparator().toText()
+            environment["пи"].getValue() shouldSucceedWith PI.toReal()
         }
     }
 
