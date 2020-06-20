@@ -16,10 +16,11 @@ application {
     mainClassName = 'com.mattmik.rapira.RaptureCommandKt'
 }
 
+def antlrOutputDirectory = "src/main/java/com/mattmik/rapira/antlr"
 sourceSets.main.antlr.srcDirs = ["src/antlr"]
 generateGrammarSource {
     arguments += ["-visitor", "-no-listener", "-package", "com.mattmik.rapira.antlr"]
-    outputDirectory = file("src/main/java/com/mattmik/rapira/antlr")
+    outputDirectory = file(antlrOutputDirectory)
 }
 
 dependencies {
@@ -45,4 +46,8 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+clean.doFirst {
+    delete "${rootDir}/${antlrOutputDirectory}"
 }
