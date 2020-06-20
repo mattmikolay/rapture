@@ -46,17 +46,22 @@ To interpret a file using Rapture:
 
 ## Development
 
-To generate the parser using ANTLR:
+1. Clone this repository:
 
-```
-./gradlew generateGrammarSource
-```
+        git clone https://github.com/mattmikolay/rapture.git
 
-To build a distribution:
+2. Generate the parser using ANTLR:
 
-```
-./gradlew assembleDist
-```
+        ./gradlew generateGrammarSource
+
+3. Build an executable `rapture` application in the `build/install/rapture/bin`
+directory:
+
+        ./gradlew installDist
+
+4. If making source code changes, run unit tests:
+
+        ./gradlew test
 
 [Kotlin]: https://kotlinlang.org/
 [ANTLR]: https://github.com/antlr/antlr4/
