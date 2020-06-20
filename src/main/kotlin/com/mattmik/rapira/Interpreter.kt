@@ -1,5 +1,6 @@
 package com.mattmik.rapira
 
+import com.github.ajalt.clikt.core.ProgramResult
 import com.mattmik.rapira.antlr.RapiraLexer
 import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.console.ConsoleWriter
@@ -8,10 +9,11 @@ import com.mattmik.rapira.errors.InterpreterRuntimeError
 import com.mattmik.rapira.errors.SyntaxErrorListener
 import com.mattmik.rapira.visitors.StatementVisitor
 import java.io.InputStream
-import kotlin.system.exitProcess
+import org.antlr.v4.runtime.BailErrorStrategy
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.ConsoleErrorListener
+import org.antlr.v4.runtime.misc.ParseCancellationException
 import org.antlr.v4.runtime.tree.ParseTree
 
 object Interpreter {
@@ -22,9 +24,11 @@ object Interpreter {
         val lexer = RapiraLexer(CharStreams.fromString("$statement\n"))
         val parser = makeParser(lexer)
 
-        val tree = parser.dialogUnit()
-        if (tree.exception == null) {
+        try {
+            val tree = parser.dialogUnit()
             interpret(tree)
+        } catch (exception: ParseCancellationException) {
+            // no-op; syntax error message is printed by SyntaxErrorListener
         }
     }
 
@@ -32,9 +36,11 @@ object Interpreter {
         val lexer = RapiraLexer(CharStreams.fromStream(inputStream))
         val parser = makeParser(lexer)
 
-        val tree = parser.fileInput()
-        tree.exception?.let {
-            exitProcess(1)
+        val tree = try {
+            parser.fileInput()
+        } catch (exception: ParseCancellationException) {
+            // Halt execution; syntax error message is printed by SyntaxErrorListener
+            throw ProgramResult(statusCode = 1)
         }
 
         interpret(tree)
@@ -44,6 +50,7 @@ object Interpreter {
         RapiraParser(CommonTokenStream(lexer)).apply {
             removeErrorListener(ConsoleErrorListener.INSTANCE)
             addErrorListener(SyntaxErrorListener)
+            errorHandler = BailErrorStrategy()
         }
 
     private fun interpret(parseTree: ParseTree) {
