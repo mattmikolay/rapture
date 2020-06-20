@@ -159,10 +159,32 @@ class StatementVisitorTest : WordSpec({
             }
         }
 
-        "handle recursive calls" {
+        "handle recursive function calls" {
             evaluateStatements(
                 """
                     fun sayHello(n)
+                        output: "Hello, world!"
+                        if n > 1 then
+                            sayHello(n - 1)
+                        fi
+                    end
+                    call sayHello(3)
+                """.trimIndent()
+            )
+            verify(exactly = 3) {
+                ConsoleWriter.printObjects(
+                    listOf(
+                        Text("Hello, world!")
+                    ),
+                    lineBreak = true
+                )
+            }
+        }
+
+        "handle recursive procedure calls" {
+            evaluateStatements(
+                """
+                    proc sayHello(n)
                         output: "Hello, world!"
                         if n > 1 then
                             sayHello(n - 1)
