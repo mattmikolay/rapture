@@ -7,6 +7,7 @@ import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.IllegalInvocationError
 import com.mattmik.rapira.errors.IllegalParamNameError
+import com.mattmik.rapira.errors.IllegalProcedureInvocationError
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
@@ -128,12 +129,9 @@ class ExpressionVisitor(private val environment: Environment) : RapiraBaseVisito
         val leftParenToken = ctx.functionArguments().LPAREN().symbol
 
         return when (baseResult) {
-            is Procedure ->
-                throw InvalidOperationError("Cannot invoke procedure within expression", token = leftParenToken)
-            is RCallable ->
-                baseResult.call(environment, arguments, callToken = leftParenToken) ?: Empty
-            else ->
-                throw IllegalInvocationError(token = leftParenToken)
+            is Procedure -> throw IllegalProcedureInvocationError(token = leftParenToken)
+            is RCallable -> baseResult.call(environment, arguments, callToken = leftParenToken) ?: Empty
+            else -> throw IllegalInvocationError(token = leftParenToken)
         }
     }
 
