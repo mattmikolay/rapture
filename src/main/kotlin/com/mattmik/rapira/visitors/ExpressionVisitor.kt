@@ -6,6 +6,7 @@ import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.errors.IllegalInvocationError
+import com.mattmik.rapira.errors.IllegalParamNameError
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
@@ -192,8 +193,8 @@ class ExpressionVisitor(private val environment: Environment) : RapiraBaseVisito
         val paramName = ctx.IDENTIFIER().text
 
         if (Environment.isReserved(paramName)) {
-            throw InvalidOperationError(
-                "Param name $paramName is reserved word",
+            throw IllegalParamNameError(
+                paramName,
                 token = ctx.IDENTIFIER().symbol
             )
         }
@@ -205,8 +206,8 @@ class ExpressionVisitor(private val environment: Environment) : RapiraBaseVisito
         val paramName = ctx.IDENTIFIER().text
 
         if (Environment.isReserved(paramName)) {
-            throw InvalidOperationError(
-                "Param name $paramName is reserved word",
+            throw IllegalParamNameError(
+                paramName,
                 token = ctx.IDENTIFIER().symbol
             )
         }
