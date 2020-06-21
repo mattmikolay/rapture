@@ -8,6 +8,7 @@ import com.mattmik.rapira.console.ConsoleReader
 import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
+import com.mattmik.rapira.errors.IllegalRepeatLoopError
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
@@ -726,6 +727,30 @@ class StatementVisitorTest : WordSpec({
                             return 123
                         end
                         call test_procedure()
+                    """.trimIndent()
+                )
+            }
+        }
+
+        "throw exception when repeat loop has non-integer value" {
+            shouldThrow<IllegalRepeatLoopError> {
+                evaluateStatements(
+                    """
+                        repeat "123" do
+                            output: "Hello, world!"
+                        od
+                    """.trimIndent()
+                )
+            }
+        }
+
+        "throw exception when repeat loop has negative integer value" {
+            shouldThrow<IllegalRepeatLoopError> {
+                evaluateStatements(
+                    """
+                        repeat -3 do
+                            output: "Hello, world!"
+                        od
                     """.trimIndent()
                 )
             }
