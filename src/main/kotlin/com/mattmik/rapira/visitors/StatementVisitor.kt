@@ -15,6 +15,7 @@ import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.control.MasterLoopController
 import com.mattmik.rapira.control.RepeatLoopController
 import com.mattmik.rapira.control.WhileLoopController
+import com.mattmik.rapira.errors.IllegalForLoopError
 import com.mattmik.rapira.errors.IllegalInvocationError
 import com.mattmik.rapira.errors.IllegalRepeatLoopError
 import com.mattmik.rapira.errors.InvalidOperationError
@@ -205,7 +206,7 @@ class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor
         val stepValue = ctx.stepExpr?.let { expressionVisitor.visit(it) }
 
         if (toValue != null && toValue !is RInteger && toValue !is Real) {
-            throw InvalidOperationError("To value in for loop must be numeric", token = ctx.toExpr.start)
+            throw IllegalForLoopError(value = toValue, token = ctx.toExpr.start)
         }
 
         return ForLoopController(
