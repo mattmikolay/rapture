@@ -63,5 +63,12 @@ directory:
 
         ./gradlew test
 
+## Resources
+- *Rapira Programming Language (Язык программирования Рапира)*  
+  L.S. Baraz, E.V. Borovikov, N.G. Glagoleva, P.A. Zemtsov, E.V. Nalimov,
+  and V.A. Tsikoza
+    - [English](http://ershov.iis.nsk.su/ru/node/772586)
+    - [Russian](http://ershov.iis.nsk.su/ru/node/772584)
+
 [Kotlin]: https://kotlinlang.org/
 [ANTLR]: https://github.com/antlr/antlr4/
