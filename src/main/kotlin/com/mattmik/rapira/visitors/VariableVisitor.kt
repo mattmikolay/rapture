@@ -4,6 +4,7 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraBaseVisitor
 import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.errors.InvalidOperationError
+import com.mattmik.rapira.errors.NonIntegerIndexError
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.andThen
@@ -24,8 +25,9 @@ class VariableVisitor(private val environment: Environment) : RapiraBaseVisitor<
 
         return ctx.commaExpression().expression()
             .map {
-                expressionVisitor.visit(it) as? RInteger
-                    ?: throw InvalidOperationError("Value is not a valid index", token = it.start)
+                val indexValue = expressionVisitor.visit(it)
+                indexValue as? RInteger
+                    ?: throw NonIntegerIndexError(indexValue, token = it.start)
             }
             .fold(variable) { resultVariable, index -> IndexedVariable(resultVariable, index.value) }
     }
