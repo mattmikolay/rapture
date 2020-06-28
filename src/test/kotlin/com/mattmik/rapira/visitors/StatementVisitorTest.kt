@@ -9,6 +9,7 @@ import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.errors.IllegalRepeatLoopError
+import com.mattmik.rapira.errors.IllegalReturnValueError
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
@@ -720,7 +721,7 @@ class StatementVisitorTest : WordSpec({
         }
 
         "throw exception when return with value occurs in procedure" {
-            shouldThrow<InvalidOperationError> {
+            shouldThrow<IllegalReturnValueError> {
                 evaluateStatements(
                     """
                         proc test_procedure ()

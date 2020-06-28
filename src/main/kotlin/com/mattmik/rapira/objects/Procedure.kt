@@ -4,6 +4,7 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.control.CallableReturnException
+import com.mattmik.rapira.errors.IllegalReturnValueError
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
@@ -42,7 +43,7 @@ class Procedure private constructor(
             callable.call(newEnvironment, arguments, callToken)
         } catch (exception: CallableReturnException) {
             if (exception.returnValue != null) {
-                throw InvalidOperationError("Cannot return value within procedure", token = exception.token)
+                throw IllegalReturnValueError(token = exception.token)
             }
             null
         }
