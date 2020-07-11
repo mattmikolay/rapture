@@ -22,7 +22,7 @@ class Function private constructor(
         extern: List<String> = emptyList()
     ) : this(
         name,
-        BaseCallable(
+        Subroutine(
             statements,
             params,
             if (name != null) (extern + name) else extern

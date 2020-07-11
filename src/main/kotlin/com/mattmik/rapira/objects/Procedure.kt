@@ -5,7 +5,6 @@ import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.IllegalReturnValueError
-import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.variables.ReadOnlyVariable
 import org.antlr.v4.runtime.Token
@@ -22,7 +21,7 @@ class Procedure private constructor(
         extern: List<String> = emptyList()
     ) : this(
         name,
-        BaseCallable(
+        Subroutine(
             statements,
             params,
             if (name != null) (extern + name) else extern

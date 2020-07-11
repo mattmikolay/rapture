@@ -11,7 +11,7 @@ import com.mattmik.rapira.params.Parameter
 import com.mattmik.rapira.visitors.StatementVisitor
 import org.antlr.v4.runtime.Token
 
-class BaseCallable(
+class Subroutine(
     private val statements: RapiraParser.StmtsContext?,
     private val params: List<Parameter>,
     private val extern: List<String>

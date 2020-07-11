@@ -7,7 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyAll
 
-class BaseCallableTest : WordSpec({
+class SubroutineTest : WordSpec({
 
     "call" should {
         "read extern objects from old environment" {
@@ -18,7 +18,7 @@ class BaseCallableTest : WordSpec({
                 "externVariable3"
             )
             every { mockEnvironment[any()] } returns SimpleVariable(Empty)
-            val baseCallable = BaseCallable(
+            val baseCallable = Subroutine(
                 statements = null,
                 params = emptyList(),
                 extern = extern
