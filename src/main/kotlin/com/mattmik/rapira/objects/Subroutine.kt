@@ -8,14 +8,16 @@ import com.mattmik.rapira.errors.IllegalArgumentError
 import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.params.ParamType
 import com.mattmik.rapira.params.Parameter
+import com.mattmik.rapira.variables.ReadOnlyVariable
 import com.mattmik.rapira.visitors.StatementVisitor
 import org.antlr.v4.runtime.Token
 
-class Subroutine(
+abstract class Subroutine(
+    private val name: String?,
     private val statements: RapiraParser.StmtsContext?,
     private val params: List<Parameter>,
     private val extern: List<String>
-) : RCallable {
+) : RCallable, RObject {
 
     override fun call(
         environment: Environment,
@@ -51,6 +53,11 @@ class Subroutine(
             }
 
             newEnvironment[param.name] = argument.evaluate(environment)
+        }
+
+        name?.let {
+            // Prevents reassigning this subroutine's identifier
+            newEnvironment[it] = ReadOnlyVariable(this)
         }
 
         extern.map { Pair(it, environment[it]) }

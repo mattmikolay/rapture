@@ -18,13 +18,14 @@ class SubroutineTest : WordSpec({
                 "externVariable3"
             )
             every { mockEnvironment[any()] } returns SimpleVariable(Empty)
-            val baseCallable = Subroutine(
+            val subroutine = object : Subroutine(
+                name = "TestSubroutine",
                 statements = null,
                 params = emptyList(),
                 extern = extern
-            )
+            ) {}
 
-            baseCallable.call(mockEnvironment, emptyList(), mockk())
+            subroutine.call(mockEnvironment, emptyList(), mockk())
 
             verifyAll {
                 mockEnvironment["externVariable1"]
