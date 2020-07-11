@@ -4,7 +4,7 @@ import com.mattmik.rapira.Environment
 import com.mattmik.rapira.args.Argument
 import org.antlr.v4.runtime.Token
 
-interface RCallable {
+interface Callable {
 
     fun call(
         environment: Environment,

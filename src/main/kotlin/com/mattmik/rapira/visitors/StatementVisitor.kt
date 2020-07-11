@@ -21,7 +21,7 @@ import com.mattmik.rapira.errors.IllegalRepeatLoopError
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
-import com.mattmik.rapira.objects.RCallable
+import com.mattmik.rapira.objects.Callable
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.util.getOrThrow
@@ -66,7 +66,7 @@ class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor
 
         val callToken = ctx.expression()?.start ?: ctx.IDENTIFIER().symbol
 
-        val callable = obj as? RCallable
+        val callable = obj as? Callable
             ?: throw IllegalInvocationError(token = callToken)
 
         val arguments = readProcedureArguments(ctx.procedureArguments())

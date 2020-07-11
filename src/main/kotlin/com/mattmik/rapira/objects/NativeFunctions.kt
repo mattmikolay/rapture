@@ -22,9 +22,9 @@ import kotlin.math.tan
 import kotlin.random.Random
 import org.antlr.v4.runtime.Token
 
-private interface NativeFunction : RObject, RCallable
+private interface NativeFunction : RObject, Callable
 
-private interface SingleParamNativeFunction : RObject, RCallable {
+private interface SingleParamNativeFunction : RObject, Callable {
 
     override fun call(
         environment: Environment,

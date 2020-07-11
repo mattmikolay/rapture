@@ -17,7 +17,7 @@ abstract class Subroutine(
     private val statements: RapiraParser.StmtsContext?,
     private val params: List<Parameter>,
     private val extern: List<String>
-) : RCallable, RObject {
+) : Callable, RObject {
 
     override fun call(
         environment: Environment,

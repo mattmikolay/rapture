@@ -12,7 +12,7 @@ import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
-import com.mattmik.rapira.objects.RCallable
+import com.mattmik.rapira.objects.Callable
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.objects.parseEscapedText
@@ -130,7 +130,7 @@ class ExpressionVisitor(private val environment: Environment) : RapiraBaseVisito
 
         return when (baseResult) {
             is Procedure -> throw IllegalProcedureInvocationError(token = leftParenToken)
-            is RCallable -> baseResult.call(environment, arguments, callToken = leftParenToken) ?: Empty
+            is Callable -> baseResult.call(environment, arguments, callToken = leftParenToken) ?: Empty
             else -> throw IllegalInvocationError(token = leftParenToken)
         }
     }
