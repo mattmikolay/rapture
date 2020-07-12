@@ -5,6 +5,11 @@ import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Text
 import org.antlr.v4.runtime.Token
 
+/**
+ * Convenience object providing the ability to write to the terminal and format
+ * output. This class exists mostly for testing purposes; the [ConsoleWriter]
+ * object is easily mocked.
+ */
 object ConsoleWriter {
 
     fun println(message: String) =

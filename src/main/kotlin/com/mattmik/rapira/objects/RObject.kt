@@ -2,6 +2,9 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.util.Result
 
+/**
+ * A Rapira object value.
+ */
 interface RObject {
 
     operator fun plus(other: RObject): Result<RObject> =

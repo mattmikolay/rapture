@@ -4,16 +4,15 @@ import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.output.TermUi.prompt
 import com.mattmik.rapira.CONST_NO
 import com.mattmik.rapira.CONST_YES
-import com.mattmik.rapira.objects.Empty
-import com.mattmik.rapira.objects.parseEscapedText
-import com.mattmik.rapira.objects.toRInteger
-import com.mattmik.rapira.objects.toReal
-import com.mattmik.rapira.objects.toText
+import com.mattmik.rapira.objects.*
 
 val integerRegex = """[+-]?[0-9]+""".toRegex()
 val realRegex = """[+-]?[0-9]+(?:e[+-]?[0-9]+|\.[0-9]+(?:e[+-]?[0-9]+)?)""".toRegex()
 val textRegex = """"(?:[^\r\n"]|"")*"""".toRegex()
 
+/**
+ * Convenience object used to read [RObject] values from the terminal.
+ */
 object ConsoleReader {
 
     fun readText() =
@@ -26,7 +25,7 @@ object ConsoleReader {
             convert = { input -> parseObject(input.trim()) }
         )
 
-    fun parseObject(input: String) = when {
+    fun parseObject(input: String): RObject = when {
         input == "empty" -> Empty
         input == "yes" -> CONST_YES
         input == "no" -> CONST_NO

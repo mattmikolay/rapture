@@ -5,6 +5,10 @@ import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.andThen
 
+/**
+ * A [Variable] that wraps the values in [baseVariable] between two indexes:
+ * [startIndex] and [endIndex].
+ */
 class SliceVariable(
     private val baseVariable: Variable,
     private val startIndex: RObject,

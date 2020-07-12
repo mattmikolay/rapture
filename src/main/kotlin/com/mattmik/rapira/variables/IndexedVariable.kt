@@ -8,6 +8,9 @@ import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.andThen
 import com.mattmik.rapira.util.toSuccess
 
+/**
+ * A [Variable] that wraps a parent [variable]'s value at a specified [index].
+ */
 class IndexedVariable(
     private val variable: Variable,
     private val index: Int

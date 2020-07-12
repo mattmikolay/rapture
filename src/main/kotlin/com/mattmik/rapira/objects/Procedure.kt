@@ -6,9 +6,12 @@ import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.IllegalReturnValueError
 import com.mattmik.rapira.params.Parameter
-import com.mattmik.rapira.variables.ReadOnlyVariable
 import org.antlr.v4.runtime.Token
 
+/**
+ * A procedure Rapira object value. Procedures cannot return values, but can be
+ * passed in-out arguments.
+ */
 class Procedure(
     name: String? = null,
     statements: RapiraParser.StmtsContext? = null,

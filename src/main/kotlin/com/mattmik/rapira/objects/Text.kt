@@ -3,6 +3,9 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.toSuccess
 
+/**
+ * A text Rapira object value. For example, `"Hello, world!"`.
+ */
 data class Text(val value: String) : RObject {
 
     override fun plus(other: RObject) = when (other) {

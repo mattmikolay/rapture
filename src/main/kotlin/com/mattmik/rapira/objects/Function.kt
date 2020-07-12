@@ -7,9 +7,12 @@ import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.IllegalArgumentError
 import com.mattmik.rapira.params.Parameter
-import com.mattmik.rapira.variables.ReadOnlyVariable
 import org.antlr.v4.runtime.Token
 
+/**
+ * A function Rapira object value. Functions can return values, but cannot be
+ * passed in-out arguments.
+ */
 class Function(
     name: String? = null,
     statements: RapiraParser.StmtsContext? = null,

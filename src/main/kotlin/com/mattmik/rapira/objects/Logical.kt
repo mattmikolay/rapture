@@ -2,6 +2,9 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.util.toSuccess
 
+/**
+ * A logical Rapira object value: either `yes` or `no`.
+ */
 data class Logical(val value: Boolean) : RObject {
 
     override fun and(other: RObject) = when (other) {

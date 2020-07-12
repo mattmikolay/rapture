@@ -4,6 +4,9 @@ import com.mattmik.rapira.util.toSuccess
 import kotlin.math.exp
 import kotlin.math.ln
 
+/**
+ * A real number Rapira object value. For example, `530.84` or `1.9e-8`.
+ */
 data class Real(val value: Double) : RObject {
     override fun plus(other: RObject) = when (other) {
         is RInteger -> Real(value + other.value).toSuccess()

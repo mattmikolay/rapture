@@ -12,6 +12,12 @@ import com.mattmik.rapira.variables.ReadOnlyVariable
 import com.mattmik.rapira.visitors.StatementVisitor
 import org.antlr.v4.runtime.Token
 
+/**
+ * Base class representing a subprogram within the program source code.
+ *
+ * @see Procedure
+ * @see Function
+ */
 abstract class Subroutine(
     private val name: String?,
     private val statements: RapiraParser.StmtsContext?,

@@ -6,6 +6,9 @@ import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.pow
 
+/**
+ * An integer number Rapira object value. For example, `125`.
+ */
 data class RInteger(val value: Int) : RObject {
     override fun plus(other: RObject) = when (other) {
         is RInteger -> RInteger(value + other.value).toSuccess()

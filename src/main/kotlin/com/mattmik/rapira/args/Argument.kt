@@ -9,6 +9,9 @@ import org.antlr.v4.runtime.Token
  */
 interface Argument {
 
+    /**
+     * The argument's start token.
+     */
     val token: Token
 
     /**

@@ -19,6 +19,16 @@ private val specialValues = nativeFunctions + mapOf(
     "пи" to CONST_PI
 )
 
+/**
+ * A binding of string identifiers to Rapira object values.
+ *
+ * All Rapira code is executed within an environment. When a procedure or
+ * function is called, it is executed in a new environment generated from its
+ * parameters, arguments, and parent environment.
+ *
+ * Environments include bindings for reserved words (for example, `yes` and
+ * `no`) as well as user-defined variable assignments.
+ */
 class Environment private constructor(
     private val bindings: MutableMap<String, Variable>
 ) {
