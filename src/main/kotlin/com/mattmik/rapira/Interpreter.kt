@@ -50,6 +50,7 @@ object Interpreter {
         RapiraParser(CommonTokenStream(lexer)).apply {
             removeErrorListener(ConsoleErrorListener.INSTANCE)
             addErrorListener(SyntaxErrorListener)
+            // FIXME BailErrorStrategy is swallowing errors that should be reported by SyntaxErrorListener
             errorHandler = BailErrorStrategy()
         }
 
