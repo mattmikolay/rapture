@@ -22,36 +22,22 @@ object Interpreter {
 
     fun interpretStatement(statement: String) {
         val lexer = RapiraLexer(CharStreams.fromString("$statement\n"))
-        val parser = makeParser(lexer)
-
-        try {
-            val tree = parser.dialogUnit()
-            interpret(tree)
-        } catch (exception: ParseCancellationException) {
-            // no-op; syntax error message is printed by SyntaxErrorListener
-        }
+        val parser = makeParser(lexer, abortOnError = false)
+        val tree = parser.dialogUnit()
+        interpret(tree)
     }
 
     fun interpretInputStream(inputStream: InputStream) {
         val lexer = RapiraLexer(CharStreams.fromStream(inputStream))
-        val parser = makeParser(lexer)
-
-        val tree = try {
-            parser.fileInput()
-        } catch (exception: ParseCancellationException) {
-            // Halt execution; syntax error message is printed by SyntaxErrorListener
-            throw ProgramResult(statusCode = 1)
-        }
-
+        val parser = makeParser(lexer, abortOnError = true)
+        val tree = parser.fileInput()
         interpret(tree)
     }
 
-    private fun makeParser(lexer: RapiraLexer) =
+    private fun makeParser(lexer: RapiraLexer, abortOnError: Boolean) =
         RapiraParser(CommonTokenStream(lexer)).apply {
             removeErrorListener(ConsoleErrorListener.INSTANCE)
-            addErrorListener(SyntaxErrorListener)
-            // FIXME BailErrorStrategy is swallowing errors that should be reported by SyntaxErrorListener
-            errorHandler = BailErrorStrategy()
+            addErrorListener(SyntaxErrorListener(abortOnError))
         }
 
     private fun interpret(parseTree: ParseTree) {
