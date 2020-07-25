@@ -1,0 +1,52 @@
+fun scramble(input_word)
+    output_word := input_word
+    for i from 1 to #output_word do
+        swap_index := int_rand(#output_word)
+        letter1 := output_word[i]
+        letter2 := output_word[swap_index]
+        output_word[swap_index] := letter1
+        output_word[i] := letter2
+    od
+    return output_word
+end
+
+fun next_word()
+    extern: remaining_words
+    position := int_rand(#remaining_words)
+    selected_word := remaining_words[position]
+    remaining_words[position:position] := <* *>
+    return selected_word
+end
+
+fun min(a, b)
+    if a < b then
+        return a
+    fi
+    return b
+end
+
+remaining_words := <* "bibulous", "aorta", "ululate", "contumacious", "datum", "tutelage", "sassafras", "anthropomorphic", "appellation", "uncopyrightable" *>
+
+output: "How many rounds do you want to play?"
+while not is_int(rounds) or rounds <= 0 do
+    input: rounds
+od
+rounds := min(rounds, #remaining_words)
+
+score := 0
+repeat rounds do
+    solved_word := next_word()
+    scrambled_word := scramble(solved_word)
+
+    output: "Unscramble the following: ", scrambled_word
+    input text: users_guess
+
+    if users_guess = solved_word then
+        output: "That's correct!"
+        score := score + 1
+    else
+        output: "That's incorrect."
+    fi
+od
+
+output: "You scored ", score, " out of ", rounds, "."
