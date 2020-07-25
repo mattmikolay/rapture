@@ -1,5 +1,7 @@
 package com.mattmik.rapira.visitors
 
+import com.mattmik.rapira.CONST_NO
+import com.mattmik.rapira.CONST_YES
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraBaseVisitor
 import com.mattmik.rapira.antlr.RapiraParser
@@ -31,17 +33,33 @@ import com.mattmik.rapira.util.map
  */
 class ExpressionVisitor(private val environment: Environment) : RapiraBaseVisitor<RObject>() {
 
+    // Supports short-circuit evaluation
     override fun visitAndExpression(ctx: RapiraParser.AndExpressionContext) =
         ctx.expression()
-            .map { visit(it) }
-            .let { (leftExpr, rightExpr) -> leftExpr and rightExpr }
-            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.AND().symbol) }
+            .fold<RapiraParser.ExpressionContext, RObject>(CONST_YES) { result, expr ->
+                if (result == CONST_NO)
+                    CONST_NO
+                else (result and visit(expr)).getOrThrow { reason ->
+                    InvalidOperationError(
+                        reason,
+                        token = ctx.AND().symbol
+                    )
+                }
+            }
 
+    // Supports short-circuit evaluation
     override fun visitOrExpression(ctx: RapiraParser.OrExpressionContext) =
         ctx.expression()
-            .map { visit(it) }
-            .let { (leftExpr, rightExpr) -> leftExpr or rightExpr }
-            .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.OR().symbol) }
+            .fold<RapiraParser.ExpressionContext, RObject>(CONST_NO) { result, expr ->
+                if (result == CONST_YES)
+                    CONST_YES
+                else (result or visit(expr)).getOrThrow { reason ->
+                    InvalidOperationError(
+                        reason,
+                        token = ctx.OR().symbol
+                    )
+                }
+            }
 
     override fun visitNotExpression(ctx: RapiraParser.NotExpressionContext) =
         visit(ctx.expression())

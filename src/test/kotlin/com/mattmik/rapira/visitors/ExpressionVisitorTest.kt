@@ -220,8 +220,20 @@ class ExpressionVisitorTest : WordSpec({
             resultObject shouldBe Logical(true)
         }
 
+        "evaluate logical or with short-circuiting" {
+            // Second condition "hello" <= 0 would throw exception without short-circuiting
+            val resultObject = evaluateExpression("is_int(\"hello\") = no or \"hello\" <= 0")
+            resultObject shouldBe Logical(true)
+        }
+
         "evaluate logical and" {
             val resultObject = evaluateExpression("yes and no")
+            resultObject shouldBe Logical(false)
+        }
+
+        "evaluate logical and with short-circuiting" {
+            // Second condition "hello" <= 0 would throw exception without short-circuiting
+            val resultObject = evaluateExpression("is_int(\"hello\") and \"hello\" <= 0")
             resultObject shouldBe Logical(false)
         }
 
