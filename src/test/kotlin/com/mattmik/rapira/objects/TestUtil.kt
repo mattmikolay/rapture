@@ -38,6 +38,17 @@ infix fun <T> Result<T>.shouldSucceedWith(expected: T) = this should succeedWith
 
 fun <T> Result<T>.shouldError() = this should beOfType<Result.Error>()
 
+fun <T> errorWith(expected: String) = object : Matcher<Result<T>> {
+    override fun test(value: Result<T>) =
+        MatcherResult(
+            value is Result.Error && value.reason == expected,
+            "Result $value should be error with reason $expected",
+            "Result $value should not be error with reason $expected"
+        )
+}
+
+infix fun <T> Result<T>.shouldErrorWith(reason: String) = this should errorWith(reason)
+
 val rapiraEmptyArb = Arb.create { Empty }
 val rapiraFunctionArb = Arb.create { Function() }
 val rapiraIntegerArb = Arb.int().map { num -> num.toRInteger() }
