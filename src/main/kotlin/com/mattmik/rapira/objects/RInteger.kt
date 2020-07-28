@@ -34,9 +34,10 @@ data class RInteger(val value: Int) : RObject {
     }
 
     override fun div(other: RObject) = when (other) {
-        is RInteger -> if (value % other.value == 0)
-            RInteger(value / other.value).toSuccess()
-        else Real(value.toDouble() / other.value).toSuccess()
+        is RInteger ->
+            if (value % other.value == 0)
+                RInteger(value / other.value).toSuccess()
+            else Real(value.toDouble() / other.value).toSuccess()
         is Real -> Real(value / other.value).toSuccess()
         else -> super.div(other)
     }

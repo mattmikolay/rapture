@@ -11,10 +11,10 @@ import com.mattmik.rapira.errors.IllegalInvocationError
 import com.mattmik.rapira.errors.IllegalParamNameError
 import com.mattmik.rapira.errors.IllegalProcedureInvocationError
 import com.mattmik.rapira.errors.InvalidOperationError
+import com.mattmik.rapira.objects.Callable
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
-import com.mattmik.rapira.objects.Callable
 import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.objects.parseEscapedText
@@ -70,13 +70,15 @@ class ExpressionVisitor(private val environment: Environment) : RapiraBaseVisito
         ctx.expression()
             .map { visit(it) }
             .let { (leftExpr, rightExpr) -> leftExpr.compare(rightExpr) }
-            .map { when (ctx.op.type) {
-                RapiraParser.LESS -> it < 0
-                RapiraParser.GREATER -> it > 0
-                RapiraParser.LESSEQ -> it <= 0
-                RapiraParser.GREATEREQ -> it >= 0
-                else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
-            } }
+            .map {
+                when (ctx.op.type) {
+                    RapiraParser.LESS -> it < 0
+                    RapiraParser.GREATER -> it > 0
+                    RapiraParser.LESSEQ -> it <= 0
+                    RapiraParser.GREATEREQ -> it >= 0
+                    else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
+                }
+            }
             .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.op) }
             .toLogical()
 
@@ -95,23 +97,27 @@ class ExpressionVisitor(private val environment: Environment) : RapiraBaseVisito
     override fun visitMultiplicationExpression(ctx: RapiraParser.MultiplicationExpressionContext) =
         ctx.arithmeticExpression()
             .map { visit(it) }
-            .let { (leftExpr, rightExpr) -> when (ctx.op.type) {
-                RapiraParser.MULT -> leftExpr * rightExpr
-                RapiraParser.DIVIDE -> leftExpr / rightExpr
-                RapiraParser.INTDIVIDE -> leftExpr.intDivide(rightExpr)
-                RapiraParser.MOD -> leftExpr % rightExpr
-                else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
-            } }
+            .let { (leftExpr, rightExpr) ->
+                when (ctx.op.type) {
+                    RapiraParser.MULT -> leftExpr * rightExpr
+                    RapiraParser.DIVIDE -> leftExpr / rightExpr
+                    RapiraParser.INTDIVIDE -> leftExpr.intDivide(rightExpr)
+                    RapiraParser.MOD -> leftExpr % rightExpr
+                    else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
+                }
+            }
             .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.op) }
 
     override fun visitAdditionExpression(ctx: RapiraParser.AdditionExpressionContext) =
         ctx.arithmeticExpression()
             .map { visit(it) }
-            .let { (leftExpr, rightExpr) -> when (ctx.op.type) {
-                RapiraParser.PLUS -> leftExpr + rightExpr
-                RapiraParser.MINUS -> leftExpr - rightExpr
-                else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
-            } }
+            .let { (leftExpr, rightExpr) ->
+                when (ctx.op.type) {
+                    RapiraParser.PLUS -> leftExpr + rightExpr
+                    RapiraParser.MINUS -> leftExpr - rightExpr
+                    else -> throw IllegalStateException("Fatal: encountered unexpected token of type ${ctx.op.type}")
+                }
+            }
             .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.op) }
 
     override fun visitUnaryExpression(ctx: RapiraParser.UnaryExpressionContext) =

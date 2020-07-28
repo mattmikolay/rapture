@@ -34,20 +34,24 @@ class VariableVisitorTest : WordSpec({
     beforeTest {
         environment = Environment()
         environment["string_value"] = SimpleVariable(Text("Hello, world!"))
-        environment["seq_value"] = SimpleVariable(listOf(
-            "Alpha".toText(),
-            "Bravo".toText(),
-            "Charlie".toText()
-        ).toSequence())
-        environment["nested_sequence"] = SimpleVariable(listOf(
-            "Oink".toText(),
-            Sequence(
-                "Bark".toText(),
-                "Meow".toText(),
-                "Quack".toText()
-            ),
-            "Moo".toText()
-        ).toSequence())
+        environment["seq_value"] = SimpleVariable(
+            listOf(
+                "Alpha".toText(),
+                "Bravo".toText(),
+                "Charlie".toText()
+            ).toSequence()
+        )
+        environment["nested_sequence"] = SimpleVariable(
+            listOf(
+                "Oink".toText(),
+                Sequence(
+                    "Bark".toText(),
+                    "Meow".toText(),
+                    "Quack".toText()
+                ),
+                "Moo".toText()
+            ).toSequence()
+        )
         environment["one"] = SimpleVariable(RInteger(1))
     }
 

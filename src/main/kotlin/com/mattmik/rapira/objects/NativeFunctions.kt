@@ -6,6 +6,7 @@ import com.mattmik.rapira.errors.IllegalArgumentError
 import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.util.getOrThrow
+import org.antlr.v4.runtime.Token
 import kotlin.math.absoluteValue
 import kotlin.math.asin
 import kotlin.math.atan
@@ -20,7 +21,6 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 import kotlin.random.Random
-import org.antlr.v4.runtime.Token
 
 private interface NativeFunction : RObject, Callable
 

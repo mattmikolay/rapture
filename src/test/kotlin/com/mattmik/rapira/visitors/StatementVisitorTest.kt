@@ -10,7 +10,6 @@ import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
 import com.mattmik.rapira.errors.IllegalRepeatLoopError
 import com.mattmik.rapira.errors.IllegalReturnValueError
-import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure

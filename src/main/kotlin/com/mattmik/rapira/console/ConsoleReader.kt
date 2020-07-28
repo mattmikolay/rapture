@@ -4,11 +4,19 @@ import com.github.ajalt.clikt.core.UsageError
 import com.github.ajalt.clikt.output.TermUi.prompt
 import com.mattmik.rapira.CONST_NO
 import com.mattmik.rapira.CONST_YES
-import com.mattmik.rapira.objects.*
+import com.mattmik.rapira.objects.Empty
+import com.mattmik.rapira.objects.RObject
+import com.mattmik.rapira.objects.parseEscapedText
+import com.mattmik.rapira.objects.toRInteger
+import com.mattmik.rapira.objects.toReal
+import com.mattmik.rapira.objects.toText
 
-val integerRegex = """[+-]?[0-9]+""".toRegex()
-val realRegex = """[+-]?[0-9]+(?:e[+-]?[0-9]+|\.[0-9]+(?:e[+-]?[0-9]+)?)""".toRegex()
-val textRegex = """"(?:[^\r\n"]|"")*"""".toRegex()
+val integerRegex =
+    """[+-]?[0-9]+""".toRegex()
+val realRegex =
+    """[+-]?[0-9]+(?:e[+-]?[0-9]+|\.[0-9]+(?:e[+-]?[0-9]+)?)""".toRegex()
+val textRegex =
+    """"(?:[^\r\n"]|"")*"""".toRegex()
 
 /**
  * Convenience object used to read [RObject] values from the terminal.

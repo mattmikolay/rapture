@@ -52,10 +52,12 @@ abstract class Subroutine(
 
         params.zip(arguments).forEach { (param, argument) ->
             when (argument) {
-                is InArgument -> if (param.type != ParamType.In)
-                    throw IllegalArgumentError("Unexpected in argument passed to in-out param", argument)
-                else -> if (param.type != ParamType.InOut)
-                    throw IllegalArgumentError("Unexpected in-out argument passed to in param", argument)
+                is InArgument ->
+                    if (param.type != ParamType.In)
+                        throw IllegalArgumentError("Unexpected in argument passed to in-out param", argument)
+                else ->
+                    if (param.type != ParamType.InOut)
+                        throw IllegalArgumentError("Unexpected in-out argument passed to in param", argument)
             }
 
             newEnvironment[param.name] = argument.evaluate(environment)

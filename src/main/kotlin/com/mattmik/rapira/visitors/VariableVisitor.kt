@@ -6,7 +6,6 @@ import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.errors.InvalidOperationError
 import com.mattmik.rapira.errors.NonIntegerIndexError
 import com.mattmik.rapira.objects.RInteger
-import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.andThen
 import com.mattmik.rapira.util.getOrThrow
 import com.mattmik.rapira.variables.IndexedVariable
@@ -41,9 +40,9 @@ class VariableVisitor(private val environment: Environment) : RapiraBaseVisitor<
 
         val startIndex = leftExpr ?: RInteger(1)
         val endIndex = rightExpr ?: (
-                variable.getValue().andThen { it.length() }
-                    .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.variable().start) }
-                )
+            variable.getValue().andThen { it.length() }
+                .getOrThrow { reason -> InvalidOperationError(reason, token = ctx.variable().start) }
+            )
 
         return SliceVariable(variable, startIndex, endIndex)
     }

@@ -59,22 +59,26 @@ class ExpressionVisitorTest : WordSpec({
         }
 
         "evaluate procedure definitions" {
-            val resultObject = evaluateExpression("""
+            val resultObject = evaluateExpression(
+                """
                 proc (param1, =>param2, <=param3)
                     output: "Hello, world!"
                     test := 3 + 4
                 end
-            """.trimIndent())
+                """.trimIndent()
+            )
             resultObject should beOfType<Procedure>()
         }
 
         "evaluate function definitions" {
-            val resultObject = evaluateExpression("""
+            val resultObject = evaluateExpression(
+                """
                 fun (param1, =>param2)
                     output: "Hello, world!"
                     test := 3 + 4
                 end
-            """.trimIndent())
+                """.trimIndent()
+            )
             resultObject should beOfType<Function>()
         }
 

@@ -1,6 +1,5 @@
 package com.mattmik.rapira
 
-import com.github.ajalt.clikt.core.ProgramResult
 import com.mattmik.rapira.antlr.RapiraLexer
 import com.mattmik.rapira.antlr.RapiraParser
 import com.mattmik.rapira.console.ConsoleWriter
@@ -8,13 +7,11 @@ import com.mattmik.rapira.control.ControlFlowException
 import com.mattmik.rapira.errors.InterpreterRuntimeError
 import com.mattmik.rapira.errors.SyntaxErrorListener
 import com.mattmik.rapira.visitors.StatementVisitor
-import java.io.InputStream
-import org.antlr.v4.runtime.BailErrorStrategy
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.ConsoleErrorListener
-import org.antlr.v4.runtime.misc.ParseCancellationException
 import org.antlr.v4.runtime.tree.ParseTree
+import java.io.InputStream
 
 object Interpreter {
 
