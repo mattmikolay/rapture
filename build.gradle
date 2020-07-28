@@ -23,6 +23,10 @@ generateGrammarSource {
     outputDirectory = file(antlrOutputDirectory)
 }
 
+ktlint {
+    version = "0.37.2"
+}
+
 dependencies {
     antlr "org.antlr:antlr4:4.8"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
