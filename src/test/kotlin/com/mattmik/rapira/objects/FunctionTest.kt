@@ -2,15 +2,22 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraParser
+import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
+import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.IllegalArgumentError
 import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.params.ParamType
 import com.mattmik.rapira.params.Parameter
+import com.mattmik.rapira.visitors.StatementVisitor
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.unmockkConstructor
 
 class FunctionTest : WordSpec({
 
@@ -23,6 +30,14 @@ class FunctionTest : WordSpec({
         }
 
     "call" should {
+        beforeTest {
+            mockkConstructor(StatementVisitor::class)
+        }
+
+        afterTest {
+            unmockkConstructor(StatementVisitor::class)
+        }
+
         "throw exception when param and argument count differ" {
             val params = makeFunctionParams("param1", "param2", "param3")
             val arguments = listOf(
@@ -49,6 +64,20 @@ class FunctionTest : WordSpec({
             shouldThrow<IllegalArgumentError> {
                 function.call(Environment(), arguments, mockk())
             }
+        }
+
+        "return value held by CallableReturnException" {
+            val params = emptyList<Parameter>()
+            val arguments = emptyList<Argument>()
+            val mockStatements = mockk<RapiraParser.StmtsContext>(relaxed = true)
+            val expectedReturnValue = Text("Hello, world!")
+            every { anyConstructed<StatementVisitor>().visit(any()) } throws CallableReturnException(
+                returnValue = expectedReturnValue,
+                token = mockk()
+            )
+
+            Function(null, mockStatements, params)
+                .call(Environment(), arguments, mockk()) shouldBe expectedReturnValue
         }
     }
 
