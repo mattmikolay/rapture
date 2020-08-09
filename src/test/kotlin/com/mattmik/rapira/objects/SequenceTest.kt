@@ -2,6 +2,8 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.CONST_YES
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.list
@@ -18,6 +20,33 @@ class SequenceTest : WordSpec({
             val sequence = Sequence(obj1, obj2, obj3)
 
             sequence.entries shouldBe listOf(obj1, obj2, obj3)
+        }
+    }
+
+    "plus" should {
+        val sequence = listOf(
+            1.toRInteger(),
+            "Hello, world!".toText(),
+            2.toRInteger(),
+            "This is a test.".toText()
+        ).toSequence()
+
+        "succeed with sequence when given sequence" {
+            sequence + sequence shouldSucceedWith Sequence(sequence.entries + sequence.entries)
+        }
+
+        "error when given other types" {
+            forAll(
+                row(Empty),
+                row(Procedure()),
+                row(Function()),
+                row(RInteger(1)),
+                row(CONST_YES),
+                row(Real(1.0)),
+                row(Text("Hello, world!"))
+            ) { obj ->
+                (sequence + obj).shouldError()
+            }
         }
     }
 
@@ -55,6 +84,20 @@ class SequenceTest : WordSpec({
                 (sequence * RInteger(num)).shouldError()
             }
         }
+
+        "error when given other types" {
+            forAll(
+                row(Empty),
+                row(Procedure()),
+                row(Function()),
+                row(Text("Hello, world!")),
+                row(CONST_YES),
+                row(Real(1.0)),
+                row(Sequence())
+            ) { obj ->
+                (sequence * obj).shouldError()
+            }
+        }
     }
 
     "length" should {
@@ -84,6 +127,20 @@ class SequenceTest : WordSpec({
             sequence.elementAt(0.toRInteger()).shouldError()
             sequence.elementAt(5.toRInteger()).shouldError()
         }
+
+        "error when given other types" {
+            forAll(
+                row(Empty),
+                row(Procedure()),
+                row(Function()),
+                row(Text("Hello, world!")),
+                row(CONST_YES),
+                row(Real(1.0)),
+                row(Sequence())
+            ) { obj ->
+                sequence.elementAt(obj).shouldError()
+            }
+        }
     }
 
     "slice" should {
@@ -110,6 +167,29 @@ class SequenceTest : WordSpec({
                 2.toRInteger(),
                 3.toRInteger()
             ).toSequence()
+        }
+
+        "error when given other types" {
+            forAll(
+                row(Empty),
+                row(Procedure()),
+                row(Function()),
+                row(Text("Hello, world!")),
+                row(CONST_YES),
+                row(Real(1.0)),
+                row(Sequence())
+            ) { obj ->
+                val testSequence = listOf(
+                    1.toRInteger(),
+                    "Hello, world!".toText(),
+                    2.toRInteger(),
+                    "This is a test.".toText()
+                ).toSequence()
+
+                testSequence.slice(null, obj).shouldError()
+                testSequence.slice(obj, null).shouldError()
+                testSequence.slice(obj, obj).shouldError()
+            }
         }
     }
 
