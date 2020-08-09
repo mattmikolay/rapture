@@ -1,7 +1,9 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.CONST_YES
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.should
+import io.kotest.data.forAll
+import io.kotest.data.row
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.negativeInts
 import io.kotest.property.arbitrary.positiveInts
@@ -13,6 +15,20 @@ class TextTest : WordSpec({
         "succeed with text when given text" {
             checkAll<String, String> { a, b ->
                 Text(a) + Text(b) shouldSucceedWith Text(a + b)
+            }
+        }
+
+        "error when given other types" {
+            forAll(
+                row(Empty),
+                row(Procedure()),
+                row(Function()),
+                row(RInteger(1)),
+                row(CONST_YES),
+                row(Real(1.0)),
+                row(Sequence())
+            ) { obj ->
+                (Text("Hello, world!") + obj).shouldError()
             }
         }
     }
@@ -33,6 +49,20 @@ class TextTest : WordSpec({
         "error when given negative integer" {
             checkAll(Arb.string(), Arb.negativeInts()) { str, num ->
                 (str.toText() * num.toRInteger()).shouldError()
+            }
+        }
+
+        "error when given other types" {
+            forAll(
+                row(Empty),
+                row(Procedure()),
+                row(Function()),
+                row(Text("Hello, world!")),
+                row(CONST_YES),
+                row(Real(1.0)),
+                row(Sequence())
+            ) { obj ->
+                (Text("Hello, world!") * obj).shouldError()
             }
         }
     }
@@ -56,6 +86,20 @@ class TextTest : WordSpec({
             text.elementAt(RInteger(0)).shouldError()
             text.elementAt(RInteger(5)).shouldError()
         }
+
+        "error when given other types" {
+            forAll(
+                row(Empty),
+                row(Procedure()),
+                row(Function()),
+                row(Text("Hello, world!")),
+                row(CONST_YES),
+                row(Real(1.0)),
+                row(Sequence())
+            ) { obj ->
+                Text("Hello, world!").elementAt(obj).shouldError()
+            }
+        }
     }
 
     "slice" should {
@@ -65,6 +109,22 @@ class TextTest : WordSpec({
             text.slice(8.toRInteger(), null) shouldSucceedWith "world!".toText()
             text.slice(4.toRInteger(), 9.toRInteger()) shouldSucceedWith "lo, wo".toText()
             text.slice(null, 5.toRInteger()) shouldSucceedWith "Hello".toText()
+        }
+
+        "error when given other types" {
+            forAll(
+                row(Empty),
+                row(Procedure()),
+                row(Function()),
+                row(Text("Hello, world!")),
+                row(CONST_YES),
+                row(Real(1.0)),
+                row(Sequence())
+            ) { obj ->
+                Text("Hello, world!").slice(null, obj).shouldError()
+                Text("Hello, world!").slice(obj, null).shouldError()
+                Text("Hello, world!").slice(obj, obj).shouldError()
+            }
         }
     }
 
