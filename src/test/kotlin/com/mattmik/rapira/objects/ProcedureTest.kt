@@ -2,15 +2,23 @@ package com.mattmik.rapira.objects
 
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraParser
+import com.mattmik.rapira.args.Argument
 import com.mattmik.rapira.args.InArgument
 import com.mattmik.rapira.args.InOutArgument
+import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.errors.IllegalArgumentError
+import com.mattmik.rapira.errors.IllegalReturnValueError
 import com.mattmik.rapira.errors.IncorrectArgumentCountError
 import com.mattmik.rapira.params.ParamType
 import com.mattmik.rapira.params.Parameter
+import com.mattmik.rapira.visitors.StatementVisitor
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.nulls.shouldBeNull
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.unmockkConstructor
 
 class ProcedureTest : WordSpec({
 
@@ -23,6 +31,14 @@ class ProcedureTest : WordSpec({
         }
 
     "call" should {
+        beforeTest {
+            mockkConstructor(StatementVisitor::class)
+        }
+
+        afterTest {
+            unmockkConstructor(StatementVisitor::class)
+        }
+
         "throw exception when param and argument count differ" {
             val mockVariableContext = mockk<RapiraParser.VariableContext> {
                 start = mockk()
@@ -54,6 +70,35 @@ class ProcedureTest : WordSpec({
             shouldThrow<IllegalArgumentError> {
                 procedure.call(Environment(), arguments, mockk())
             }
+        }
+
+        "throw exception when CallableReturnException holds non-null value" {
+            val params = emptyList<Parameter>()
+            val arguments = emptyList<Argument>()
+            val mockStatements = mockk<RapiraParser.StmtsContext>(relaxed = true)
+            val returnValue = Text("Hello, world!")
+            every { anyConstructed<StatementVisitor>().visit(any()) } throws CallableReturnException(
+                returnValue = returnValue,
+                token = mockk()
+            )
+
+            shouldThrow<IllegalReturnValueError> {
+                Procedure(null, mockStatements, params).call(Environment(), arguments, mockk())
+            }
+        }
+
+        "return when CallableReturnException holds null value" {
+            val params = emptyList<Parameter>()
+            val arguments = emptyList<Argument>()
+            val mockStatements = mockk<RapiraParser.StmtsContext>(relaxed = true)
+            every { anyConstructed<StatementVisitor>().visit(any()) } throws CallableReturnException(
+                returnValue = null,
+                token = mockk()
+            )
+
+            Procedure(null, mockStatements, params)
+                .call(Environment(), arguments, mockk())
+                .shouldBeNull()
         }
     }
 
