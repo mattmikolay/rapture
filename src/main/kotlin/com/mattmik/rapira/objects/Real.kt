@@ -1,5 +1,6 @@
 package com.mattmik.rapira.objects
 
+import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.util.toSuccess
 import kotlin.math.exp
 import kotlin.math.ln
@@ -30,8 +31,16 @@ data class Real(val value: Double) : RObject {
     }
 
     override fun div(other: RObject) = when (other) {
-        is RInteger -> Real(value / other.value).toSuccess()
-        is Real -> Real(value / other.value).toSuccess()
+        is RInteger -> {
+            if (other.value != 0)
+                Real(value / other.value).toSuccess()
+            else
+                Result.Error("Invalid division operation with zero value")
+        }
+        is Real -> when (other.value) {
+            0.0, -0.0 -> Result.Error("Invalid division operation with zero value")
+            else -> Real(value / other.value).toSuccess()
+        }
         else -> super.div(other)
     }
 
