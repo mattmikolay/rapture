@@ -1,11 +1,13 @@
 package com.mattmik.rapira.console
 
+import com.github.ajalt.clikt.core.UsageError
 import com.mattmik.rapira.CONST_NO
 import com.mattmik.rapira.CONST_YES
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.objects.Text
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
@@ -61,6 +63,12 @@ class ConsoleReaderTest : WordSpec({
                 row("+1.23e-3", 0.00123)
             ) { str, num ->
                 ConsoleReader.parseObject(str) shouldBe Real(num)
+            }
+        }
+
+        "throw UsageError on unmatched input" {
+            shouldThrow<UsageError> {
+                ConsoleReader.parseObject("#*&%!")
             }
         }
     }
