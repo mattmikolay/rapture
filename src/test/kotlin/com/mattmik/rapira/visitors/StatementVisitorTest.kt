@@ -8,6 +8,8 @@ import com.mattmik.rapira.console.ConsoleReader
 import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.control.CallableReturnException
 import com.mattmik.rapira.control.LoopExitException
+import com.mattmik.rapira.errors.IllegalForLoopError
+import com.mattmik.rapira.errors.IllegalInvocationError
 import com.mattmik.rapira.errors.IllegalRepeatLoopError
 import com.mattmik.rapira.errors.IllegalReturnValueError
 import com.mattmik.rapira.objects.Empty
@@ -750,6 +752,28 @@ class StatementVisitorTest : WordSpec({
                     """
                         repeat -3 do
                             output: "Hello, world!"
+                        od
+                    """.trimIndent()
+                )
+            }
+        }
+
+        "throw IllegalInvocationError when call is used with non-callable object" {
+            shouldThrow<IllegalInvocationError> {
+                evaluateStatements(
+                    """
+                        call alpha()
+                    """.trimIndent()
+                )
+            }
+        }
+
+        "throw IllegalForLoopError when for loop to value is non-numeric" {
+            shouldThrow<IllegalForLoopError> {
+                evaluateStatements(
+                    """
+                        for i from 3 to "hello" do
+                            output: i
                         od
                     """.trimIndent()
                 )
