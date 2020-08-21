@@ -1,8 +1,10 @@
 package com.mattmik.rapira.variables
 
+import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
+import com.mattmik.rapira.objects.shouldError
 import com.mattmik.rapira.objects.shouldSucceedWith
 import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.objects.toText
@@ -99,6 +101,34 @@ class SliceVariableTest : WordSpec({
                     Text("epsilon"),
                     Text("delta")
                 )
+            }
+        }
+
+        "start index is non-integer" should {
+            val textVariable = SimpleVariable(value = "Hello, world!".toText())
+
+            "return error" {
+                val sliceVariable = SliceVariable(
+                    textVariable,
+                    startIndex = Empty,
+                    endIndex = RInteger(2)
+                )
+
+                sliceVariable.setValue("test".toText()).shouldError()
+            }
+        }
+
+        "end index is non-integer" should {
+            val textVariable = SimpleVariable(value = "Hello, world!".toText())
+
+            "return error" {
+                val sliceVariable = SliceVariable(
+                    textVariable,
+                    startIndex = RInteger(2),
+                    endIndex = Empty
+                )
+
+                sliceVariable.setValue("test".toText()).shouldError()
             }
         }
     }
