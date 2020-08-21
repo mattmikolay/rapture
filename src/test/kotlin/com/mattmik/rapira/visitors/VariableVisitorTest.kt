@@ -3,6 +3,7 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLexer
 import com.mattmik.rapira.antlr.RapiraParser
+import com.mattmik.rapira.errors.NonIntegerIndexError
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.RInteger
 import com.mattmik.rapira.objects.Sequence
@@ -14,6 +15,7 @@ import com.mattmik.rapira.variables.IndexedVariable
 import com.mattmik.rapira.variables.SimpleVariable
 import com.mattmik.rapira.variables.SliceVariable
 import com.mattmik.rapira.variables.Variable
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
@@ -129,6 +131,12 @@ class VariableVisitorTest : WordSpec({
                     "Quack".toText()
                 )
             )
+        }
+
+        "throw NonIntegerIndexError when non-integer index is encountered" {
+            shouldThrow<NonIntegerIndexError> {
+                evaluateVariable("nested_sequence[1.4]")
+            }
         }
     }
 })
