@@ -3,6 +3,8 @@ package com.mattmik.rapira.visitors
 import com.mattmik.rapira.Environment
 import com.mattmik.rapira.antlr.RapiraLexer
 import com.mattmik.rapira.antlr.RapiraParser
+import com.mattmik.rapira.errors.IllegalInvocationError
+import com.mattmik.rapira.errors.IllegalParamNameError
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.Procedure
@@ -12,6 +14,7 @@ import com.mattmik.rapira.objects.toReal
 import com.mattmik.rapira.objects.toSequence
 import com.mattmik.rapira.objects.toText
 import com.mattmik.rapira.variables.SimpleVariable
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
@@ -251,6 +254,36 @@ class ExpressionVisitorTest : WordSpec({
             resultObject1 shouldBe 43.toRInteger()
             val resultObject2 = evaluateExpression("not (not (is_text(\"Hello!\") and no)) or (4 > 3 + 2) = no")
             resultObject2 shouldBe Logical(true)
+        }
+
+        "throw IllegalParamNameError when in-out param name is reserved word" {
+            shouldThrow<IllegalParamNameError> {
+                evaluateExpression(
+                    """
+                        proc (<=pi)
+                            output: "Hello, world!"
+                        end
+                    """.trimIndent()
+                )
+            }
+        }
+
+        "throw IllegalParamNameError when in param name is reserved word" {
+            shouldThrow<IllegalParamNameError> {
+                evaluateExpression(
+                    """
+                        fun (pi)
+                            output: "Hello, world!"
+                        end
+                    """.trimIndent()
+                )
+            }
+        }
+
+        "throw IllegalInvocationError when non-callable is invoked" {
+            shouldThrow<IllegalInvocationError> {
+                evaluateExpression("alpha()")
+            }
         }
     }
 })
