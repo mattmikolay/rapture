@@ -28,7 +28,7 @@ ktlint {
 }
 
 dependencies {
-    def kotest_version = "4.1.2"
+    def kotest_version = "4.2.0"
     antlr "org.antlr:antlr4:4.8"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "com.github.ajalt:clikt:2.8.0"
