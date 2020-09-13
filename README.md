@@ -87,12 +87,13 @@ directory:
         ./gradlew test
 
 ## References
-[1]: *Rapira Programming Language (Язык программирования Рапира)*
-  L.S. Baraz, E.V. Borovikov, N.G. Glagoleva, P.A. Zemtsov, E.V. Nalimov,
-  and V.A. Tsikoza
-    - [English](http://ershov.iis.nsk.su/ru/node/772586)
-    - [Russian](http://ershov.iis.nsk.su/ru/node/772584)
-[2]: [Звенигородский](http://alley.iis.nsk.su/person/zvenigorodskiy)
+[1]: L.S. Baraz, E.V. Borovikov, N.G. Glagoleva, P.A. Zemtsov, E.V. Nalimov, and
+     V.A. Tsikoza. *Rapira Programming Language (Язык программирования Рапира)*.
+     English URL: http://ershov.iis.nsk.su/ru/node/772586 Russian URL:
+     http://ershov.iis.nsk.su/ru/node/772584 (visited on 09/13/2020).
+
+[2]: *Звенигородский*. URL: http://alley.iis.nsk.su/person/zvenigorodskiy
+     (visited on 09/13/2020).
 
 [Agat]: https://en.wikipedia.org/wiki/Agat_%28computer%29
 [Korvet]: https://en.wikipedia.org/wiki/Corvette_%28computer%29
