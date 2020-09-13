@@ -44,6 +44,23 @@ To interpret a file using Rapture:
 ./rapture filename.rap
 ```
 
+## FAQ
+
+**What is Rapira?**
+
+Rapira (Рапира) is a programming language that was created in the Soviet Union
+during the 1980s.
+
+**What computers was Rapira originally used on?**
+
+Rapira interpreters existed for the [Agat], [Korvet], and an unspecified Yamaha
+computer. [\[1\]](#references)
+
+**What languages does Rapira support?**
+
+Russian, English, and Moldovan variants of Rapira were developed.
+[\[1\]](#references) Rapture only supports the English and Russian variants.
+
 ## Development
 
 1. Clone this repository:
@@ -63,12 +80,14 @@ directory:
 
         ./gradlew test
 
-## Resources
-- *Rapira Programming Language (Язык программирования Рапира)*  
+## References
+[1]: *Rapira Programming Language (Язык программирования Рапира)*
   L.S. Baraz, E.V. Borovikov, N.G. Glagoleva, P.A. Zemtsov, E.V. Nalimov,
   and V.A. Tsikoza
     - [English](http://ershov.iis.nsk.su/ru/node/772586)
     - [Russian](http://ershov.iis.nsk.su/ru/node/772584)
 
+[Agat]: https://en.wikipedia.org/wiki/Agat_%28computer%29
+[Korvet]: https://en.wikipedia.org/wiki/Corvette_%28computer%29
 [Kotlin]: https://kotlinlang.org/
 [ANTLR]: https://github.com/antlr/antlr4/
