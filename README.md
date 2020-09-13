@@ -49,7 +49,13 @@ To interpret a file using Rapture:
 **What is Rapira?**
 
 Rapira (Рапира) is a programming language that was created in the Soviet Union
-during the 1980s.
+during the 1980s. It was originally designed by Gennady Anatolievich
+Zvenigorodsky as a "bridge from the education language Robic to the standard
+programming languages." [\[1\]](#references)
+
+The original implementation of Rapira was part of Schoolgirl (Shkolnitsa)
+[\[1\]](#references), a programming system created by Zvenigorodsky and a group
+of his students. [\[2\]](#references)
 
 **What computers was Rapira originally used on?**
 
@@ -86,6 +92,7 @@ directory:
   and V.A. Tsikoza
     - [English](http://ershov.iis.nsk.su/ru/node/772586)
     - [Russian](http://ershov.iis.nsk.su/ru/node/772584)
+[2]: [Звенигородский](http://alley.iis.nsk.su/person/zvenigorodskiy)
 
 [Agat]: https://en.wikipedia.org/wiki/Agat_%28computer%29
 [Korvet]: https://en.wikipedia.org/wiki/Corvette_%28computer%29
