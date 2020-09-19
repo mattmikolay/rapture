@@ -73,16 +73,12 @@ Russian, English, and Moldovan variants of Rapira were developed.
 
         git clone https://github.com/mattmikolay/rapture.git
 
-2. Generate the parser using ANTLR:
-
-        ./gradlew generateGrammarSource
-
-3. Build an executable `rapture` application in the `build/install/rapture/bin`
+2. Build an executable `rapture` application in the `build/install/rapture/bin`
 directory:
 
         ./gradlew installDist
 
-4. If making source code changes, run unit tests:
+3. If making source code changes, run unit tests:
 
         ./gradlew test
 

@@ -39,6 +39,8 @@ dependencies {
     testImplementation "io.mockk:mockk:1.9.3"
 }
 
+compileKotlin.dependsOn generateGrammarSource
+
 tasks.test {
     useJUnitPlatform()
     testLogging {
