@@ -28,14 +28,14 @@ ktlint {
 }
 
 dependencies {
-    def kotest_version = "4.2.0"
+    def kotest_version = "4.2.5"
     antlr "org.antlr:antlr4:4.8"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "com.github.ajalt:clikt:2.8.0"
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
-    testImplementation "io.kotest:kotest-runner-junit5-jvm:$kotest_version"
-    testImplementation "io.kotest:kotest-assertions-core-jvm:$kotest_version"
-    testImplementation "io.kotest:kotest-property-jvm:$kotest_version"
+    testImplementation "io.kotest:kotest-runner-junit5:$kotest_version"
+    testImplementation "io.kotest:kotest-assertions-core:$kotest_version"
+    testImplementation "io.kotest:kotest-property:$kotest_version"
     testImplementation "io.mockk:mockk:1.9.3"
 }
 
