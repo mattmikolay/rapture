@@ -3,14 +3,14 @@ grammar Rapira;
 // Parser rules
 
 dialogUnit
-    : statement STMT_END EOF
-    | expressionStatement STMT_END EOF
-    | routineDefinition STMT_END EOF
+    : statement stmtEnd EOF
+    | expressionStatement stmtEnd EOF
+    | routineDefinition stmtEnd EOF
     ;
 
 fileInput
-    : fileStatement (STMT_END fileStatement)* STMT_END? EOF
-    | STMT_END? EOF
+    : fileStatement (stmtEnd fileStatement)* stmtEnd? EOF
+    | stmtEnd? EOF
     ;
 
 fileStatement
@@ -24,7 +24,11 @@ routineDefinition
     ;
 
 stmts
-    : (statement? STMT_END)*
+    : (statement? stmtEnd)*
+    ;
+
+stmtEnd
+    : (';' | NL)+
     ;
 
 statement
@@ -40,34 +44,34 @@ statement
     ;
 
 assignStatement
-    : variable ASSIGN expression
+    : variable NL* ASSIGN NL* expression
     ;
 
 variable
-    : variable LBRACKET commaExpression RBRACKET #variableCommaIndex
-    | variable LBRACKET leftExpr=expression? COLON rightExpr=expression? RBRACKET #variableColonIndex
+    : variable NL* LBRACKET NL* commaExpression NL* RBRACKET #variableCommaIndex
+    | variable NL* LBRACKET NL* leftExpr=expression? NL* COLON NL* rightExpr=expression? NL* RBRACKET #variableColonIndex
     | IDENTIFIER #variableIdentifier
     ;
 
 callStatement
-    : CALL expression procedureArguments
-    | IDENTIFIER procedureArguments
+    : CALL NL* expression NL* procedureArguments
+    | IDENTIFIER NL* procedureArguments
     ;
 
 functionDefinition
-    : FUN IDENTIFIER? LPAREN functionParams? RPAREN STMT_END declarations? stmts END
+    : FUN NL* IDENTIFIER? NL* LPAREN NL* functionParams? NL* RPAREN stmtEnd declarations? stmts END
     ;
 
 functionParams
-    : inParam (',' inParam)*
+    : inParam (NL* ',' NL* inParam)*
     ;
 
 procedureDefinition
-    : PROC IDENTIFIER? LPAREN procedureParams? RPAREN STMT_END declarations? stmts END
+    : PROC NL* IDENTIFIER? NL* LPAREN NL* procedureParams? NL* RPAREN stmtEnd declarations? stmts END
     ;
 
 procedureParams
-    : procedureParam (',' procedureParam)*
+    : procedureParam (NL* ',' NL* procedureParam)*
     ;
 
 procedureParam
@@ -76,11 +80,11 @@ procedureParam
     ;
 
 inParam
-    : '=>'? IDENTIFIER
+    : '=>'? NL* IDENTIFIER
     ;
 
 inOutParam
-    : '<=' IDENTIFIER
+    : '<=' NL* IDENTIFIER
     ;
 
 declarations
@@ -89,52 +93,52 @@ declarations
     ;
 
 intern
-    : INTERN COLON IDENTIFIER (',' IDENTIFIER)* STMT_END
+    : INTERN NL* COLON NL* IDENTIFIER (NL* ',' NL* IDENTIFIER)* stmtEnd
     ;
 
 extern
-    : EXTERN COLON IDENTIFIER (',' IDENTIFIER)* STMT_END
+    : EXTERN NL* COLON NL* IDENTIFIER (NL* ',' NL* IDENTIFIER)* stmtEnd
     ;
 
 ifStatement
-    : IF condition=expression THEN ifBody=stmts (ELSE elseBody=stmts)? (FI | BCE)
+    : IF NL* condition=expression NL* THEN ifBody=stmts (ELSE elseBody=stmts)? (FI | BCE)
     ;
 
 caseStatement
-    : CASE condition=expression multiWhenClause* (ELSE elseBody=stmts)? (ESAC | BCE) #conditionCaseStatement
-    | CASE singleWhenClause* (ELSE elseBody=stmts)? (ESAC | BCE) #conditionlessCaseStatement
+    : CASE NL* condition=expression NL* multiWhenClause* (ELSE elseBody=stmts)? (ESAC | BCE) #conditionCaseStatement
+    | CASE NL* singleWhenClause* (ELSE elseBody=stmts)? (ESAC | BCE) #conditionlessCaseStatement
     ;
 
 multiWhenClause
-    : WHEN expression (',' expression)* COLON stmts
+    : WHEN NL* expression (NL* ',' NL* expression)* NL* COLON stmts
     ;
 
 singleWhenClause
-    : WHEN expression COLON stmts
+    : WHEN NL* expression NL* COLON stmts
     ;
 
 loopStatement
-    : (forClause | repeatClause)? whileClause? DO stmts (OD | (UNTIL untilExpr=expression))
+    : (forClause | repeatClause)? NL* whileClause? NL* DO stmts (OD | (UNTIL NL* untilExpr=expression))
     ;
 
 forClause
-    : FOR IDENTIFIER (FROM fromExpr=expression)? (TO toExpr=expression)? (STEP stepExpr=expression)?
+    : FOR NL* IDENTIFIER NL* (FROM NL* fromExpr=expression)? NL* (TO NL* toExpr=expression)? NL* (STEP NL* stepExpr=expression)?
     ;
 
 repeatClause
-    : REPEAT expression
+    : REPEAT NL* expression
     ;
 
 whileClause
-    : WHILE expression
+    : WHILE NL* expression
     ;
 
 outputStatement
-    : OUTPUT nlf=NLF? (COLON expression (',' expression)*)?
+    : OUTPUT NL* nlf=NLF? (NL* COLON NL* expression (NL* ',' NL* expression)*)?
     ;
 
 inputStatement
-    : INPUT inputMode=MODE_TEXT? COLON variable (',' variable)*
+    : INPUT NL* inputMode=MODE_TEXT? NL* COLON NL* variable (NL* ',' NL* variable)*
     ;
 
 exitStatement
@@ -142,7 +146,7 @@ exitStatement
     ;
 
 returnStatement
-    : RETURN expression?
+    : RETURN NL* expression?
     ;
 
 expressionStatement
@@ -150,27 +154,27 @@ expressionStatement
     ;
 
 expression
-    : expression op=(LESS | GREATER | LESSEQ | GREATEREQ) expression #relationalExpression
-    | expression op=(EQ | NEQ) expression #equalityExpression
-    | NOT expression #notExpression
-    | expression AND expression #andExpression
-    | expression OR expression #orExpression
+    : expression NL* op=(LESS | GREATER | LESSEQ | GREATEREQ) NL* expression #relationalExpression
+    | expression NL* op=(EQ | NEQ) NL* expression #equalityExpression
+    | NOT NL* expression #notExpression
+    | expression NL* AND NL* expression #andExpression
+    | expression NL* OR NL* expression #orExpression
     | arithmeticExpression #baseComparisonExpression
     ;
 
 arithmeticExpression
-    : arithmeticExpression POWER arithmeticExpression #exponentiationExpression
-    | arithmeticExpression op=(MULT | DIVIDE | INTDIVIDE | MOD) arithmeticExpression #multiplicationExpression
-    | arithmeticExpression op=(PLUS | MINUS) arithmeticExpression #additionExpression
-    | op=(PLUS | MINUS) subopExpression #unaryExpression
+    : arithmeticExpression NL* POWER NL* arithmeticExpression #exponentiationExpression
+    | arithmeticExpression NL* op=(MULT | DIVIDE | INTDIVIDE | MOD) NL* arithmeticExpression #multiplicationExpression
+    | arithmeticExpression NL* op=(PLUS | MINUS) NL* arithmeticExpression #additionExpression
+    | op=(PLUS | MINUS) NL* subopExpression #unaryExpression
     | subopExpression #unaryExpression
     ;
 
 subopExpression
-    : subopExpression LBRACKET commaExpression RBRACKET #indexCommaExpression
-    | subopExpression LBRACKET leftExpr=expression? COLON rightExpr=expression? RBRACKET #indexColonExpression
-    | subopExpression functionArguments #functionInvocationExpression
-    | HASH subopExpression #lengthExpression
+    : subopExpression NL* LBRACKET NL* commaExpression NL* RBRACKET #indexCommaExpression
+    | subopExpression NL* LBRACKET NL* leftExpr=expression? NL* COLON NL* rightExpr=expression? NL* RBRACKET #indexColonExpression
+    | subopExpression NL* functionArguments #functionInvocationExpression
+    | HASH NL* subopExpression #lengthExpression
     | baseExpression #baseSubopExpression
     ;
 
@@ -181,25 +185,25 @@ baseExpression
     | UNSIGNED_REAL #realValue
     | procedureDefinition #procedureValue
     | functionDefinition #functionValue
-    | LARROW (commaExpression)? RARROW #sequenceValue
-    | LPAREN expression RPAREN #parentheticalExpression
+    | LARROW NL* (commaExpression)? NL* RARROW #sequenceValue
+    | LPAREN NL* expression NL* RPAREN #parentheticalExpression
     ;
 
 commaExpression
-    : expression (',' expression)*
+    : expression (NL* ',' NL* expression)*
     ;
 
 procedureArguments
-    : LPAREN procedureArgument? (',' procedureArgument)* RPAREN
+    : LPAREN NL* procedureArgument? (NL* ',' NL* procedureArgument)* NL* RPAREN
     ;
 
 procedureArgument
-    : '<=' variable
-    | '=>'? expression
+    : '<=' NL* variable
+    | '=>'? NL* expression
     ;
 
 functionArguments
-    : LPAREN ( '=>'? expression )? (',' '=>'? expression)* RPAREN
+    : LPAREN NL* ('=>'? NL* expression)? (NL* ',' NL* '=>'? NL* expression)* NL* RPAREN
     ;
 
 // Lexer rules
@@ -430,10 +434,6 @@ IDENTIFIER
     : [a-zA-Z\p{Cyrillic}][a-zA-Z\p{Cyrillic}0-9_]*
     ;
 
-STMT_END
-    : (';' | NEWLINE)+
-    ;
-
 TEXT
     : '"' (~[\r\n"] | '""')* '"'
     ;
@@ -442,7 +442,7 @@ SKIPPED
     : (COMMENT | WHITESPACE) -> skip
     ;
 
-fragment NEWLINE
+NL
     : [\r\n]
     ;
 
