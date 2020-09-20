@@ -3,8 +3,8 @@ package com.mattmik.rapira.objects
 import com.mattmik.rapira.util.Result
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
+import io.kotest.matchers.types.beOfType
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.bool
 import io.kotest.property.arbitrary.choice

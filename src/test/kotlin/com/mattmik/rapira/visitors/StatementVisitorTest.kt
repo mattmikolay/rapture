@@ -26,8 +26,8 @@ import com.mattmik.rapira.util.Result
 import com.mattmik.rapira.variables.SimpleVariable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
+import io.kotest.matchers.types.beOfType
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.mockkObject

@@ -17,8 +17,8 @@ import com.mattmik.rapira.variables.SliceVariable
 import com.mattmik.rapira.variables.Variable
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.matchers.beOfType
 import io.kotest.matchers.should
+import io.kotest.matchers.types.beOfType
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
