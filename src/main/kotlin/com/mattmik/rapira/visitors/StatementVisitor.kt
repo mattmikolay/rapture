@@ -34,6 +34,9 @@ class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor
 
     private val expressionVisitor = ExpressionVisitor(environment)
 
+    override fun visitStmts(ctx: RapiraParser.StmtsContext) =
+        ctx.statement().forEach { visit(it) }
+
     override fun visitProcedureDefinition(ctx: RapiraParser.ProcedureDefinitionContext) {
         val procedure = expressionVisitor.visit(ctx)
         ctx.IDENTIFIER()?.let {
