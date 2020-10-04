@@ -1,6 +1,5 @@
 package com.mattmik.rapira.interpreter
 
-import org.antlr.v4.runtime.CharStream
 import java.io.InputStream
 
 object InterpreterFactory {
@@ -16,6 +15,6 @@ object InterpreterFactory {
         val charStreamInterpreter = CharStreamInterpreter()
         val errorHandlingInterpreter =
             ErrorHandlingInterpreter(charStreamInterpreter, abortOnError = false)
-        return REPLInterpreter<CharStream>(errorHandlingInterpreter)
+        return REPLInterpreter(errorHandlingInterpreter)
     }
 }
