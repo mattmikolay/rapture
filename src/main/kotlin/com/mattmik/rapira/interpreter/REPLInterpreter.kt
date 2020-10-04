@@ -11,8 +11,12 @@ private const val QUIT_STATEMENT = ":quit"
 class REPLInterpreter(private val charStreamInterpreter: Interpreter<CharStream>) : Interpreter<Unit> {
 
     override fun interpret(input: Unit) {
-        echo("Rapture v$VERSION")
-        echo("Type $QUIT_STATEMENT to exit")
+        echo(
+            """
+                Rapture v$VERSION
+                Type $QUIT_STATEMENT to exit
+            """.trimIndent()
+        )
 
         var line: String?
         while (true) {
