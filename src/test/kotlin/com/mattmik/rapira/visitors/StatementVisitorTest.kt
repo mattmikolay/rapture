@@ -44,11 +44,11 @@ import org.antlr.v4.runtime.CommonTokenStream
 class StatementVisitorTest : WordSpec({
     lateinit var environment: Environment
 
-    fun evaluateStatements(input: String) {
+    fun evaluateStatements(input: String, outputToRepl: ((RObject) -> Unit)? = null) {
         val lexer = RapiraLexer(CharStreams.fromString(input))
         val parser = RapiraParser(CommonTokenStream(lexer))
         val tree = parser.fileInput()
-        StatementVisitor(environment).visit(tree)
+        StatementVisitor(environment, outputToRepl).visit(tree)
     }
 
     beforeTest {
@@ -699,13 +699,9 @@ class StatementVisitorTest : WordSpec({
         }
 
         "handle expression statements" {
-            val statement = "3 * alpha"
             val mockOutputToRepl = mockk<(RObject) -> Unit>(relaxed = true)
 
-            val lexer = RapiraLexer(CharStreams.fromString("$statement\n"))
-            val parser = RapiraParser(CommonTokenStream(lexer))
-            val tree = parser.fileInput()
-            StatementVisitor(environment, mockOutputToRepl).visit(tree)
+            evaluateStatements("3 * alpha", mockOutputToRepl)
 
             verify(exactly = 1) {
                 mockOutputToRepl(Text("Ready!Ready!Ready!"))
