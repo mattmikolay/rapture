@@ -12,7 +12,7 @@ class CharStreamInterpreter(private val visitor: RapiraVisitor<Unit>) : Interpre
     override fun interpret(input: CharStream) {
         val lexer = makeLexer(input)
         val parser = makeParser(lexer)
-        val tree = parser.fileInput() // TODO REPL should use dialogUnit
+        val tree = parser.fileInput()
         visitor.visit(tree)
     }
 
