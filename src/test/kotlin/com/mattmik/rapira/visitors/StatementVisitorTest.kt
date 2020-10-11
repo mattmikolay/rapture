@@ -16,6 +16,7 @@ import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Function
 import com.mattmik.rapira.objects.Procedure
 import com.mattmik.rapira.objects.RInteger
+import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Sequence
 import com.mattmik.rapira.objects.Text
 import com.mattmik.rapira.objects.shouldSucceedWith
@@ -30,6 +31,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.types.beOfType
 import io.mockk.Called
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
@@ -698,14 +700,15 @@ class StatementVisitorTest : WordSpec({
 
         "handle expression statements" {
             val statement = "3 * alpha"
+            val mockOutputToRepl = mockk<(RObject) -> Unit>(relaxed = true)
 
             val lexer = RapiraLexer(CharStreams.fromString("$statement\n"))
             val parser = RapiraParser(CommonTokenStream(lexer))
             val tree = parser.dialogUnit()
-            StatementVisitor(environment).visit(tree)
+            StatementVisitor(environment, mockOutputToRepl).visit(tree)
 
-            verify {
-                ConsoleWriter.println(Text("Ready!Ready!Ready!").toString())
+            verify(exactly = 1) {
+                mockOutputToRepl(Text("Ready!Ready!Ready!"))
             }
         }
 

@@ -1,6 +1,7 @@
 package com.mattmik.rapira.interpreter
 
 import com.mattmik.rapira.Environment
+import com.mattmik.rapira.console.ConsoleWriter
 import com.mattmik.rapira.visitors.StatementVisitor
 import java.io.InputStream
 
@@ -15,7 +16,10 @@ object InterpreterFactory {
     }
 
     fun makeREPLInterpreter(): Interpreter<Unit> {
-        val statementVisitor = StatementVisitor(Environment())
+        val statementVisitor = StatementVisitor(
+            Environment(),
+            outputToRepl = { obj -> ConsoleWriter.println(obj.toString()) },
+        )
         val charStreamInterpreter = CharStreamInterpreter(statementVisitor)
         val errorHandlingInterpreter =
             ErrorHandlingInterpreter(charStreamInterpreter, abortOnError = false)

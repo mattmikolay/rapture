@@ -23,6 +23,7 @@ import com.mattmik.rapira.objects.Callable
 import com.mattmik.rapira.objects.Empty
 import com.mattmik.rapira.objects.Logical
 import com.mattmik.rapira.objects.RInteger
+import com.mattmik.rapira.objects.RObject
 import com.mattmik.rapira.objects.Real
 import com.mattmik.rapira.util.getOrThrow
 
@@ -30,7 +31,10 @@ import com.mattmik.rapira.util.getOrThrow
  * A visitor that executes statements while walking the tree within a given
  * [environment].
  */
-class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor<Unit>() {
+class StatementVisitor(
+    private val environment: Environment,
+    private val outputToRepl: ((RObject) -> Unit)? = null,
+) : RapiraBaseVisitor<Unit>() {
 
     private val expressionVisitor = ExpressionVisitor(environment)
 
@@ -181,10 +185,9 @@ class StatementVisitor(private val environment: Environment) : RapiraBaseVisitor
         throw CallableReturnException(returnValue, token = ctx.RETURN().symbol)
     }
 
-    // Expression statements are only valid in the REPL
     override fun visitExpressionStatement(ctx: RapiraParser.ExpressionStatementContext) {
         val expressionResult = expressionVisitor.visit(ctx.expression()) ?: Empty
-        ConsoleWriter.println(expressionResult.toString())
+        outputToRepl?.let { it(expressionResult) }
     }
 
     private fun readProcedureArguments(ctx: RapiraParser.ProcedureArgumentsContext) =
