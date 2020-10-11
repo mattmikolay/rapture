@@ -164,6 +164,40 @@ class StatementVisitorTest : WordSpec({
             }
         }
 
+        "handle call statements with procedures and output to REPL" {
+            val mockOutputToRepl = mockk<(RObject) -> Unit>(relaxed = true)
+
+            evaluateStatements(
+                """
+                    proc test_procedure()
+                        output: "Hello, world!"
+                    end
+                    call test_procedure()
+                """.trimIndent(),
+                mockOutputToRepl,
+            )
+
+            verify { mockOutputToRepl wasNot Called }
+        }
+
+        "handle call statements with functions and output to REPL" {
+            val mockOutputToRepl = mockk<(RObject) -> Unit>(relaxed = true)
+
+            evaluateStatements(
+                """
+                    fun test_function()
+                        return 32
+                    end
+                    call test_function()
+                """.trimIndent(),
+                mockOutputToRepl,
+            )
+
+            verify(exactly = 1) {
+                mockOutputToRepl(RInteger(32))
+            }
+        }
+
         "handle recursive function calls" {
             evaluateStatements(
                 """

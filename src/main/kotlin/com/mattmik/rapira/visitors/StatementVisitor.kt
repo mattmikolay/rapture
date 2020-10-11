@@ -78,7 +78,10 @@ class StatementVisitor(
 
         val arguments = readProcedureArguments(ctx.procedureArguments())
 
-        callable.call(environment, arguments, callToken)
+        val returnValue = callable.call(environment, arguments, callToken)
+        if (returnValue != null) {
+            outputToRepl?.let { it(returnValue) }
+        }
     }
 
     override fun visitIfStatement(ctx: RapiraParser.IfStatementContext) {
