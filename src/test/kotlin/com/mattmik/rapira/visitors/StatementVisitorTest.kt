@@ -704,7 +704,7 @@ class StatementVisitorTest : WordSpec({
 
             val lexer = RapiraLexer(CharStreams.fromString("$statement\n"))
             val parser = RapiraParser(CommonTokenStream(lexer))
-            val tree = parser.dialogUnit()
+            val tree = parser.fileInput()
             StatementVisitor(environment, mockOutputToRepl).visit(tree)
 
             verify(exactly = 1) {

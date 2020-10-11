@@ -2,20 +2,14 @@ grammar Rapira;
 
 // Parser rules
 
-dialogUnit
-    : statement stmtEnd EOF
-    | expressionStatement stmtEnd EOF
-    | routineDefinition stmtEnd EOF
-    ;
-
 fileInput
     : fileStatement (stmtEnd fileStatement)* stmtEnd? EOF
     | stmtEnd? EOF
     ;
 
 fileStatement
-    : statement
-    | routineDefinition
+    : routineDefinition
+    | statement
     ;
 
 routineDefinition
@@ -41,6 +35,7 @@ statement
     | inputStatement
     | exitStatement
     | returnStatement
+    | expressionStatement
     ;
 
 assignStatement
@@ -149,6 +144,9 @@ returnStatement
     : RETURN NL* expression?
     ;
 
+// Grammar present in "Rapira Programming Language" document does not accept
+// standalone expressions as statements, but doing so here enables REPL
+// functionality.
 expressionStatement
     : expression
     ;
