@@ -3,8 +3,7 @@ grammar Rapira;
 // Parser rules
 
 fileInput
-    : fileStatement (stmtEnd fileStatement)* stmtEnd? EOF
-    | stmtEnd? EOF
+    : stmtEnd? (fileStatement (stmtEnd fileStatement)*)? stmtEnd? EOF
     ;
 
 fileStatement

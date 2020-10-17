@@ -742,6 +742,40 @@ class StatementVisitorTest : WordSpec({
             }
         }
 
+        "ignore leading and trailing whitespace" {
+            evaluateStatements(
+                """
+
+
+                    output
+
+
+                """.trimIndent()
+            )
+            verify {
+                ConsoleWriter.printObjects(
+                    objects = emptyList(),
+                    lineBreak = true
+                )
+            }
+        }
+
+        "ignore leading and trailing comments" {
+            evaluateStatements(
+                """
+                    \ I am a comment
+                    output
+                    \ I am also a comment
+                """.trimIndent()
+            )
+            verify {
+                ConsoleWriter.printObjects(
+                    objects = emptyList(),
+                    lineBreak = true
+                )
+            }
+        }
+
         "throw exception when exit statement occurs outside loop" {
             shouldThrow<LoopExitException> {
                 evaluateStatements("exit")
