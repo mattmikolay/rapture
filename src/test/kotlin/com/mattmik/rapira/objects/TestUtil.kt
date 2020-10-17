@@ -6,9 +6,10 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.types.beOfType
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.bool
 import io.kotest.property.arbitrary.choice
-import io.kotest.property.arbitrary.create
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
@@ -49,11 +50,11 @@ fun <T> errorWith(expected: String) = object : Matcher<Result<T>> {
 
 infix fun <T> Result<T>.shouldErrorWith(reason: String) = this should errorWith(reason)
 
-val rapiraEmptyArb = Arb.create { Empty }
-val rapiraFunctionArb = Arb.create { Function() }
+val rapiraEmptyArb = Arb.constant(Empty)
+val rapiraFunctionArb = arbitrary { Function() }
 val rapiraIntegerArb = Arb.int().map { num -> num.toRInteger() }
 val rapiraLogicalArb = Arb.bool().map { bool -> Logical(bool) }
-val rapiraProcedureArb = Arb.create { Procedure() }
+val rapiraProcedureArb = arbitrary { Procedure() }
 val rapiraRealArb = Arb.double().map { double -> Real(double) }
 val rapiraTextArb = Arb.string().map { str -> str.toText() }
 val rapiraObjectArb = Arb.choice(
