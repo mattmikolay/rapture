@@ -47,6 +47,18 @@ data class Sequence(val entries: List<RObject> = emptyList()) : RObject {
         if (startIndex !is RInteger || endIndex !is RInteger) {
             return Result.Error("Cannot invoke slice with non-integer arguments")
         }
+        if (endIndex.value - startIndex.value + 1 < 0) {
+            return Result.Error("Indexes $startIndex and $endIndex are out of bounds")
+        }
+        if (startIndex.value > endIndex.value) {
+            return emptyList<RObject>().toSequence().toSuccess()
+        }
+        if (startIndex.value < 1) {
+            return Result.Error("Start index $startIndex is out of bounds")
+        }
+        if (endIndex.value > entries.size) {
+            return Result.Error("End index $endIndex is out of bounds")
+        }
         return entries.subList(startIndex.value - 1, endIndex.value).toSequence().toSuccess()
     }
 

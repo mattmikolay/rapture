@@ -167,6 +167,28 @@ class SequenceTest : WordSpec({
                 2.toRInteger(),
                 3.toRInteger()
             ).toSequence()
+
+            sequence.slice(1.toRInteger(), 0.toRInteger()) shouldSucceedWith emptyList<RObject>().toSequence()
+            sequence.slice(5.toRInteger(), 4.toRInteger()) shouldSucceedWith emptyList<RObject>().toSequence()
+        }
+
+        "error when start index is out of bounds" {
+            val sequence = listOf(
+                1.toRInteger(),
+                2.toRInteger(),
+                3.toRInteger(),
+            ).toSequence()
+            sequence.slice(0.toRInteger(), null).shouldError()
+            sequence.slice((-1).toRInteger(), null).shouldError()
+        }
+
+        "error when end index is out of bounds" {
+            val sequence = listOf(
+                1.toRInteger(),
+                2.toRInteger(),
+                3.toRInteger(),
+            ).toSequence()
+            sequence.slice(null, 4.toRInteger()).shouldError()
         }
 
         "error when given other types" {

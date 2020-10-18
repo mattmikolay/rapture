@@ -109,6 +109,20 @@ class TextTest : WordSpec({
             text.slice(8.toRInteger(), null) shouldSucceedWith "world!".toText()
             text.slice(4.toRInteger(), 9.toRInteger()) shouldSucceedWith "lo, wo".toText()
             text.slice(null, 5.toRInteger()) shouldSucceedWith "Hello".toText()
+
+            text.slice(1.toRInteger(), 0.toRInteger()) shouldSucceedWith "".toText()
+            text.slice(14.toRInteger(), 13.toRInteger()) shouldSucceedWith "".toText()
+        }
+
+        "error when start index is out of bounds" {
+            val text = Text("Hello, world!")
+            text.slice(0.toRInteger(), null).shouldError()
+            text.slice((-1).toRInteger(), null).shouldError()
+        }
+
+        "error when end index is out of bounds" {
+            val text = Text("Hello, world!")
+            text.slice(null, 14.toRInteger()).shouldError()
         }
 
         "error when given other types" {

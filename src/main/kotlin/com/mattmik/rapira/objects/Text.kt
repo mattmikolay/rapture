@@ -44,6 +44,18 @@ data class Text(val value: String) : RObject {
         if (startIndex !is RInteger || endIndex !is RInteger) {
             return Result.Error("Cannot invoke slice with non-integer arguments")
         }
+        if (endIndex.value - startIndex.value + 1 < 0) {
+            return Result.Error("Indexes $startIndex and $endIndex are out of bounds")
+        }
+        if (startIndex.value > endIndex.value) {
+            return "".toText().toSuccess()
+        }
+        if (startIndex.value < 1) {
+            return Result.Error("Start index $startIndex is out of bounds")
+        }
+        if (endIndex.value > value.length) {
+            return Result.Error("End index $endIndex is out of bounds")
+        }
         return value.substring(startIndex.value - 1, endIndex.value).toText().toSuccess()
     }
 
