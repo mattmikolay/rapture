@@ -7,6 +7,9 @@ import com.mattmik.rapira.util.toSuccess
  */
 data class Logical(val value: Boolean) : RObject {
 
+    override val typeName: String
+        get() = "logical"
+
     override fun and(other: RObject) = when (other) {
         is Logical -> Logical(value && other.value).toSuccess()
         else -> super.and(other)

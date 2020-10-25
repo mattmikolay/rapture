@@ -8,6 +8,9 @@ import com.mattmik.rapira.util.toSuccess
  */
 data class Text(val value: String) : RObject {
 
+    override val typeName: String
+        get() = "text"
+
     override fun plus(other: RObject) = when (other) {
         is Text -> Text(value + other.value).toSuccess()
         else -> super.plus(other)

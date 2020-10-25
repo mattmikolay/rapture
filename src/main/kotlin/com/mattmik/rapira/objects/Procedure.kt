@@ -19,6 +19,9 @@ class Procedure(
     extern: List<String> = emptyList()
 ) : Subroutine(name, statements, params, extern) {
 
+    override val typeName: String
+        get() = "procedure"
+
     override fun call(
         environment: Environment,
         arguments: List<Argument>,

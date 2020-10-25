@@ -7,6 +7,10 @@ import com.mattmik.rapira.util.toSuccess
  * A sequence Rapira object value. For example, `<* 1, 2.5, yes, "Hello" *>`.
  */
 data class Sequence(val entries: List<RObject> = emptyList()) : RObject {
+
+    override val typeName: String
+        get() = "sequence"
+
     constructor(vararg entries: RObject) : this(entries.toList())
 
     override fun plus(other: RObject) = when (other) {

@@ -9,6 +9,10 @@ import kotlin.math.ln
  * A real number Rapira object value. For example, `530.84` or `1.9e-8`.
  */
 data class Real(val value: Double) : RObject {
+
+    override val typeName: String
+        get() = "real"
+
     override fun plus(other: RObject) = when (other) {
         is RInteger -> Real(value + other.value).toSuccess()
         is Real -> Real(value + other.value).toSuccess()

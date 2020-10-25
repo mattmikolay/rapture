@@ -20,6 +20,9 @@ class Function(
     extern: List<String> = emptyList()
 ) : Subroutine(name, statements, params, extern) {
 
+    override val typeName: String
+        get() = "function"
+
     override fun call(
         environment: Environment,
         arguments: List<Argument>,

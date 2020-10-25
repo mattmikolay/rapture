@@ -22,9 +22,13 @@ import kotlin.math.sqrt
 import kotlin.math.tan
 import kotlin.random.Random
 
-private interface NativeFunction : RObject, Callable
+private interface NativeFunction : RObject, Callable {
 
-private interface SingleParamNativeFunction : RObject, Callable {
+    override val typeName: String
+        get() = "function"
+}
+
+private interface SingleParamNativeFunction : NativeFunction {
 
     override fun call(
         environment: Environment,
