@@ -27,7 +27,7 @@ object ConsoleWriter {
         printError(message, token.line, token.charPositionInLine)
 
     fun printError(message: String, line: Int, charPositionInLine: Int) =
-        echo(message = "Error @ line $line:$charPositionInLine\n\t$message", err = true)
+        echo(message = "Error @ line $line:${charPositionInLine + 1}\n\t$message", err = true)
 
     /**
      * Returns a formatted string representation of a Rapira object [obj] for
