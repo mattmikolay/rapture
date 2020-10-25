@@ -12,9 +12,6 @@ import org.antlr.v4.runtime.Token
  */
 object ConsoleWriter {
 
-    fun println(message: String) =
-        echo(message)
-
     fun printObjects(objects: List<RObject>, lineBreak: Boolean) {
         val formattedOutput = objects.joinToString(
             separator = "",
