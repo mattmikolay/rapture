@@ -81,9 +81,17 @@ class FunctionTest : WordSpec({
         }
     }
 
-    "toString" should {
-        "return user friendly representation" {
-            Function() shouldConvertToString "function"
+    "toString" When {
+        "function is named" should {
+            "return user friendly representation" {
+                Function("foo") shouldConvertToString "fun[\"foo\"]"
+            }
+        }
+
+        "function is unnamed" should {
+            "return user friendly representation" {
+                Function() shouldConvertToString "fun"
+            }
         }
     }
 })

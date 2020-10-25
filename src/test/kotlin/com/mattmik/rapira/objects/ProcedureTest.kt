@@ -102,9 +102,17 @@ class ProcedureTest : WordSpec({
         }
     }
 
-    "toString" should {
-        "return user friendly representation" {
-            Procedure() shouldConvertToString "procedure"
+    "toString" When {
+        "procedure is named" should {
+            "return user friendly representation" {
+                Procedure("foo") shouldConvertToString "proc[\"foo\"]"
+            }
+        }
+
+        "procedure is unnamed" should {
+            "return user friendly representation" {
+                Procedure() shouldConvertToString "proc"
+            }
         }
     }
 })

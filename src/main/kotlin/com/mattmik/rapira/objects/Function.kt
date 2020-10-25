@@ -14,7 +14,7 @@ import org.antlr.v4.runtime.Token
  * passed in-out arguments.
  */
 class Function(
-    name: String? = null,
+    private val name: String? = null,
     statements: RapiraParser.StmtsContext? = null,
     params: List<Parameter> = emptyList(),
     extern: List<String> = emptyList()
@@ -40,5 +40,6 @@ class Function(
         }
     }
 
-    override fun toString() = "function"
+    override fun toString() =
+        name?.let { "fun[\"$it\"]" } ?: "fun"
 }

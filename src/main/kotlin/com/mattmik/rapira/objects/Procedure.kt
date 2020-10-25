@@ -13,7 +13,7 @@ import org.antlr.v4.runtime.Token
  * passed in-out arguments.
  */
 class Procedure(
-    name: String? = null,
+    private val name: String? = null,
     statements: RapiraParser.StmtsContext? = null,
     params: List<Parameter> = emptyList(),
     extern: List<String> = emptyList()
@@ -36,5 +36,6 @@ class Procedure(
             null
         }
 
-    override fun toString() = "procedure"
+    override fun toString() =
+        name?.let { "proc[\"$it\"]" } ?: "proc"
 }

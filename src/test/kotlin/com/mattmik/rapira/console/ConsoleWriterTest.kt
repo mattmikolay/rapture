@@ -14,8 +14,10 @@ class ConsoleWriterTest : WordSpec({
     "formatObject" should {
         "return correct string representations" {
             ConsoleWriter.formatObject(Empty) shouldBe "empty"
-            ConsoleWriter.formatObject(Procedure()) shouldBe "procedure"
-            ConsoleWriter.formatObject(Function()) shouldBe "function"
+            ConsoleWriter.formatObject(Procedure()) shouldBe "proc"
+            ConsoleWriter.formatObject(Procedure("foo")) shouldBe "proc[\"foo\"]"
+            ConsoleWriter.formatObject(Function()) shouldBe "fun"
+            ConsoleWriter.formatObject(Function("foo")) shouldBe "fun[\"foo\"]"
             ConsoleWriter.formatObject(Logical(true)) shouldBe "yes"
             ConsoleWriter.formatObject(Logical(false)) shouldBe "no"
             ConsoleWriter.formatObject(RInteger(123)) shouldBe "123"
