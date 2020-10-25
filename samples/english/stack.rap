@@ -1,0 +1,42 @@
+proc push(<=stack, =>obj)
+    if is_seq(stack) then
+        stack := stack + <* obj *>
+    fi
+end
+
+fun peek(stack)
+    if not is_seq(stack) or #stack = 0 then
+        return empty
+    fi
+    return stack[#stack]
+end
+
+proc pop(<=stack, <=popped_value)
+    if not is_seq(stack) or #stack = 0 then
+        popped_value := empty
+        return
+    fi
+    popped_value := stack[#stack]
+    stack := stack[:#stack - 1]
+end
+
+stack_data := <* *>
+output: "Top of stack: ", peek(stack_data)
+
+push(<=stack_data, "alpha")
+output: "Top of stack: ", peek(stack_data)
+
+push(<=stack_data, "bravo")
+output: "Top of stack: ", peek(stack_data)
+
+push(<=stack_data, "charlie")
+output: "Top of stack: ", peek(stack_data)
+
+pop(<=stack_data, <=word)
+output: "Popped ", word, ", new top of stack: ", peek(stack_data)
+
+pop(<=stack_data, <=word)
+output: "Popped ", word, ", new top of stack: ", peek(stack_data)
+
+pop(<=stack_data, <=word)
+output: "Popped ", word, ", new top of stack: ", peek(stack_data)
