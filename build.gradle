@@ -16,6 +16,15 @@ application {
     mainClassName = 'com.mattmik.rapira.RaptureCommandKt'
 }
 
+// Includes LICENSE in distributions built via Application plugin
+distributions {
+    main {
+        contents {
+            from "LICENSE" into ""
+        }
+    }
+}
+
 def antlrOutputDirectory = "src/main/java/com/mattmik/rapira/antlr"
 sourceSets.main.antlr.srcDirs = ["src/antlr"]
 generateGrammarSource {
