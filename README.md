@@ -1,4 +1,5 @@
-# Rapture
+![Rapture](logo.png)
+====================
 
 Rapture is an interpreter for Rapira (Рапира), a programming language created in
 the Soviet Union during the 1980s.
@@ -29,7 +30,8 @@ output: "Good morning!"
 вывод: "Доброе утро"
 ```
 
-Rapture was built using [Kotlin] and [ANTLR].
+Rapture was built using [Kotlin] and [ANTLR]. The Rapture logo is rendered using
+the [Righteous font](https://fonts.google.com/specimen/Righteous).
 
 ## Usage
 To run the Rapture REPL:
