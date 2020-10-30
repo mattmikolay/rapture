@@ -23,7 +23,10 @@ class SubroutineTest : WordSpec({
                 statements = null,
                 params = params,
                 extern = extern
-            ) {}
+            ) {
+                override val typeName: String
+                    get() = "TestSubroutine"
+            }
 
         "read extern objects from old environment" {
             val mockEnvironment = mockk<Environment>()
