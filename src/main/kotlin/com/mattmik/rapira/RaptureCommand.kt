@@ -8,7 +8,7 @@ import com.github.ajalt.clikt.parameters.types.file
 import com.mattmik.rapira.interpreter.InterpreterFactory
 import java.io.File
 
-const val VERSION = "0.1"
+const val VERSION = "1.0.0"
 
 class RaptureCommand : CliktCommand(
     name = "rapture",
