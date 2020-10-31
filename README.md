@@ -1,6 +1,8 @@
 ![Rapture](logo.png)
 ====================
 
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/mattmikolay/rapture?sort=semver)](https://github.com/mattmikolay/rapture/releases)
+
 Rapture is an interpreter for Rapira (Рапира), a programming language created in
 the Soviet Union during the 1980s.
 
