@@ -443,6 +443,10 @@ NL
     : [\r\n]
     ;
 
+ILLEGAL_TOKEN
+    : .
+    ;
+
 fragment WHITESPACE
     : [ \t]+
     ;
