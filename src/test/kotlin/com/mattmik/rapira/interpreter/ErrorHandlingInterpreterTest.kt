@@ -91,23 +91,6 @@ class ErrorHandlingInterpreterTest : WordSpec({
                     ConsoleWriter.printError(testInterpreterRuntimeError.message, mockToken)
                 }
             }
-
-            "terminate program when SyntaxError thrown" {
-                val testSyntaxError = SyntaxError(TEST_ERROR_MESSAGE, TEST_ERROR_LINE, TEST_ERROR_CHAR_POSITION_IN_LINE)
-                val mockInterpreter = mockk<Interpreter<Unit>> {
-                    every { interpret(any()) } throws testSyntaxError
-                }
-
-                val errorHandlingInterpreter =
-                    ErrorHandlingInterpreter(mockInterpreter, abortOnError)
-
-                val programResult = shouldThrow<ProgramResult> { errorHandlingInterpreter.interpret(Unit) }
-                programResult.statusCode shouldBeExactly 1
-                verify(exactly = 1) {
-                    mockInterpreter.interpret(Unit)
-                    ConsoleWriter.printError(testSyntaxError.message, TEST_ERROR_LINE, TEST_ERROR_CHAR_POSITION_IN_LINE)
-                }
-            }
         }
 
         "abortOnError is false" should {
@@ -157,22 +140,6 @@ class ErrorHandlingInterpreterTest : WordSpec({
                 verify(exactly = 1) {
                     mockInterpreter.interpret(Unit)
                     ConsoleWriter.printError(testInterpreterRuntimeError.message, mockToken)
-                }
-            }
-
-            "not terminate program when SyntaxError thrown" {
-                val testSyntaxError = SyntaxError(TEST_ERROR_MESSAGE, TEST_ERROR_LINE, TEST_ERROR_CHAR_POSITION_IN_LINE)
-                val mockInterpreter = mockk<Interpreter<Unit>> {
-                    every { interpret(any()) } throws testSyntaxError
-                }
-
-                val errorHandlingInterpreter =
-                    ErrorHandlingInterpreter(mockInterpreter, abortOnError)
-
-                shouldNotThrow<ProgramResult> { errorHandlingInterpreter.interpret(Unit) }
-                verify(exactly = 1) {
-                    mockInterpreter.interpret(Unit)
-                    ConsoleWriter.printError(testSyntaxError.message, TEST_ERROR_LINE, TEST_ERROR_CHAR_POSITION_IN_LINE)
                 }
             }
         }

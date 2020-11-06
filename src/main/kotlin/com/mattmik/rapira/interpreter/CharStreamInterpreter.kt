@@ -13,7 +13,9 @@ class CharStreamInterpreter(private val visitor: RapiraVisitor<Unit>) : Interpre
         val lexer = makeLexer(input)
         val parser = makeParser(lexer)
         val tree = parser.fileInput()
-        visitor.visit(tree)
+        if (parser.numberOfSyntaxErrors == 0) {
+            visitor.visit(tree)
+        }
     }
 
     private fun makeLexer(charStream: CharStream) =

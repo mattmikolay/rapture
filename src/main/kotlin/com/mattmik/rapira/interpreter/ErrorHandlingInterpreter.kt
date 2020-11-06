@@ -19,9 +19,6 @@ class ErrorHandlingInterpreter<T>(
         } catch (error: InterpreterRuntimeError) {
             ConsoleWriter.printError(error.message, error.token)
             abortIfNeeded()
-        } catch (error: SyntaxError) {
-            ConsoleWriter.printError(error.message, error.line, error.charPositionInLine)
-            abortIfNeeded()
         }
     }
 

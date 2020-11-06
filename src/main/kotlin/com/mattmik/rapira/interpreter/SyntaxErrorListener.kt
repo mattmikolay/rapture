@@ -1,5 +1,6 @@
 package com.mattmik.rapira.interpreter
 
+import com.mattmik.rapira.console.ConsoleWriter
 import org.antlr.v4.runtime.BaseErrorListener
 import org.antlr.v4.runtime.RecognitionException
 import org.antlr.v4.runtime.Recognizer
@@ -18,5 +19,5 @@ object SyntaxErrorListener : BaseErrorListener() {
         msg: String,
         e: RecognitionException?
     ) =
-        throw SyntaxError("Syntax error - $msg", line, charPositionInLine)
+        ConsoleWriter.printError("Syntax error - $msg", line, charPositionInLine)
 }
