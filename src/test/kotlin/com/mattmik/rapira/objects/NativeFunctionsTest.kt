@@ -9,8 +9,11 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.forAll
 import io.kotest.data.row
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.collection
 import io.mockk.every
 import io.mockk.mockk
 import kotlin.math.absoluteValue
@@ -37,6 +40,15 @@ class NativeFunctionsTest : WordSpec() {
         }
 
         "all native functions" should {
+            "implement toString" {
+                val allFunctionNames = nativeFunctions.keys
+                checkAll(Exhaustive.collection(allFunctionNames)) { functionName ->
+                    nativeFunctions[functionName]
+                        .shouldNotBeNull()
+                        .shouldConvertToString("fun[\"$functionName\"]")
+                }
+            }
+
             "throw exception when invoked with invalid number of arguments" {
                 forAll(
                     row("abs", 1),

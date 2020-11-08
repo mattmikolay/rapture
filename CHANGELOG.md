@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog], and this project adheres to
 ## Unreleased
 
 - Improve syntax error handling
+- Fix output of native functions as strings
 
 ## [v1.0.0] - 2020-10-31
 

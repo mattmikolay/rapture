@@ -28,30 +28,40 @@ private interface NativeFunction : RObject, Callable {
         get() = "function"
 }
 
-private interface SingleParamNativeFunction : NativeFunction {
-
-    override fun call(
+private inline fun makeNativeFunction(
+    name: String,
+    crossinline functionDef: (
         environment: Environment,
         arguments: List<Argument>,
         callToken: Token
-    ): RObject? {
-        if (arguments.size != 1) {
-            throw IncorrectArgumentCountError(
-                expectedArgCount = 1,
-                actualArgCount = arguments.size,
-                token = callToken
-            )
-        }
+    ) -> RObject
+) =
+    name to object : NativeFunction {
+        override fun call(environment: Environment, arguments: List<Argument>, callToken: Token): RObject? =
+            functionDef(environment, arguments, callToken)
 
-        val arg = arguments[0]
-        val obj = arg.evaluate(environment)
-            .getValue()
-            .getOrThrow { reason -> InvalidOperationError(reason, token = arg.token) }
-
-        return call(obj, arg)
+        override fun toString() =
+            "fun[\"$name\"]"
     }
 
-    fun call(obj: RObject, arg: Argument): RObject
+private inline fun makeNativeFunction(
+    name: String,
+    crossinline functionDef: (obj: RObject, arg: Argument) -> RObject,
+) = makeNativeFunction(name) { environment, arguments, callToken ->
+    if (arguments.size != 1) {
+        throw IncorrectArgumentCountError(
+            expectedArgCount = 1,
+            actualArgCount = arguments.size,
+            token = callToken,
+        )
+    }
+
+    val arg = arguments[0]
+    val obj = arg.evaluate(environment)
+        .getValue()
+        .getOrThrow { reason -> InvalidOperationError(reason, token = arg.token) }
+
+    functionDef(obj, arg)
 }
 
 /**
@@ -67,190 +77,161 @@ private interface SingleParamNativeFunction : NativeFunction {
  * - circle
  */
 val nativeFunctions = mapOf<String, RObject>(
-    "abs" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> obj.value.absoluteValue.toRInteger()
-                is Real -> obj.value.absoluteValue.toReal()
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }
-    },
-    "sign" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> obj.value.sign
-                is Real -> obj.value.sign.toInt()
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toRInteger()
-    },
-    "sqrt" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> sqrt(obj.value.toDouble())
-                is Real -> sqrt(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
-    },
-    "entier" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> obj.value
-                is Real -> floor(obj.value).toInt()
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toRInteger()
-    },
-    "round" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> obj.value
-                is Real -> obj.value.let { if (it.isNaN()) 0 else round(it).toInt() }
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toRInteger()
-    },
-    "rand" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> Random.nextDouble() * obj.value
-                is Real -> Random.nextDouble() * obj.value
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
-    },
-    "int_rand" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> (1..obj.value).random()
-                is Real -> (1..obj.value.toInt()).random()
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toRInteger()
-    },
-    "index" to object : NativeFunction {
-        override fun call(
-            environment: Environment,
-            arguments: List<Argument>,
-            callToken: Token
-        ): RObject? {
-            if (arguments.size != 2) {
-                throw IncorrectArgumentCountError(
-                    expectedArgCount = 2,
-                    actualArgCount = arguments.size,
-                    token = callToken
-                )
-            }
-
-            val arg1 = arguments[0].evaluate(environment)
-                .getValue()
-                .getOrThrow { reason -> InvalidOperationError(reason, token = arguments[0].token) }
-            val arg2 = arguments[1].evaluate(environment)
-                .getValue()
-                .getOrThrow { reason -> InvalidOperationError(reason, token = arguments[1].token) }
-
-            return when (arg2) {
-                is Sequence -> arg2.entries.indexOf(arg1) + 1
-                is Text -> {
-                    if (arg1 !is Text) {
-                        throw IllegalArgumentError("Invalid type passed to index function", arguments[0])
-                    }
-
-                    arg2.value.indexOf(arg1.value) + 1
-                }
-                else -> throw IllegalArgumentError("Expected text or sequence at argument 1", arguments[1])
-            }.toRInteger()
+    makeNativeFunction("abs") { obj, arg ->
+        when (obj) {
+            is RInteger -> obj.value.absoluteValue.toRInteger()
+            is Real -> obj.value.absoluteValue.toReal()
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
         }
     },
-    "is_empty" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            Logical(obj is Empty)
+    makeNativeFunction("sign") { obj, arg ->
+        when (obj) {
+            is RInteger -> obj.value.sign
+            is Real -> obj.value.sign.toInt()
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toRInteger()
     },
-    "is_log" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            Logical(obj is Logical)
+    makeNativeFunction("sqrt") { obj, arg ->
+        when (obj) {
+            is RInteger -> sqrt(obj.value.toDouble())
+            is Real -> sqrt(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
     },
-    "is_int" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            Logical(obj is RInteger)
+    makeNativeFunction("entier") { obj, arg ->
+        when (obj) {
+            is RInteger -> obj.value
+            is Real -> floor(obj.value).toInt()
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toRInteger()
     },
-    "is_real" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            Logical(obj is Real)
+    makeNativeFunction("round") { obj, arg ->
+        when (obj) {
+            is RInteger -> obj.value
+            is Real -> obj.value.let { if (it.isNaN()) 0 else round(it).toInt() }
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toRInteger()
     },
-    "is_text" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            Logical(obj is Text)
+    makeNativeFunction("rand") { obj, arg ->
+        when (obj) {
+            is RInteger -> Random.nextDouble() * obj.value
+            is Real -> Random.nextDouble() * obj.value
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
     },
-    "is_seq" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            Logical(obj is Sequence)
+    makeNativeFunction("int_rand") { obj, arg ->
+        when (obj) {
+            is RInteger -> (1..obj.value).random()
+            is Real -> (1..obj.value.toInt()).random()
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toRInteger()
     },
-    "is_proc" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            Logical(obj is Procedure)
+    makeNativeFunction("index") { environment, arguments, callToken ->
+        if (arguments.size != 2) {
+            throw IncorrectArgumentCountError(
+                expectedArgCount = 2,
+                actualArgCount = arguments.size,
+                token = callToken
+            )
+        }
+
+        val arg1 = arguments[0].evaluate(environment)
+            .getValue()
+            .getOrThrow { reason -> InvalidOperationError(reason, token = arguments[0].token) }
+        val arg2 = arguments[1].evaluate(environment)
+            .getValue()
+            .getOrThrow { reason -> InvalidOperationError(reason, token = arguments[1].token) }
+
+        when (arg2) {
+            is Sequence -> arg2.entries.indexOf(arg1) + 1
+            is Text -> {
+                if (arg1 !is Text) {
+                    throw IllegalArgumentError("Invalid type passed to index function", arguments[0])
+                }
+
+                arg2.value.indexOf(arg1.value) + 1
+            }
+            else -> throw IllegalArgumentError("Expected text or sequence at argument 1", arguments[1])
+        }.toRInteger()
     },
-    "is_fun" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            Logical(obj is Function || obj is NativeFunction)
+    makeNativeFunction("is_empty") { obj, _ ->
+        Logical(obj is Empty)
     },
-    "sin" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> sin(obj.value.toDouble())
-                is Real -> sin(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
+    makeNativeFunction("is_log") { obj, _ ->
+        Logical(obj is Logical)
     },
-    "cos" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> cos(obj.value.toDouble())
-                is Real -> cos(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
+    makeNativeFunction("is_int") { obj, _ ->
+        Logical(obj is RInteger)
     },
-    "tg" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> tan(obj.value.toDouble())
-                is Real -> tan(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
+    makeNativeFunction("is_real") { obj, _ ->
+        Logical(obj is Real)
     },
-    "arcsin" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> asin(obj.value.toDouble())
-                is Real -> asin(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
+    makeNativeFunction("is_text") { obj, _ ->
+        Logical(obj is Text)
     },
-    "arctg" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> atan(obj.value.toDouble())
-                is Real -> atan(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
+    makeNativeFunction("is_seq") { obj, _ ->
+        Logical(obj is Sequence)
     },
-    "exp" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> exp(obj.value.toDouble())
-                is Real -> exp(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
+    makeNativeFunction("is_proc") { obj, _ ->
+        Logical(obj is Procedure)
     },
-    "ln" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> ln(obj.value.toDouble())
-                is Real -> ln(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
+    makeNativeFunction("is_fun") { obj, _ ->
+        Logical(obj is Function || obj is NativeFunction)
     },
-    "lg" to object : SingleParamNativeFunction {
-        override fun call(obj: RObject, arg: Argument) =
-            when (obj) {
-                is RInteger -> log10(obj.value.toDouble())
-                is Real -> log10(obj.value)
-                else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
-            }.toReal()
+    makeNativeFunction("sin") { obj, arg ->
+        when (obj) {
+            is RInteger -> sin(obj.value.toDouble())
+            is Real -> sin(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
+    },
+    makeNativeFunction("cos") { obj, arg ->
+        when (obj) {
+            is RInteger -> cos(obj.value.toDouble())
+            is Real -> cos(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
+    },
+    makeNativeFunction("tg") { obj, arg ->
+        when (obj) {
+            is RInteger -> tan(obj.value.toDouble())
+            is Real -> tan(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
+    },
+    makeNativeFunction("arcsin") { obj, arg ->
+        when (obj) {
+            is RInteger -> asin(obj.value.toDouble())
+            is Real -> asin(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
+    },
+    makeNativeFunction("arctg") { obj, arg ->
+        when (obj) {
+            is RInteger -> atan(obj.value.toDouble())
+            is Real -> atan(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
+    },
+    makeNativeFunction("exp") { obj, arg ->
+        when (obj) {
+            is RInteger -> exp(obj.value.toDouble())
+            is Real -> exp(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
+    },
+    makeNativeFunction("ln") { obj, arg ->
+        when (obj) {
+            is RInteger -> ln(obj.value.toDouble())
+            is Real -> ln(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
+    },
+    makeNativeFunction("lg") { obj, arg ->
+        when (obj) {
+            is RInteger -> log10(obj.value.toDouble())
+            is Real -> log10(obj.value)
+            else -> throw IllegalArgumentError("Expected integer or real at argument 0", arg)
+        }.toReal()
     }
 )
