@@ -34,32 +34,38 @@ import com.mattmik.rapira.util.map
 class ExpressionVisitor(private val environment: Environment) : RapiraBaseVisitor<RObject>() {
 
     // Supports short-circuit evaluation
-    override fun visitAndExpression(ctx: RapiraParser.AndExpressionContext) =
-        ctx.expression()
-            .fold<RapiraParser.ExpressionContext, RObject>(CONST_YES) { result, expr ->
-                if (result == CONST_NO)
-                    CONST_NO
-                else (result and visit(expr)).getOrThrow { reason ->
-                    InvalidOperationError(
-                        reason,
-                        token = ctx.AND().symbol
-                    )
-                }
+    override fun visitAndExpression(ctx: RapiraParser.AndExpressionContext): RObject {
+        val (expr1, expr2) = ctx.expression()
+
+        val result1 = visit(expr1)
+        if (result1 == CONST_NO)
+            return CONST_NO
+
+        return (result1 and visit(expr2))
+            .getOrThrow { reason ->
+                InvalidOperationError(
+                    reason,
+                    token = ctx.AND().symbol
+                )
             }
+    }
 
     // Supports short-circuit evaluation
-    override fun visitOrExpression(ctx: RapiraParser.OrExpressionContext) =
-        ctx.expression()
-            .fold<RapiraParser.ExpressionContext, RObject>(CONST_NO) { result, expr ->
-                if (result == CONST_YES)
-                    CONST_YES
-                else (result or visit(expr)).getOrThrow { reason ->
-                    InvalidOperationError(
-                        reason,
-                        token = ctx.OR().symbol
-                    )
-                }
+    override fun visitOrExpression(ctx: RapiraParser.OrExpressionContext): RObject {
+        val (expr1, expr2) = ctx.expression()
+
+        val result1 = visit(expr1)
+        if (result1 == CONST_YES)
+            return CONST_YES
+
+        return (result1 or visit(expr2))
+            .getOrThrow { reason ->
+                InvalidOperationError(
+                    reason,
+                    token = ctx.OR().symbol
+                )
             }
+    }
 
     override fun visitNotExpression(ctx: RapiraParser.NotExpressionContext) =
         visit(ctx.expression())

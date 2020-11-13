@@ -8,8 +8,14 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 ## Unreleased
 
+### Changed
+
 - Improve syntax error handling
+
+### Fixed
+
 - Fix output of native functions as strings
+- Fix error message displayed for invalid logical operations
 
 ## [v1.0.0] - 2020-10-31
 
