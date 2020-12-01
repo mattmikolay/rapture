@@ -59,12 +59,12 @@ Zvenigorodsky [\[1\]](#references).
 The original implementation of Rapira was part of Schoolgirl (Shkolnitsa)
 [\[1\]](#references), an educational software system created at the Computing
 Center of the Siberian Branch of the USSR Academy of Science in Novosibirsk.
-[\[3, 4\]](#references) The Schoolgirl system was developed “in late 1984 by a
+[\[2, 3\]](#references) The Schoolgirl system was developed “in late 1984 by a
 group of young graduates of the Young Programmers School, mentored by G.
 Zvenigorodski under the guidance of [Andrei Ershov]” and accompanied a course
 meant to teach “the basics of informatics and computing machines.”
-[\[3\]](#references) It supported two languages, Robic and Rapira, used to
-teach programming to “children from 2nd to 10th grades.” [\[4\]](#references)
+[\[2\]](#references) It supported two languages, Robic and Rapira, used to
+teach programming to “children from 2nd to 10th grades.” [\[3\]](#references)
 
 **What computers was Rapira originally used on?**
 
@@ -97,14 +97,11 @@ directory:
      English URL: http://ershov.iis.nsk.su/ru/node/772586 Russian URL:
      http://ershov.iis.nsk.su/ru/node/772584 (visited on 09/13/2020).
 
-[2]: *Звенигородский*. URL: http://alley.iis.nsk.su/person/zvenigorodskiy
-     (visited on 09/13/2020).
-
-[3]: *“Shkolnitsa” – an Application Package for Automation of School Educational
+[2]: *“Shkolnitsa” – an Application Package for Automation of School Educational
      Process*. URL: https://web.archive.org/web/20160401080544/http://sorucom.karelia.ru/view_thesis.html?id=17&user_id=17
      (visited on 09/19/2020).
 
-[4]: Boenig-Liptsin, Margarita. 2015. *Making Citizens of the Information Age: A
+[3]: Boenig-Liptsin, Margarita. 2015. *Making Citizens of the Information Age: A
      Comparative Study of the First Computer Literacy Programs for Children in
      the United States, France, and the Soviet Union, 1970-1990*. Doctoral
      dissertation, Harvard University, Graduate School of Arts & Sciences.
